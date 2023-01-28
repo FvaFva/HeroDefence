@@ -1,0 +1,97 @@
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+using TMPro;
+
+[RequireComponent(typeof(Image))]
+public class CharacterViewer : MonoBehaviour
+{
+    [SerializeField] private Slider _hitPointsBar;
+    [SerializeField] private Slider _manaPointsBar;
+    [SerializeField] private Image _portrait;
+    [SerializeField] private ScrollRect _effectPlace;
+    [SerializeField] private Button _selectSharacter;
+    [SerializeField] private TMP_Text _name;
+    [SerializeField] private Color _targetebleColor;
+    [SerializeField] private Image _flagImage;
+    [SerializeField] private TMP_Text _flagText;
+    [SerializeField] private Image _currentMask;
+
+    private Character _character;
+    private Color _baseColor;
+
+    public UnityEvent<Character, CharacterViewer> SelectSharacter = new UnityEvent<Character, CharacterViewer>();
+    public bool IsUsed;
+
+    private void Awake()
+    {
+        _baseColor = _currentMask.color;
+    }
+
+    private void OnEnable()
+    {
+        if(_character != null)
+            _character.Changed—haracteristics.AddListener(SetCurrentCharacteristics);
+
+        _selectSharacter.onClick.AddListener(Selected);
+    }
+
+    private void OnDisable()
+    {
+        RemoveListenersFromCharacter();
+        _selectSharacter.onClick.RemoveListener(Selected);
+    }
+
+    public void SetMainTarget(bool isItMain)
+    {
+        _currentMask.color = isItMain? _targetebleColor : _baseColor;
+    }
+
+    public void Render(Character character)
+    {
+        if (character == null)
+        {
+            Clear();
+        }
+        else
+        {
+            IsUsed = true;
+            _character = character;
+            _name.text = character.Name;
+            _portrait.sprite = _character.Portrait;
+            _character.Changed—haracteristics.AddListener(SetCurrentCharacteristics);
+            character.NotifyChanged—haracteristics();
+            gameObject.SetActive(true);
+            _flagImage.color = character.Team.Flag;
+            _flagText.text = character.Team.Name;
+        }
+    }
+
+    public void Selected() 
+    {
+        SelectSharacter.Invoke(_character, this);
+    }
+
+    public void Clear()
+    {
+        RemoveListenersFromCharacter();
+        _character = null;
+        _name.text = "|||||";
+        _portrait.sprite = null;
+        SetCurrentCharacteristics(0, 0);
+        IsUsed = false;
+        gameObject.SetActive(false);
+    }
+
+    private void RemoveListenersFromCharacter()
+    {
+        if (_character != null)
+            _character.Changed—haracteristics.RemoveListener(SetCurrentCharacteristics);
+    }
+
+    private void SetCurrentCharacteristics(float hitPointsCoeffecient, float manaPointsCoeffecient)
+    {
+        _hitPointsBar.value = hitPointsCoeffecient;
+        _manaPointsBar.value = manaPointsCoeffecient;
+    }
+}
