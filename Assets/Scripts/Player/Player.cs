@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     private Camera _camera;
     private float _cameraSpeed = 10;
     private Coroutine _cameraMover;
+    private bool _isControllabilityCharacter;
 
     public Team Team => _team;
 
@@ -59,7 +60,7 @@ public class Player : MonoBehaviour
 
     private void ComandAction()
     {      
-        if (_currentCharacter != null && CheckMouseRay())
+        if (_currentCharacter != null && _isControllabilityCharacter && CheckMouseRay())
         {
             if (_hitTemp.collider.gameObject.TryGetComponent<Walkable>(out Walkable place))
                 SetCharactersTargetPoint();
@@ -122,14 +123,25 @@ public class Player : MonoBehaviour
     private void SetCurrentCharacter(Character character)
     {
         if(character != null && character != _currentCharacter)
-        { 
+        {
+            UpdateCharacterControllability(character);
+
             _currentCharacter = character;
             bool isNewInPool = _selectedPull.Contains(_currentCharacter) == false;
             _mainUI.DrawCurrentCharacter(character, isNewInPool);
 
             if (isNewInPool)
-                _selectedPull.Add(_currentCharacter);
+                _selectedPull.Add(_currentCharacter);            
         }
+    }
+
+    private void UpdateCharacterControllability(Character character)
+    {
+        bool oldCharacterControllability = _isControllabilityCharacter;
+        _isControllabilityCharacter = character.Team == Team;
+
+        if (_isControllabilityCharacter != oldCharacterControllability || _isControllabilityCharacter == false)
+            ClearSelectedCharacters();
     }
 
     private bool CheckMouseRay()

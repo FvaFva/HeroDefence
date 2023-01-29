@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47ec0e95f89919a4a87f220238710f29, type: 3}
-  m_Name: Green
+  m_Script: {fileID: 11500000, guid: c94c9dedb86e1fe46920b72ae370d310, type: 3}
+  m_Name: Melee3meters
   m_EditorClassIdentifier: 
-  _flag: {r: 0.11236813, g: 0.9811321, b: 0.0509078, a: 1}
-  _name: Player
+  _attackDistance: 3
+  EnemyDamageApply:
+    m_PersistentCalls:
+      m_Calls: []

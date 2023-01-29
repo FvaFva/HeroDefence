@@ -13,7 +13,7 @@ public class Spell:ScriptableObject
 
     public void Cast(Vector2 castPoint)
     {
-        foreach(CombatUnit target in PlaceLogic.GetTargets(castPoint))
+        foreach(CharacterFightLogic target in PlaceLogic.GetTargets(castPoint))
         {
             foreach(SpellCastLogic castLogic in SpellCastLogicList)
             {

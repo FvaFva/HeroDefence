@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MoveSistem
+public class CharacterMoveLogic
 {
     private NavMeshAgent _moveAgent;
     private Transform _body;
@@ -10,32 +10,30 @@ public class MoveSistem
     private Vector3 _currentTargetPoint;
     private Character _targetEnemy;
     private float _moveSpeed;
-    private float _atackDistance;
+    private float _distance;
     private Vector3 _currentPosition;
     private Vector3 _currentEnemyPosition;
-    private float _attackDistanceDelta = 0.1f;
-    private WaitForSeconds _moveDelay = new WaitForSeconds(0.1f);
     private float _rotationSpeed;
     private Quaternion _targetRotation;
 
     public bool IsMove { get; private set; }
 
-    public MoveSistem(NavMeshAgent moveAgent, Transform body, float atackDistance)
+    public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body)
     {
         _moveAgent = moveAgent;
         _moveAgent.enabled = true;
         _rotationSpeed = moveAgent.angularSpeed;
         _body = body;
         _moveSpeed = 0;
-        _atackDistance = atackDistance;
         IsMove = false;
     }
 
-    public void SetTarget(Character enemy)
+    public void SetTarget(Character character, float distance)
     {
-        _targetEnemy = enemy;
+        _distance = distance;
+        _targetEnemy = character;
         _targetPoint = _body.position;
-    }   
+    }
 
     public void SetTarget(Vector3 point)
     {
@@ -43,11 +41,15 @@ public class MoveSistem
         _targetEnemy = null;
     }
 
+    public void SetNewDistanceToTarget(float distance)
+    {
+        _distance = distance;
+    }
+
     public void SetMoveSpeed(float moveSpeed)
     {
         _moveSpeed = Mathf.Max(0, moveSpeed);
         _moveAgent.speed = _moveSpeed;
-        _moveAgent.acceleration = _moveSpeed;
     }
 
     public IEnumerator UpdatePathToTarget()
@@ -60,9 +62,9 @@ public class MoveSistem
             {
                 _currentEnemyPosition = _targetEnemy.transform.position;
 
-                if (Vector3.Distance(_currentPosition, _currentEnemyPosition) > _atackDistance + _attackDistanceDelta)
+                if (Vector3.Distance(_currentPosition, _currentEnemyPosition) > _distance + GameSettings.Character.RangeDelta)
                 {
-                    Vector3 newTarget = Vector3.MoveTowards(_currentEnemyPosition, _currentPosition, _atackDistance);
+                    Vector3 newTarget = Vector3.MoveTowards(_currentEnemyPosition, _currentPosition, _distance);
                     SetNewTargetPointToAgent(newTarget);
                 }
                 else
@@ -78,7 +80,7 @@ public class MoveSistem
 
             IsMove = _currentTargetPoint != _currentPosition;
 
-            yield return _moveDelay;
+            yield return GameSettings.Character.OptimizationDelay();
         }
     }
 

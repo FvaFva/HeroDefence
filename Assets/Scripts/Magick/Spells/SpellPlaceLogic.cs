@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class SpellPlaceLogic : ScriptableObject
 {
-    public abstract List<CombatUnit> GetTargets(Vector2 targetPoint);
+    public abstract List<CharacterFightLogic> GetTargets(Vector2 targetPoint);
 }

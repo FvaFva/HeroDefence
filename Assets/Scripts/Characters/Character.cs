@@ -8,91 +8,88 @@ using UnityEngine.Events;
 public class Character : MonoBehaviour
 {    
     [SerializeField] private CharacterInformation _informationUI;
-    [SerializeField] private float _speed;
-    
+    [SerializeField] private CharacterPreset _preset;
+
+    private float _speed;
     private float _speedCoefficient;
-    private float _hitPointsCoeffecient = 1;
-    private CombatUnit _unit;
+    private float _hitPointsCurrentCoefficient = 1;
+    private CharacterFightLogic _fightLogic;
+    private CharacterMoveLogic _moveLogic;
     private Anima _anima;
-    private float _attacDistance = 3f;
+    private AttackLogic _attackLogic;
     private List<EffectImpact> _effects = new List<EffectImpact>();
-    private MoveSistem _moveSistem;
+
     private Coroutine _staminaRegeneration;
     private Coroutine _updateMovePath;
     private Coroutine _attakEnemy;
-    private WaitForSeconds _attackDelay = new WaitForSeconds(0.1f);
 
-    [SerializeField] public string Name;
-    [SerializeField] public Sprite Portrait;
+    public string Name { get; private set; }
+    public bool IsLive { get; private set; }
+    public Sprite Portrait{ get; private set; }
+    
     [SerializeField] public Team Team;
 
     public UnityEvent<float, float> Changed—haracteristics = new UnityEvent<float, float>();
     public UnityEvent SetMainTarget = new UnityEvent();
-    public bool IsLive { get; private set; }
 
     public void SetNewTarget(Vector3 targtPoint)
     {        
         if(_attakEnemy != null)
             StopCoroutine(_attakEnemy);
 
-        _moveSistem.SetTarget(targtPoint);
+        _moveLogic.SetTarget(targtPoint);
     }
 
-    public void SetNewTarget(Character targetEnemy)
+    public void SetNewTarget(Character target)
     {        
-        if(targetEnemy != null && targetEnemy != this)
-            _attakEnemy = StartCoroutine(AttackEnemy(targetEnemy));
+        float socialDistance = GameSettings.Character.SocialDistance;
 
-        _moveSistem.SetTarget(targetEnemy);
+        if (target != null && target != this && target.Team != Team)
+        {            
+            socialDistance = _attackLogic.AttackDistance;
+            _attakEnemy = StartCoroutine(AttackEnemy(target));
+        }
+
+        _moveLogic.SetTarget(target, socialDistance);
     }
 
-    public void ApplyDamage(float damage)
+    public bool ApplyDamage(float damage)
     {
-        _unit.ApplyDamage(damage);
+        return _fightLogic.ApplyDamage(damage);
     }
 
     public void ApplyHeal(float heal)
     {
-        _unit.ApplyHeal(heal);
+        _fightLogic.ApplyHeal(heal);
     }
 
     public void NotifyChanged—haracteristics()
     {        
         float manaPointsCoeffecient = _anima.ManaPointsCurrent / _anima.ManaPointsMax;
-        _informationUI.SetCurrentCharacteristics(_hitPointsCoeffecient, manaPointsCoeffecient);
-        Changed—haracteristics.Invoke(_hitPointsCoeffecient, manaPointsCoeffecient);
-    }
-
-    private void Start()
-    {
-        NotifyChanged—haracteristics();
+        _informationUI.SetCurrentCharacteristics(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
+        Changed—haracteristics.Invoke(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
     }
 
     private void Awake()
     {
-        TryGetComponent<NavMeshAgent>(out NavMeshAgent _navigator);
-        _moveSistem = new MoveSistem(_navigator, transform, _attacDistance);
-        _unit = new CombatUnit(100, 20, 30, 400);   
-        _anima = new Anima(100, 1);
-        IsLive = true;
-        _speedCoefficient = 1;
-        UpdateSpeed();
+        LoadPreset(_preset);
     }
 
     private void OnEnable()
     {        
-        _unit.ImpactingEffect.AddListener(AddEffectImpact);
-        _unit.HitPointsChanged.AddListener(UpdateHitPointsCoefficient);
-        _unit.Died.AddListener(OnDeth);
-        _staminaRegeneration = StartCoroutine(_unit.Resting());
-        _updateMovePath = StartCoroutine(_moveSistem.UpdatePathToTarget());
+        _fightLogic.ImpactingEffect.AddListener(AddEffectImpact);
+        _fightLogic.HitPointsChanged.AddListener(UpdateHitPointsCoefficient);
+        _fightLogic.Died.AddListener(OnDeth);
+        _staminaRegeneration = StartCoroutine(_fightLogic.Resting());
+        _updateMovePath = StartCoroutine(_moveLogic.UpdatePathToTarget());
+        NotifyChanged—haracteristics();
     }
 
     private void OnDisable()
     {
-        _unit.ImpactingEffect.RemoveListener(AddEffectImpact);
-        _unit.HitPointsChanged.RemoveListener(UpdateHitPointsCoefficient);
-        _unit.Died.RemoveListener(OnDeth);
+        _fightLogic.ImpactingEffect.RemoveListener(AddEffectImpact);
+        _fightLogic.HitPointsChanged.RemoveListener(UpdateHitPointsCoefficient);
+        _fightLogic.Died.RemoveListener(OnDeth);
         
         if (_staminaRegeneration != null)
             StopCoroutine(_staminaRegeneration);
@@ -106,7 +103,7 @@ public class Character : MonoBehaviour
 
     private void UpdateHitPointsCoefficient(float newCoefficient)
     {
-        _hitPointsCoeffecient = newCoefficient;
+        _hitPointsCurrentCoefficient = newCoefficient;
         NotifyChanged—haracteristics();
     }    
 
@@ -115,14 +112,15 @@ public class Character : MonoBehaviour
         IsLive = false;
         gameObject.SetActive(false);        
     }
+
     private IEnumerator AttackEnemy(Character enemy)
     {
         while (enemy.IsLive)
         {
-            if (_moveSistem.IsMove == false)
-                _unit.Attack(enemy);
+            if (_moveLogic.IsMove == false)
+                _fightLogic.Attack(enemy);
 
-            yield return _attackDelay;
+            yield return GameSettings.Character.OptimizationDelay();
         }
 
         SetNewTarget(this.transform.position);
@@ -143,6 +141,30 @@ public class Character : MonoBehaviour
     private void UpdateSpeed()
     {
         float currentSpeed = _speed * _speedCoefficient;
-        _moveSistem.SetMoveSpeed(currentSpeed);
+        _moveLogic.SetMoveSpeed(currentSpeed);
     } 
+
+    private void UpdateAttackLogic(AttackLogic logic)
+    {
+        _attackLogic = logic;
+        _fightLogic.SetNewAttackLogic(_attackLogic);
+    }
+
+    private void LoadPreset(CharacterPreset preset)
+    {
+        TryGetComponent<NavMeshAgent>(out NavMeshAgent _navigator);
+        _moveLogic          = new CharacterMoveLogic(_navigator, transform);
+        _speed              = preset.MoveSpeed;
+        _speedCoefficient   = 1;
+        UpdateSpeed();
+        
+        _fightLogic     = new CharacterFightLogic(preset.HitPoints, preset.Armor, preset.Damage, preset.AttacSpeed);        
+        IsLive          = true;
+        UpdateAttackLogic(preset.AttackLogic);
+
+        Name        = preset.Name;
+        Portrait    = preset.Portrait;
+
+        _anima = new Anima(100, 1);
+    }
 }
