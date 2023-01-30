@@ -817,6 +817,10 @@ PrefabInstance:
       propertyPath: Team
       value: 
       objectReference: {fileID: 11400000, guid: 0db71fec695662e4997218424520e2e9, type: 2}
+    - target: {fileID: 8137608635697448951, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
+      propertyPath: _team
+      value: 
+      objectReference: {fileID: 11400000, guid: 9e6536d411937fd4f80d3dabbb48a5f5, type: 2}
     - target: {fileID: 8530097724742372972, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000015258789
@@ -1257,7 +1261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebd88f671a58b7b4584bfe77875121eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentCharacterViewer: {fileID: 0}
+  _currentCharacter: {fileID: 2091987866}
   _selectedCharacters: {fileID: 1371952914}
   OnCharacterSelect:
     m_PersistentCalls:
@@ -1507,6 +1511,10 @@ PrefabInstance:
       propertyPath: Team
       value: 
       objectReference: {fileID: 11400000, guid: 0db71fec695662e4997218424520e2e9, type: 2}
+    - target: {fileID: 8137608635697448951, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
+      propertyPath: _team
+      value: 
+      objectReference: {fileID: 11400000, guid: 9e6536d411937fd4f80d3dabbb48a5f5, type: 2}
     - target: {fileID: 8530097724742372972, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000015258789
@@ -1628,7 +1636,7 @@ GameObject:
   - component: {fileID: 938623013}
   - component: {fileID: 938623012}
   m_Layer: 5
-  m_Name: Class
+  m_Name: Profession
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1674,7 +1682,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Class
+  m_text: Profession
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1701,7 +1709,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.1
+  m_fontSize: 22.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2260,6 +2268,10 @@ PrefabInstance:
       propertyPath: Team
       value: 
       objectReference: {fileID: 11400000, guid: 9e6536d411937fd4f80d3dabbb48a5f5, type: 2}
+    - target: {fileID: 8137608635697448951, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
+      propertyPath: _team
+      value: 
+      objectReference: {fileID: 11400000, guid: 0db71fec695662e4997218424520e2e9, type: 2}
     - target: {fileID: 8530097724742372972, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000015258789
@@ -2511,7 +2523,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.014623088, y: 0}
   m_AnchorMax: {x: 1, y: 0.87600005}
-  m_AnchoredPosition: {x: -0.9993744, y: -0.000015259}
+  m_AnchoredPosition: {x: -0.9993744, y: -0.000015258789}
   m_SizeDelta: {x: 3.16, y: 0.000015259}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1389826208
@@ -2904,10 +2916,10 @@ RectTransform:
   m_Father: {fileID: 2144929985}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 287.3, y: 771.32}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1529267615
 MonoBehaviour:
@@ -3286,6 +3298,10 @@ PrefabInstance:
       propertyPath: Team
       value: 
       objectReference: {fileID: 11400000, guid: 9e6536d411937fd4f80d3dabbb48a5f5, type: 2}
+    - target: {fileID: 8137608635697448951, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
+      propertyPath: _team
+      value: 
+      objectReference: {fileID: 11400000, guid: 0db71fec695662e4997218424520e2e9, type: 2}
     - target: {fileID: 8530097724742372972, guid: 81055e56542444843aeefe7032cbed1f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000015258789
@@ -3643,6 +3659,7 @@ GameObject:
   - component: {fileID: 2091987863}
   - component: {fileID: 2091987865}
   - component: {fileID: 2091987864}
+  - component: {fileID: 2091987866}
   m_Layer: 5
   m_Name: CurrentCharacterInformation
   m_TagString: Untagged
@@ -3715,6 +3732,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2091987862}
   m_CullTransparentMesh: 1
+--- !u!114 &2091987866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091987862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67ffeab7da5a4044493465bcc576a849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _portrait: {fileID: 3506574248004609859}
+  _hitPoints: {fileID: 3506574247325884677}
+  _manaPoints: {fileID: 8561952023061044484}
+  _name: {fileID: 967415568}
+  _profession: {fileID: 938623012}
+  _damage: {fileID: 687357571}
+  _armor: {fileID: 1420823515}
+  _attackSpeed: {fileID: 205102860}
+  _moveSpeed: {fileID: 413399241}
+  _flag: {fileID: 4589667368338571998}
+  _teamName: {fileID: 3280369478231595236}
 --- !u!1 &2144929983
 GameObject:
   m_ObjectHideFlags: 0
@@ -4788,7 +4828,7 @@ GameObject:
   - component: {fileID: 1950747518682965967}
   - component: {fileID: 3280369478231595236}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TeamName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

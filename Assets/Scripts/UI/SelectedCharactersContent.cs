@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 [RequireComponent(typeof(GridLayoutGroup))]
-public class SelectedCharactersPanel : MonoBehaviour
+public class SelectedCharactersContent : MonoBehaviour
 {
     [SerializeField] private float _plaseWidth; 
     [SerializeField] private float _plaseHeight;

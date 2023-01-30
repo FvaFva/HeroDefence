@@ -38,10 +38,10 @@ public class CharacterFightLogic
         _attackLogic = newLogic;
     }
 
-    public bool ApplyDamage(float damage)
+    public void ApplyDamage(float damage)
     {
-        if(damage<=0) 
-            return false;
+        if (damage <= 0)
+            return;
 
         Attacked?.Invoke();        
         _hitPointsCurrent -= GetRealDamage(damage);
@@ -50,7 +50,6 @@ public class CharacterFightLogic
             Deing();
 
         HitPointsChanged.Invoke(_hitPointsCurrent / _hitPointsMax);
-        return true;
     }
 
     public void ApplyHeal(float heal)

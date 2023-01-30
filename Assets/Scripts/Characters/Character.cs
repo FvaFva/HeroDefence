@@ -9,6 +9,7 @@ public class Character : MonoBehaviour
 {    
     [SerializeField] private CharacterInformation _informationUI;
     [SerializeField] private CharacterPreset _preset;
+    [SerializeField] private Team _team;
 
     private float _speed;
     private float _speedCoefficient;
@@ -24,12 +25,15 @@ public class Character : MonoBehaviour
     private Coroutine _attakEnemy;
 
     public string Name { get; private set; }
+    public string Profission { get; private set; }
     public bool IsLive { get; private set; }
     public Sprite Portrait{ get; private set; }
-    
-    [SerializeField] public Team Team;
+    public string TeamName => _team.Name;
+    public Color TeamFlag => _team.Flag;
 
-    public UnityEvent<float, float> Changed—haracteristics = new UnityEvent<float, float>();
+    public UnityEvent<float, float> ChangedIndicators = new UnityEvent<float, float>();
+    public UnityEvent<float> ChangedSpeed = new UnityEvent<float>();
+    public UnityEvent<float, float, float> ChangedCharacteristics = new UnityEvent<float, float, float>();
     public UnityEvent SetMainTarget = new UnityEvent();
 
     public void SetNewTarget(Vector3 targtPoint)
@@ -44,7 +48,7 @@ public class Character : MonoBehaviour
     {        
         float socialDistance = GameSettings.Character.SocialDistance;
 
-        if (target != null && target != this && target.Team != Team)
+        if (target != null && target != this && target.CheckFrendly(_team) == false)
         {            
             socialDistance = _attackLogic.AttackDistance;
             _attakEnemy = StartCoroutine(AttackEnemy(target));
@@ -53,9 +57,14 @@ public class Character : MonoBehaviour
         _moveLogic.SetTarget(target, socialDistance);
     }
 
-    public bool ApplyDamage(float damage)
+    public void ApplyDamage(float damage)
     {
-        return _fightLogic.ApplyDamage(damage);
+        _fightLogic.ApplyDamage(damage);
+    }
+
+    public bool CheckFrendly(Team team)
+    {
+        return _team == team;
     }
 
     public void ApplyHeal(float heal)
@@ -67,7 +76,9 @@ public class Character : MonoBehaviour
     {        
         float manaPointsCoeffecient = _anima.ManaPointsCurrent / _anima.ManaPointsMax;
         _informationUI.SetCurrentCharacteristics(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
-        Changed—haracteristics.Invoke(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
+        ChangedIndicators.Invoke(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
+        ChangedCharacteristics.Invoke(_preset.Damage, _preset.Armor, _preset.AttacSpeed);
+        UpdateSpeed();
     }
 
     private void Awake()
@@ -123,7 +134,7 @@ public class Character : MonoBehaviour
             yield return GameSettings.Character.OptimizationDelay();
         }
 
-        SetNewTarget(this.transform.position);
+        SetNewTarget(transform.position);
     }
 
     private void AddEffectImpact(EffectImpact effect)
@@ -142,6 +153,7 @@ public class Character : MonoBehaviour
     {
         float currentSpeed = _speed * _speedCoefficient;
         _moveLogic.SetMoveSpeed(currentSpeed);
+        ChangedSpeed.Invoke(currentSpeed);
     } 
 
     private void UpdateAttackLogic(AttackLogic logic)
@@ -163,6 +175,7 @@ public class Character : MonoBehaviour
         UpdateAttackLogic(preset.AttackLogic);
 
         Name        = preset.Name;
+        Profission  = preset.Profission;
         Portrait    = preset.Portrait;
 
         _anima = new Anima(100, 1);

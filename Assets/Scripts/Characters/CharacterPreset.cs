@@ -16,7 +16,7 @@ public class CharacterPreset : ScriptableObject
 
     public float HitPoints => _hitPoints;
     public float AttacSpeed => _attacSpeed;
-    public string Class => _class;
+    public string Profission => _class;
     public float MoveSpeed => _moveSpeed;
     public float Damage => _damage;
     public float Armor => _armor;

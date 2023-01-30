@@ -31,7 +31,7 @@ public class CharacterViewer : MonoBehaviour
     private void OnEnable()
     {
         if(_character != null)
-            _character.Changed—haracteristics.AddListener(SetCurrentCharacteristics);
+            _character.ChangedIndicators.AddListener(SetCurrentCharacteristics);
 
         _selectSharacter.onClick.AddListener(Selected);
     }
@@ -59,11 +59,11 @@ public class CharacterViewer : MonoBehaviour
             _character = character;
             _name.text = character.Name;
             _portrait.sprite = _character.Portrait;
-            _character.Changed—haracteristics.AddListener(SetCurrentCharacteristics);
+            _character.ChangedIndicators.AddListener(SetCurrentCharacteristics);
             character.NotifyChanged—haracteristics();
             gameObject.SetActive(true);
-            _flagImage.color = character.Team.Flag;
-            _flagText.text = character.Team.Name;
+            _flagImage.color = character.TeamFlag;
+            _flagText.text = character.TeamName;
         }
     }
 
@@ -86,7 +86,7 @@ public class CharacterViewer : MonoBehaviour
     private void RemoveListenersFromCharacter()
     {
         if (_character != null)
-            _character.Changed—haracteristics.RemoveListener(SetCurrentCharacteristics);
+            _character.ChangedIndicators.RemoveListener(SetCurrentCharacteristics);
     }
 
     private void SetCurrentCharacteristics(float hitPointsCoeffecient, float manaPointsCoeffecient)

@@ -6,15 +6,14 @@ using System.Linq;
 
 public class MainUi : MonoBehaviour
 {
-    [SerializeField] private CharacterViewer _currentCharacterViewer;
-    [SerializeField] private SelectedCharactersPanel _selectedCharacters;
+    [SerializeField] private CurrentCharacterInfoPanel _currentCharacter; 
+    [SerializeField] private SelectedCharactersContent _selectedCharacters;
 
     public UnityEvent<Character> OnCharacterSelect;
     
     private void Awake()
     {
-        _currentCharacterViewer.Render(null);
-        _currentCharacterViewer.SetMainTarget(true);
+        _currentCharacter.SetNewCurrentCharacter(null);
     }
 
     private void OnEnable()
@@ -29,7 +28,7 @@ public class MainUi : MonoBehaviour
 
     public void DrawCurrentCharacter(Character character, bool isNewInPool)
     {
-        _currentCharacterViewer.Render(character);
+        _currentCharacter.SetNewCurrentCharacter(character);
 
         if (isNewInPool)
         {
@@ -39,7 +38,7 @@ public class MainUi : MonoBehaviour
 
     public void ClearAllCharacters()
     {
-        _currentCharacterViewer.Render(null);
+        _currentCharacter.SetNewCurrentCharacter(null);
         _selectedCharacters.ClearSelectedChaViewers();
     }
 

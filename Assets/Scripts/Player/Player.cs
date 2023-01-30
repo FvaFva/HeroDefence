@@ -17,7 +17,8 @@ public class Player : MonoBehaviour
     private Coroutine _cameraMover;
     private bool _isControllabilityCharacter;
 
-    public Team Team => _team;
+    public string TeamName => _team.Name;
+    public Color TeamFlag => _team.Flag;
 
     private void Awake()
     {
@@ -138,7 +139,7 @@ public class Player : MonoBehaviour
     private void UpdateCharacterControllability(Character character)
     {
         bool oldCharacterControllability = _isControllabilityCharacter;
-        _isControllabilityCharacter = character.Team == Team;
+        _isControllabilityCharacter = character.CheckFrendly(_team);
 
         if (_isControllabilityCharacter != oldCharacterControllability || _isControllabilityCharacter == false)
             ClearSelectedCharacters();

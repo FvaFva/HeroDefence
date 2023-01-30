@@ -15,7 +15,7 @@ MonoBehaviour:
   _hitPoints: 250
   _attacSpeed: 400
   _moveSpeed: 10
-  _class: 
+  _class: Chmo
   _armor: 10
   _damage: 40
   _portrait: {fileID: 21300000, guid: 06d70eeeaeef0704f82df886a2b6d7c0, type: 3}
