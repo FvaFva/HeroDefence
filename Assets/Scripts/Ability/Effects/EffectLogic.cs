@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewSpellEffect", menuName ="Spells/NewSpellEffect", order = 51)]
+[CreateAssetMenu(fileName = "New spell effect", menuName ="Ability/Spells/NewSpellEffect", order = 51)]
 public class EffectLogic : ScriptableObject
 {
     [SerializeField] public bool IsBlockMove { get; private set; }

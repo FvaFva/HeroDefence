@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class EffectImpact
     private Anima _caster;
     private float _durationSecond;
 
-    public UnityEvent<EffectImpact> EndingEffctDuration;
+    public event Action<EffectImpact> EndingEffctDuration;
 
     public EffectImpact(EffectLogic effect, Anima caster, float secondDuration)
     {
@@ -36,6 +37,6 @@ public class EffectImpact
         hitPontsChange = (_effect.HealPersSecond + _effect.DamagePersSecond) * delta;
 
         if (_durationSecond <= 0)
-            EndingEffctDuration.Invoke(this);
+            EndingEffctDuration?.Invoke(this);
     }
 }

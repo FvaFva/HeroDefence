@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 [RequireComponent(typeof(Image))]
 public class CharacterViewer : MonoBehaviour
@@ -20,7 +21,7 @@ public class CharacterViewer : MonoBehaviour
     private Character _character;
     private Color _baseColor;
 
-    public UnityEvent<Character, CharacterViewer> SelectSharacter = new UnityEvent<Character, CharacterViewer>();
+    public event Action<Character, CharacterViewer> SelectSharacter;
     public bool IsUsed;
 
     private void Awake()
@@ -31,7 +32,7 @@ public class CharacterViewer : MonoBehaviour
     private void OnEnable()
     {
         if(_character != null)
-            _character.ChangedIndicators.AddListener(SetCurrentCharacteristics);
+            _character.ChangedIndicators += SetCurrentCharacteristics;
 
         _selectSharacter.onClick.AddListener(Selected);
     }
@@ -59,8 +60,8 @@ public class CharacterViewer : MonoBehaviour
             _character = character;
             _name.text = character.Name;
             _portrait.sprite = _character.Portrait;
-            _character.ChangedIndicators.AddListener(SetCurrentCharacteristics);
-            character.NotifyChanged—haracteristics();
+            _character.ChangedIndicators += SetCurrentCharacteristics;
+            character.SetThisCurrentCharacter();
             gameObject.SetActive(true);
             _flagImage.color = character.TeamFlag;
             _flagText.text = character.TeamName;
@@ -69,7 +70,7 @@ public class CharacterViewer : MonoBehaviour
 
     public void Selected() 
     {
-        SelectSharacter.Invoke(_character, this);
+        SelectSharacter?.Invoke(_character, this);
     }
 
     public void Clear()
@@ -86,7 +87,7 @@ public class CharacterViewer : MonoBehaviour
     private void RemoveListenersFromCharacter()
     {
         if (_character != null)
-            _character.ChangedIndicators.RemoveListener(SetCurrentCharacteristics);
+            _character.ChangedIndicators -= SetCurrentCharacteristics;
     }
 
     private void SetCurrentCharacteristics(float hitPointsCoeffecient, float manaPointsCoeffecient)

@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public class MainUi : MonoBehaviour
 {
     [SerializeField] private CurrentCharacterInfoPanel _currentCharacter; 
     [SerializeField] private SelectedCharactersContent _selectedCharacters;
 
-    public UnityEvent<Character> OnCharacterSelect;
-    
-    private void Awake()
-    {
-        _currentCharacter.SetNewCurrentCharacter(null);
-    }
+    public event Action<Character> OnCharacterSelect;
 
     private void OnEnable()
     {
-        _selectedCharacters.OnCharacterSelect.AddListener(SetMainCharacter);
+        _selectedCharacters.OnCharacterSelect += SetMainCharacter;
     }
 
     private void OnDisable()
     {
-        _selectedCharacters.OnCharacterSelect.RemoveListener(SetMainCharacter);
+        _selectedCharacters.OnCharacterSelect -= SetMainCharacter;
     }
 
     public void DrawCurrentCharacter(Character character, bool isNewInPool)
@@ -44,6 +40,6 @@ public class MainUi : MonoBehaviour
 
     private void SetMainCharacter(Character character)
     {
-        OnCharacterSelect.Invoke(character);
+        OnCharacterSelect?.Invoke(character);
     }
 }

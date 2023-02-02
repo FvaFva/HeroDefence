@@ -31,14 +31,14 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         _input.Enable();
-        _mainUI.OnCharacterSelect.AddListener(SetCurrentCharacter);
+        _mainUI.OnCharacterSelect += SetCurrentCharacter;
         _cameraMover = StartCoroutine(CameraMover());
     }
 
     private void OnDisable()
     {
         _input.Disable();
-        _mainUI.OnCharacterSelect.RemoveListener(SetCurrentCharacter);
+        _mainUI.OnCharacterSelect -= SetCurrentCharacter;
         StopCoroutine(_cameraMover);
     }
 
@@ -116,6 +116,9 @@ public class Player : MonoBehaviour
 
     private void ClearSelectedCharacters()
     {
+        if(_selectedPull.Count == 0 && _currentCharacter == null)
+            return;
+
         _selectedPull.Clear();
         _currentCharacter = null;
         _mainUI.ClearAllCharacters();

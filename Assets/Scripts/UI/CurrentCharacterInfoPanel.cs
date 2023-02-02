@@ -17,6 +17,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     [SerializeField] private TMP_Text _moveSpeed;
     [SerializeField] private Image _flag;
     [SerializeField] private TMP_Text _teamName;
+    [SerializeField] private CurrentCharacterAbilityContent _currentCharacterAbility;
 
     private Character _character;
 
@@ -24,9 +25,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     {
         if (_character != null)
         {
-            _character.ChangedIndicators.RemoveListener(UpdateBarsInfo);
-            _character.ChangedCharacteristics.RemoveListener(UpdateCharacteristicsInfo);
-            _character.ChangedSpeed.RemoveListener(UpdateMoveSpeedInfo);
+            _character.ChangedIndicators -= UpdateBarsInfo;
+            _character.ChangedCharacteristics -= UpdateCharacteristicsInfo;
+            _character.ChangedSpeed -= UpdateMoveSpeedInfo;
+            _character.ShowedPerc -= DorwAbility;
         }
 
         _character = character;
@@ -41,6 +43,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     {        
         _portrait.sprite = null;
         UpdateBarsInfo(0, 0);
+        _currentCharacterAbility.ClearAllRenderedViewers();
         _name.text = "";
         _profession.text = "";
         _damage.text = "";
@@ -53,9 +56,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
 
     private void DrowCharacter()
     {
-        _character.ChangedIndicators.AddListener(UpdateBarsInfo);
-        _character.ChangedCharacteristics.AddListener(UpdateCharacteristicsInfo);
-        _character.ChangedSpeed.AddListener(UpdateMoveSpeedInfo);
+        _character.ChangedIndicators += UpdateBarsInfo;
+        _character.ChangedCharacteristics += UpdateCharacteristicsInfo;
+        _character.ChangedSpeed += UpdateMoveSpeedInfo;
+        _character.ShowedPerc += DorwAbility;
         _portrait.sprite = _character.Portrait;
         _name.text = _character.Name;
         _profession.text = _character.Profission;
@@ -79,5 +83,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     {
         _hitPoints.value = hitPointsCoefficient;
         _manaPoints.value = manaPointsCoefficient;
+    }
+
+    private void DorwAbility(Ability ability)
+    {
+        _currentCharacterAbility.Render(ability);
     }
 }

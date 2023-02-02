@@ -1,50 +1,35 @@
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using System;
 
-[RequireComponent(typeof(GridLayoutGroup))]
-public class SelectedCharactersContent : MonoBehaviour
+[RequireComponent(typeof(ContentViewerSezer))]
+public class SelectedCharactersContent : Content—oncealer
 {
-    [SerializeField] private float _plaseWidth; 
-    [SerializeField] private float _plaseHeight;
     [SerializeField] private CharacterViewer _tempViewer;
-    [SerializeField] private ScrollRect _panel;
-    [SerializeField] private float _showingPanelSpeed = 4;
 
-    private float _maxViewerSize;
-    private float _maxSideLeght;
-    private Vector3 _unshowingPosition;
-    private Vector3 _showingPosition;
-    private GridLayoutGroup _contentGroup;
-    private Coroutine _panelMoving;
     private List<CharacterViewer> _characterViewersPool = new List<CharacterViewer>();
+    private ContentViewerSezer _contentSizer;
 
-    public UnityEvent<Character> OnCharacterSelect = new UnityEvent<Character>();
+    public event Action<Character> OnCharacterSelect;
 
     private void Awake()
     {
-        TryGetComponent<GridLayoutGroup>(out _contentGroup);
-        _maxViewerSize = Mathf.Min(_plaseWidth, _plaseHeight);
-        _maxSideLeght = Mathf.Max(_plaseWidth, _plaseHeight);
-        int unshowSpace = 500;
-        _unshowingPosition = _panel.transform.position;
-        _unshowingPosition.x -= unshowSpace;
-        _showingPosition = _panel.transform.position;
-        UpdateViewersSize(0);
+        InitContentAdaptor();
+        TryGetComponent<ContentViewerSezer>(out _contentSizer);
     }
 
     public void ClearSelectedChaViewers()
     {
         foreach (CharacterViewer viewer in _characterViewersPool)
         {
-            viewer.SelectSharacter.RemoveListener(UpdateSelectedViewer);
+            viewer.SelectSharacter -= UpdateSelectedViewer;
             viewer.Render(null);
         }
 
-        UpdateViewersSize(0);
+        StartMovePanel(false);
+        _contentSizer.UpdateViewersSize(0);
     }
 
     public void RenderCharacter(Character character)
@@ -52,7 +37,7 @@ public class SelectedCharactersContent : MonoBehaviour
         var unusedViewer = _characterViewersPool.Where(character => character.IsUsed == false).ToList();
         CharacterViewer newViewer = null;
         int countUsedViewers = _characterViewersPool.Count - unusedViewer.Count;
-
+        
         if (unusedViewer.Count == 0)
         {
             newViewer = Instantiate(_tempViewer, transform);
@@ -64,15 +49,16 @@ public class SelectedCharactersContent : MonoBehaviour
         }
 
         newViewer.Render(character);
-        newViewer.SelectSharacter.AddListener(UpdateSelectedViewer);
+        newViewer.SelectSharacter += UpdateSelectedViewer;
         SetMainViewer(newViewer);
-        UpdateViewersSize(++countUsedViewers);
+        StartMovePanel(++countUsedViewers > 1);
+        _contentSizer.UpdateViewersSize(++countUsedViewers);
     }
 
     private void UpdateSelectedViewer(Character character, CharacterViewer viewer)
     {
         SetMainViewer(viewer);
-        OnCharacterSelect.Invoke(character);
+        OnCharacterSelect?.Invoke(character);
     }
 
     private void SetMainViewer(CharacterViewer mainViewer)
@@ -83,44 +69,4 @@ public class SelectedCharactersContent : MonoBehaviour
             viewer.SetMainTarget(viewer == mainViewer);
     }
 
-    private void UpdateViewersSize(int countsUsedViewers)
-    {
-        if(countsUsedViewers <= 1)
-        {
-            StartMovePanel(false);
-        }
-        else
-        {
-            StartMovePanel(true);
-            int countRow = Mathf.CeilToInt(_maxViewerSize * countsUsedViewers / _maxSideLeght);
-            float newSize = _maxViewerSize / countRow;
-            int countColum = Mathf.CeilToInt(countsUsedViewers / countRow);
-            float freeSpaseInColum = _maxSideLeght - countColum * newSize;
-            int countFilleredSpace = countColum + 1;
-            float Spacing = freeSpaseInColum / countFilleredSpace;
-
-            _contentGroup.padding.top = (int)Spacing;
-            _contentGroup.padding.bottom = (int)Spacing;
-            _contentGroup.spacing = new Vector2(_contentGroup.spacing.x, Spacing);
-            _contentGroup.cellSize = new Vector2(newSize, newSize);
-        }
-    }
-
-    private void StartMovePanel(bool show)
-    {
-        if(_panelMoving != null)
-            StopCoroutine(_panelMoving);
-
-        Vector3 targetPosition = show ? _showingPosition : _unshowingPosition;
-        StartCoroutine(MovePanel(targetPosition));
-    }
-
-    private IEnumerator MovePanel(Vector3 position)
-    {
-        while(_panel.transform.position != position)
-        {
-            _panel.transform.position = Vector3.MoveTowards(_panel.transform.position, position, Time.deltaTime * _showingPanelSpeed);
-            yield return null;
-        }
-    }
 }

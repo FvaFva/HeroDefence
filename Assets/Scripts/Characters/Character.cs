@@ -1,11 +1,10 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Character : MonoBehaviour
+public class Character : MonoBehaviour, IPercBag
 {    
     [SerializeField] private CharacterInformation _informationUI;
     [SerializeField] private CharacterPreset _preset;
@@ -14,11 +13,13 @@ public class Character : MonoBehaviour
     private float _speed;
     private float _speedCoefficient;
     private float _hitPointsCurrentCoefficient = 1;
+
+    private Character _targetEnemy;
     private CharacterFightLogic _fightLogic;
     private CharacterMoveLogic _moveLogic;
+    private CharacterPercBag _percBag = new CharacterPercBag();
+    private CharacterAttackLogic _attackLogic;
     private Anima _anima;
-    private AttackLogic _attackLogic;
-    private List<EffectImpact> _effects = new List<EffectImpact>();
 
     private Coroutine _staminaRegeneration;
     private Coroutine _updateMovePath;
@@ -31,15 +32,17 @@ public class Character : MonoBehaviour
     public string TeamName => _team.Name;
     public Color TeamFlag => _team.Flag;
 
-    public UnityEvent<float, float> ChangedIndicators = new UnityEvent<float, float>();
-    public UnityEvent<float> ChangedSpeed = new UnityEvent<float>();
-    public UnityEvent<float, float, float> ChangedCharacteristics = new UnityEvent<float, float, float>();
-    public UnityEvent SetMainTarget = new UnityEvent();
+    public event Action<float, float> ChangedIndicators;
+    public event Action<float> ChangedSpeed;
+    public event Action<float, float, float> ChangedCharacteristics;
+    public event Action SetMainTarget;
+    public event Action<Perc> ShowedPerc;
+    public event Action<Perc> RemovedPerc;
+    public event Action<Character ,float, bool> TakenDamage;
 
     public void SetNewTarget(Vector3 targtPoint)
-    {        
-        if(_attakEnemy != null)
-            StopCoroutine(_attakEnemy);
+    {
+        CleaOldTargetEnemy();
 
         _moveLogic.SetTarget(targtPoint);
     }
@@ -47,24 +50,26 @@ public class Character : MonoBehaviour
     public void SetNewTarget(Character target)
     {        
         float socialDistance = GameSettings.Character.SocialDistance;
+        CleaOldTargetEnemy();
 
         if (target != null && target != this && target.CheckFrendly(_team) == false)
         {            
             socialDistance = _attackLogic.AttackDistance;
-            _attakEnemy = StartCoroutine(AttackEnemy(target));
+            SetNewEnemyTarget(target);
         }
 
         _moveLogic.SetTarget(target, socialDistance);
     }
 
-    public void ApplyDamage(float damage)
+    public void TakeDamage(Character attacker, float damage, bool isPercTrigered = true)
     {
-        _fightLogic.ApplyDamage(damage);
-    }
+        bool isDamageTaken = _fightLogic.TryApplyDamage(ref damage, attacker);
 
-    public bool CheckFrendly(Team team)
-    {
-        return _team == team;
+        TakenDamage?.Invoke(this, damage, isPercTrigered);
+        if (isDamageTaken)
+        {
+            _percBag.ExecuteActionDepenceAction(this, attacker, damage, PercActionType.OnDefence);
+        }
     }
 
     public void ApplyHeal(float heal)
@@ -72,36 +77,85 @@ public class Character : MonoBehaviour
         _fightLogic.ApplyHeal(heal);
     }
 
-    public void NotifyChanged—haracteristics()
+    public bool CheckFrendly(Team team)
+    {
+        return _team == team;
+    }
+
+    public void SetThisCurrentCharacter()
     {        
         float manaPointsCoeffecient = _anima.ManaPointsCurrent / _anima.ManaPointsMax;
         _informationUI.SetCurrentCharacteristics(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
-        ChangedIndicators.Invoke(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
-        ChangedCharacteristics.Invoke(_preset.Damage, _preset.Armor, _preset.AttacSpeed);
+        ChangedIndicators?.Invoke(_hitPointsCurrentCoefficient, manaPointsCoeffecient);
+        ChangedCharacteristics?.Invoke(_preset.Damage, _preset.Armor, _preset.AttacSpeed);
+        _percBag.ShowPercs();
+        SetMainTarget?.Invoke();
         UpdateSpeed();
+    }
+
+    public void AddPerc(Perc perc)
+    {
+        ShowedPerc?.Invoke(perc);
+        _percBag.AddPerc(perc);
+    }
+
+    public void RemovePerc(Perc perc)
+    {
+        if(_percBag.TryRemovePerc(perc))
+        {
+            RemovedPerc(perc);
+            RemovedPerc?.Invoke(perc);
+        }
+    }
+
+    private void OnDamageDealing(Character enemy, float damage, bool triggeredDamage)
+    {
+        if (triggeredDamage)
+            _percBag.ExecuteActionDepenceAction(this, enemy, damage, PercActionType.OnDamageDelay);
+    }
+
+    private void CleaOldTargetEnemy()
+    {
+        if (_attakEnemy != null)
+            StopCoroutine(_attakEnemy);
+
+        if (_targetEnemy != null)
+            _targetEnemy.TakenDamage -= OnDamageDealing;
+
+        _targetEnemy = null;
+    }
+
+    private void SetNewEnemyTarget(Character target)
+    {
+        _targetEnemy = target;
+        _targetEnemy.TakenDamage += OnDamageDealing;
+        _attakEnemy = StartCoroutine(AttackEnemy());
     }
 
     private void Awake()
     {
-        LoadPreset(_preset);
+        Init();
     }
 
     private void OnEnable()
     {        
-        _fightLogic.ImpactingEffect.AddListener(AddEffectImpact);
-        _fightLogic.HitPointsChanged.AddListener(UpdateHitPointsCoefficient);
-        _fightLogic.Died.AddListener(OnDeth);
+        _fightLogic.HitPointsChanged += UpdateHitPointsCoefficient;
+        _fightLogic.Died += OnDeth;
+
+        _percBag.ShowedPerc += OnPercShowing;
+
         _staminaRegeneration = StartCoroutine(_fightLogic.Resting());
         _updateMovePath = StartCoroutine(_moveLogic.UpdatePathToTarget());
-        NotifyChanged—haracteristics();
+        SetThisCurrentCharacter();
     }
 
     private void OnDisable()
     {
-        _fightLogic.ImpactingEffect.RemoveListener(AddEffectImpact);
-        _fightLogic.HitPointsChanged.RemoveListener(UpdateHitPointsCoefficient);
-        _fightLogic.Died.RemoveListener(OnDeth);
-        
+        _fightLogic.HitPointsChanged -= UpdateHitPointsCoefficient;
+        _fightLogic.Died -= OnDeth;
+
+        _percBag.ShowedPerc -= (OnPercShowing);
+
         if (_staminaRegeneration != null)
             StopCoroutine(_staminaRegeneration);
         
@@ -112,24 +166,12 @@ public class Character : MonoBehaviour
             StopCoroutine(_attakEnemy);
     }
 
-    private void UpdateHitPointsCoefficient(float newCoefficient)
+    private IEnumerator AttackEnemy()
     {
-        _hitPointsCurrentCoefficient = newCoefficient;
-        NotifyChanged—haracteristics();
-    }    
-
-    private void OnDeth()
-    {
-        IsLive = false;
-        gameObject.SetActive(false);        
-    }
-
-    private IEnumerator AttackEnemy(Character enemy)
-    {
-        while (enemy.IsLive)
+        while (_targetEnemy.IsLive)
         {
             if (_moveLogic.IsMove == false)
-                _fightLogic.Attack(enemy);
+                _fightLogic.Attack(this, _targetEnemy);
 
             yield return GameSettings.Character.OptimizationDelay();
         }
@@ -137,47 +179,56 @@ public class Character : MonoBehaviour
         SetNewTarget(transform.position);
     }
 
-    private void AddEffectImpact(EffectImpact effect)
+    private void OnDeth()
     {
-        _effects.Add(effect);
-        effect.EndingEffctDuration.AddListener(EndEffcetTime);
+        IsLive = false;
+        gameObject.SetActive(false);        
     }
 
-    private void EndEffcetTime(EffectImpact effect)
+    private void UpdateHitPointsCoefficient(float newCoefficient)
     {
-        effect.EndingEffctDuration.RemoveListener(EndEffcetTime);
-        _effects.Remove(effect);
+        _hitPointsCurrentCoefficient = newCoefficient;
+        SetThisCurrentCharacter();
+    }    
+
+    private void OnPercShowing(Perc showePerc)
+    {
+        ShowedPerc?.Invoke(showePerc);
     }
 
     private void UpdateSpeed()
     {
         float currentSpeed = _speed * _speedCoefficient;
         _moveLogic.SetMoveSpeed(currentSpeed);
-        ChangedSpeed.Invoke(currentSpeed);
+        ChangedSpeed?.Invoke(currentSpeed);
     } 
 
-    private void UpdateAttackLogic(AttackLogic logic)
+    private void UpdateAttackLogic(CharacterAttackLogic logic)
     {
         _attackLogic = logic;
         _fightLogic.SetNewAttackLogic(_attackLogic);
     }
 
-    private void LoadPreset(CharacterPreset preset)
+    private void Init()
     {
+        LoadPreset(_preset);
         TryGetComponent<NavMeshAgent>(out NavMeshAgent _navigator);
         _moveLogic          = new CharacterMoveLogic(_navigator, transform);
-        _speed              = preset.MoveSpeed;
         _speedCoefficient   = 1;
-        UpdateSpeed();
-        
-        _fightLogic     = new CharacterFightLogic(preset.HitPoints, preset.Armor, preset.Damage, preset.AttacSpeed);        
-        IsLive          = true;
-        UpdateAttackLogic(preset.AttackLogic);
+        IsLive              = true;
+        _anima              = new Anima(100, 1);
 
+        _informationUI.SetFlagGolod(TeamFlag);
+        UpdateSpeed();
+    }
+
+    private void LoadPreset(CharacterPreset preset)
+    {        
+        _speed              = preset.MoveSpeed;        
+        _fightLogic     = new CharacterFightLogic(preset.HitPoints, preset.Armor, preset.Damage, preset.AttacSpeed);     
+        UpdateAttackLogic(preset.AttackLogic);
         Name        = preset.Name;
         Profission  = preset.Profission;
         Portrait    = preset.Portrait;
-
-        _anima = new Anima(100, 1);
-    }
+    }    
 }

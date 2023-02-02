@@ -12,7 +12,7 @@ public class CharacterPreset : ScriptableObject
     [SerializeField] private float _armor;
     [SerializeField] private float _damage;
     [SerializeField] private Sprite _portrait;
-    [SerializeField] private AttackLogic _attackLogic;
+    [SerializeField] private CharacterAttackLogic _attackLogic;
 
     public float HitPoints => _hitPoints;
     public float AttacSpeed => _attacSpeed;
@@ -22,5 +22,5 @@ public class CharacterPreset : ScriptableObject
     public float Armor => _armor;
     public Sprite Portrait => _portrait;
     public string Name => GameSettings.Character.GetRandomName();
-    public AttackLogic AttackLogic => _attackLogic;
+    public CharacterAttackLogic AttackLogic => _attackLogic;
 }

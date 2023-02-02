@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class GameSettings
 {
+    public const float Hundred = 100;
+    public const float Zero = 0;
+
     public static class Character
     {
         private static WaitForSeconds _optimizationDelay = new WaitForSeconds(0.1f);
@@ -11,8 +14,9 @@ public abstract class GameSettings
 
         public const float RangeDelta = 0.1f;
         public const float SocialDistance = 2f;
-        public const int StaminaPointsToAtack = 1000;
         public const float ArmorUnitImpact = 0.97f;
+
+        public const int StaminaPointsToAtack = 1000;        
 
         static Character()
         {
@@ -61,13 +65,13 @@ public abstract class GameSettings
             _namesPool.Add("Daniel");
         }
 
-        enum Sex
+        public enum SexType
         {
-            Female,
+            Female = 0,
             Male,
             Being
         }
-    }
+    }    
 
     public static class UI
     {
@@ -84,3 +88,9 @@ public abstract class GameSettings
     }
 }
 
+public enum PercActionType
+{
+    OnAttack = 0,
+    OnDamageDelay,
+    OnDefence
+}

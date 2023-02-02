@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,8 @@ public class Anima
     public float ManaPointsCurrent { get; protected set; }
     public float ManaPerSecond { get; protected set; }
 
-    public UnityEvent<Spell> CastedSpell = new UnityEvent<Spell>();
-    public UnityEvent<Spell> AddedSpell = new UnityEvent<Spell>();
+    public event Action<Spell> CastedSpell;
+    public event Action<Spell> AddedSpell;
 
     public Anima(float manaPoints, float manaRegen)
     {      
@@ -24,7 +25,7 @@ public class Anima
     public void AddSpell(Spell spell)
     {
         _spellBook.Add(spell);
-        AddedSpell.Invoke(spell);
+        AddedSpell?.Invoke(spell);
     }
 
     public void CastSpell(Spell spell, Vector2 castPoint)
@@ -32,7 +33,7 @@ public class Anima
         float manaCost = spell.GetManacost();
         if (_spellBook.Contains(spell) && ManaPointsCurrent >= manaCost)
         {
-            CastedSpell.Invoke(spell);
+            CastedSpell?.Invoke(spell);
             ManaPointsCurrent -= manaCost;
             spell.Cast(castPoint);
         }
