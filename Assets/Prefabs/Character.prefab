@@ -927,18 +927,6 @@ MonoBehaviour:
   _informationUI: {fileID: 2951325749132628419}
   _preset: {fileID: 11400000, guid: 009e2753ebac18e449575bfe47fa6b42, type: 2}
   _team: {fileID: 11400000, guid: 0db71fec695662e4997218424520e2e9, type: 2}
-  ChangedIndicators:
-    m_PersistentCalls:
-      m_Calls: []
-  ChangedSpeed:
-    m_PersistentCalls:
-      m_Calls: []
-  ChangedCharacteristics:
-    m_PersistentCalls:
-      m_Calls: []
-  SetMainTarget:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!195 &8137608635697448945
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -948,7 +936,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8137608635697448950}
   m_Enabled: 0
   m_AgentTypeID: 0
-  m_Radius: 0.38
+  m_Radius: 0.35
   m_Speed: 0
   m_Acceleration: 100
   avoidancePriority: 50
