@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class CharacterFightLogic
 {
+    private const float PointsToAttack = GameSettings.Character.StaminaPointsToAtack;
+
     private float _attackSpeed;
     private float _attackSpeedCoefficient;
     private float _currentPointsToAttak;
@@ -12,10 +13,14 @@ public class CharacterFightLogic
     private float _hitPointsCurrent;
     private float _armor;
     private float _damage;
+
+    public float HiPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
+
     private CharacterAttackLogic _attackLogic;
 
+    public FighterÑharacteristics Ñharacteristics => new (_attackSpeed, _damage, _hitPointsCurrent, _hitPointsCurrent, _hitPointsMax);
     public event Action Died;
-    public event Action<float> HitPointsChanged;
+    public event Action HitPointsChanged;
 
     public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed)
     {       
@@ -25,7 +30,7 @@ public class CharacterFightLogic
         _attackSpeed = attackSpeed;
         _hitPointsCurrent= hitPoints;
         _attackSpeedCoefficient = 1;
-        _currentPointsToAttak = GameSettings.Character.StaminaPointsToAtack;
+        _currentPointsToAttak = PointsToAttack;
     }
     
     public void SetNewAttackLogic(CharacterAttackLogic newLogic)
@@ -36,7 +41,7 @@ public class CharacterFightLogic
         _attackLogic = newLogic;
     }
 
-    public bool TryApplyDamage(ref float damage, Character attacker)
+    public bool TryApplyDamage(ref float damage)
     {
         damage = GetRealDamage(damage);
 
@@ -46,9 +51,9 @@ public class CharacterFightLogic
         _hitPointsCurrent -= damage;
 
         if (_hitPointsCurrent <= 0)
-            Deing();
+            Died?.Invoke();
 
-        HitPointsChanged?.Invoke(_hitPointsCurrent / _hitPointsMax);
+        HitPointsChanged?.Invoke();
 
         return true;
     }
@@ -57,23 +62,23 @@ public class CharacterFightLogic
     {
         _hitPointsCurrent += heal;
         _hitPointsCurrent = (_hitPointsMax < _hitPointsCurrent) ? _hitPointsMax : _hitPointsCurrent;
-        HitPointsChanged.Invoke(_hitPointsCurrent / _hitPointsMax);
+        HitPointsChanged.Invoke();
     }
 
-    public void Attack(Character attacker, Character enemy)
+    public void Attack(IFightebel attacker, IFightebel enemy)
     {
-        if (enemy == null || _currentPointsToAttak < GameSettings.Character.StaminaPointsToAtack)
+        if (enemy == null || _currentPointsToAttak < PointsToAttack)
             return;
        
         _attackLogic.AttackEnemy(attacker, enemy, _damage);
-        _currentPointsToAttak -= GameSettings.Character.StaminaPointsToAtack;
+        _currentPointsToAttak -= PointsToAttack;
     }
 
     public IEnumerator Resting()
     {
         while(true)
         {
-            if (_currentPointsToAttak < GameSettings.Character.StaminaPointsToAtack)
+            if (_currentPointsToAttak < PointsToAttack)
                 _currentPointsToAttak += _attackSpeed * _attackSpeedCoefficient * Time.deltaTime;
 
             yield return null;
@@ -84,10 +89,5 @@ public class CharacterFightLogic
     {        
         float armorImpact = Mathf.Pow(GameSettings.Character.ArmorUnitImpact, _armor);
         return armorImpact * damage;
-    }
-
-    private void Deing()
-    {        
-        Died?.Invoke();
     }
 }

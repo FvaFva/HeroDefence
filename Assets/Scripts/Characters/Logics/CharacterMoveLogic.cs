@@ -6,15 +6,16 @@ public class CharacterMoveLogic
 {
     private NavMeshAgent _moveAgent;
     private Transform _body;
-    private Vector3 _targetPoint;
-    private Vector3 _currentTargetPoint;
-    private Character _targetEnemy;
+    private IFightebel _targetEnemy;
+    private Quaternion _targetRotation;
+
     private float _moveSpeed;
     private float _distance;
-    private Vector3 _currentPosition;
-    private Vector3 _currentEnemyPosition;
     private float _rotationSpeed;
-    private Quaternion _targetRotation;
+    
+    private Vector3 _targetPoint;
+    private Vector3 _currentTargetPoint;
+    private Vector3 _currentPosition;
 
     public bool IsMove { get; private set; }
 
@@ -28,7 +29,7 @@ public class CharacterMoveLogic
         IsMove = false;
     }
 
-    public void SetTarget(Character character, float distance)
+    public void SetTarget(IFightebel character, float distance)
     {
         _distance = distance;
         _targetEnemy = character;
@@ -59,17 +60,15 @@ public class CharacterMoveLogic
             _currentPosition = _body.position;            
 
             if (_targetEnemy != null)
-            {
-                _currentEnemyPosition = _targetEnemy.transform.position;
-
-                if (Vector3.Distance(_currentPosition, _currentEnemyPosition) > _distance + GameSettings.Character.RangeDelta)
+            {                
+                if (Vector3.Distance(_currentPosition, _targetEnemy.CurrentPosition) > _distance + GameSettings.Character.RangeDelta)
                 {
-                    Vector3 newTarget = Vector3.MoveTowards(_currentEnemyPosition, _currentPosition, _distance);
+                    Vector3 newTarget = Vector3.MoveTowards(_targetEnemy.CurrentPosition, _currentPosition, _distance);
                     SetNewTargetPointToAgent(newTarget);
                 }
                 else
                 {
-                    _targetRotation = Quaternion.LookRotation(_currentEnemyPosition - _currentPosition);                    
+                    _targetRotation = Quaternion.LookRotation(_targetEnemy.CurrentPosition - _currentPosition);                    
                     _body.rotation = Quaternion.Slerp(_body.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
                 }
             }            

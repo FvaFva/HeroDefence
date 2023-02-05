@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d8b5564f175b34097730afe4733951, type: 3}
   m_Name: Thorn
   m_EditorClassIdentifier: 
-  _icon: {fileID: 0}
+  _icon: {fileID: 1425255154, guid: acb038c18e2486e41b3e2afd290d515c, type: 3}
   _label: 
-  _actions: []
-  _chances: []
-  _percActionTypes: 
+  _actions:
+  - {fileID: 11400000, guid: b42e3ea6045d35d4f92bc9b34efeee66, type: 2}
+  _chances:
+  - 30
+  _percActionTypes: 02000000

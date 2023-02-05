@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class PercAction : ScriptableObject
@@ -8,5 +6,5 @@ public abstract class PercAction : ScriptableObject
 
     public string Description => _description;
 
-    public abstract void DoAction(Character root, Character target, float damage);
+    public abstract void DoAction(IFightebel root, IFightebel target, float damage);
 }

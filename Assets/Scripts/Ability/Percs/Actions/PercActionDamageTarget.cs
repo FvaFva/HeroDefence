@@ -5,8 +5,8 @@ public class PercActionDamageTarget : PercAction
 {
     [SerializeField] float _coefficientOfDamage;
 
-    public override void DoAction(Character root, Character target, float damage)
+    public override void DoAction(IFightebel root, IFightebel target, float damage)
     {
-        target.TakeDamage(root, damage * _coefficientOfDamage, false);
+        target.ApplyDamage(root, damage * _coefficientOfDamage, false);
     }
 }

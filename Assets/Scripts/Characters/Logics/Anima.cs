@@ -12,6 +12,7 @@ public class Anima
     public float ManaPointsCurrent { get; protected set; }
     public float ManaPerSecond { get; protected set; }
 
+    public float CurrentMPCoefficient => ManaPointsCurrent / ManaPointsMax;
     public event Action<Spell> CastedSpell;
     public event Action<Spell> AddedSpell;
 

@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
     private void UpdateCharacterControllability(Character character)
     {
         bool oldCharacterControllability = _isControllabilityCharacter;
-        _isControllabilityCharacter = character.CheckFrendly(_team);
+        _isControllabilityCharacter = character.CheckFriendly(_team);
 
         if (_isControllabilityCharacter != oldCharacterControllability || _isControllabilityCharacter == false)
             ClearSelectedCharacters();

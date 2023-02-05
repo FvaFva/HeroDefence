@@ -72,11 +72,11 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _moveSpeed.text = speed.ToString();
     }
 
-    private void UpdateCharacteristicsInfo(float damage, float armor, float attackspeed)
+    private void UpdateCharacteristicsInfo(Fighter—haracteristics Òharacteristics)
     {
-        _damage.text = damage.ToString();
-        _armor.text = armor.ToString();
-        _attackSpeed.text = attackspeed.ToString();
+        _damage.text = Òharacteristics.Damage.ToString();
+        _armor.text = Òharacteristics.Armor.ToString();
+        _attackSpeed.text = Òharacteristics.AttackSpeed.ToString();
     }
 
     private void UpdateBarsInfo(float hitPointsCoefficient, float manaPointsCoefficient)

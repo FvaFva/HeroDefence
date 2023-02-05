@@ -6,7 +6,7 @@ using UnityEngine;
 public class PercActionHealRoot : PercAction
 {
     [SerializeField] float _coefficientOfHealByDamage;
-    public override void DoAction(Character root, Character target, float damage)
+    public override void DoAction(IFightebel root, IFightebel target, float damage)
     {
         root.ApplyHeal(damage * _coefficientOfHealByDamage);
     }

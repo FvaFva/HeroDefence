@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d8b5564f175b34097730afe4733951, type: 3}
   m_Name: Vampire
   m_EditorClassIdentifier: 
-  _icon: {fileID: 0}
+  _icon: {fileID: -1477305303, guid: acb038c18e2486e41b3e2afd290d515c, type: 3}
   _label: 
-  _attackLogics: []
-  _defenceLogics: []
-  _dealingDamageLogics: []
+  _actions:
+  - {fileID: 11400000, guid: f24bcef5978182b42b82defe01b6ad33, type: 2}
+  _chances:
+  - 100
+  _percActionTypes: 01000000

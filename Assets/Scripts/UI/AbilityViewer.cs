@@ -11,6 +11,9 @@ public class AbilityViewer : MonoBehaviour
 
     public void Render(Ability ability)
     {
+        if (ability == null)
+            Clear();
+
         gameObject.SetActive(true);
         IsUsed = true;
         _icon.sprite = ability.Icon;
@@ -19,7 +22,7 @@ public class AbilityViewer : MonoBehaviour
 
     public void Clear()
     {
-        _icon = null;
+        _icon.sprite = null;
         _description = null;
         IsUsed = false;
         gameObject.SetActive(false);

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Thorn100
   m_EditorClassIdentifier: 
   _description: 
-  _coefficientOfDamage: 0
+  _coefficientOfDamage: 1
