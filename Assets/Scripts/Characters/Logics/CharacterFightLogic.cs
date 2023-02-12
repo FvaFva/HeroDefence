@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class CharacterFightLogic
 {
-    private const float PointsToAttack = GameSettings.Character.StaminaPointsToAtack;
+    private const float StaminaToAttack = GameSettings.Character.StaminaPointsToAtack;
 
     private float _attackSpeed;
     private float _attackSpeedCoefficient;
-    private float _currentPointsToAttak;
+    private float _currentStamina;
     private float _hitPointsMax;
     private float _hitPointsCurrent;
     private float _armor;
@@ -30,7 +30,7 @@ public class CharacterFightLogic
         _attackSpeed = attackSpeed;
         _hitPointsCurrent= hitPoints;
         _attackSpeedCoefficient = 1;
-        _currentPointsToAttak = PointsToAttack;
+        _currentStamina = StaminaToAttack;
     }
     
     public void SetNewAttackLogic(CharacterAttackLogic newLogic)
@@ -67,19 +67,19 @@ public class CharacterFightLogic
 
     public void Attack(IFightebel attacker, IFightebel enemy)
     {
-        if (enemy == null || _currentPointsToAttak < PointsToAttack)
+        if (enemy == null || _currentStamina < StaminaToAttack)
             return;
        
         _attackLogic.AttackEnemy(attacker, enemy, _damage);
-        _currentPointsToAttak -= PointsToAttack;
+        _currentStamina -= StaminaToAttack;
     }
 
     public IEnumerator Resting()
     {
         while(true)
         {
-            if (_currentPointsToAttak < PointsToAttack)
-                _currentPointsToAttak += _attackSpeed * _attackSpeedCoefficient * Time.deltaTime;
+            if (_currentStamina < StaminaToAttack)
+                _currentStamina += _attackSpeed * _attackSpeedCoefficient * Time.deltaTime;
 
             yield return null;
         }

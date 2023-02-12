@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(CharacterStateMachine))]
 public class Character : MonoBehaviour, IPercBag, IFightebel
 {    
     private const float SocialDistance = GameSettings.Character.SocialDistance;
@@ -18,16 +19,17 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private IFightebel _target;
     private CharacterFightLogic _fightLogic;
     private CharacterMoveLogic _moveLogic;
-    private CharacterPercBag _percBag = new CharacterPercBag();
+    private CharacterPercBag _percBag;
     private CharacterAttackLogic _attackLogic;
     private Anima _anima;
+    private CharacterStateMachine _stateMachine;
 
     private Coroutine _staminaRegeneration;
     private Coroutine _updateMovePath;
     private Coroutine _attakEnemy;
 
     public string Name { get; private set; }
-    public string Profission { get; private set; }
+    public string Profession { get; private set; }
     public Sprite Portrait{ get; private set; }
     public string TeamName => _team.Name;
     public Color TeamFlag => _team.Flag;
@@ -42,25 +44,32 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     public event Action<IFightebel, float, bool> TakenDamage;
     public event Action Died;
 
-    public void SetNewTarget(Vector3 targtPoint)
-    {
-        CleaOldTargetEnemy();
-
-        _moveLogic.SetTarget(targtPoint);
-    }
-
-    public void SetNewTarget(IFightebel target)
+    public void SetNewTarget(Target newTarget)
     {
         float distanceToTarget = SocialDistance;
-        CleaOldTargetEnemy();
 
-        if (target != null  && target.CheckFriendly(_team) == false)
-        {            
-            distanceToTarget = _attackLogic.AttackDistance;
-            SetNewEnemyTarget(target);
+        if (newTarget.TryGetFightebel(out IFightebel target))
+        {
+            CleaOldTargetEnemy();
+
+            if (target != null && target.CheckFriendly(_team) == false)
+            {
+                distanceToTarget = _attackLogic.AttackDistance;
+                SetNewEnemyTarget(target);
+            }
+        }
+        else
+        {
+            CleaOldTargetEnemy();
         }
 
-        _moveLogic.SetTarget(target, distanceToTarget);
+        _moveLogic.SetNewDistanceToTarget(distanceToTarget);
+        _moveLogic.SetTarget(newTarget);
+    }
+
+    public void SetNewComander (ICharacterComander comander)
+    {
+        _stateMachine.SetNewComander(comander);
     }
 
     public void ApplyDamage(IFightebel attacker, float damage, bool isPercTrigered = true)
@@ -212,8 +221,12 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private void Init()
     {
         LoadPreset(_preset);
-        TryGetComponent<NavMeshAgent>(out NavMeshAgent _navigator);
-        _moveLogic          = new CharacterMoveLogic(_navigator, transform);
+        TryGetComponent<NavMeshAgent>(out NavMeshAgent navigator);
+        TryGetComponent<CharacterStateMachine>(out _stateMachine);
+
+        _stateMachine.Init(_moveLogic, _fightLogic);
+        _percBag = new CharacterPercBag();
+        _moveLogic          = new CharacterMoveLogic(navigator, transform);
         _speedCoefficient   = 1;
         _anima              = new Anima(100, 1);
 
@@ -227,7 +240,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         _fightLogic = new CharacterFightLogic(preset.HitPoints, preset.Armor, preset.Damage, preset.AttacSpeed);     
         UpdateAttackLogic(preset.AttackLogic);
         Name        = preset.Name;
-        Profission  = preset.Profission;
+        Profession  = preset.Profission;
         Portrait    = preset.Portrait;
     }    
 }

@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CharacterMoveLogic
+public class CharacterMoveLogic: IReachLogic
 {
     private NavMeshAgent _moveAgent;
     private Transform _body;
@@ -17,6 +18,9 @@ public class CharacterMoveLogic
     private Vector3 _currentTargetPoint;
     private Vector3 _currentPosition;
 
+    public event Action Reached;
+    public event Action Failed;
+
     public bool IsMove { get; private set; }
 
     public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body)
@@ -29,17 +33,12 @@ public class CharacterMoveLogic
         IsMove = false;
     }
 
-    public void SetTarget(IFightebel character, float distance)
+    public void SetTarget(Target target)
     {
-        _distance = distance;
-        _targetEnemy = character;
-        _targetPoint = _body.position;
-    }
-
-    public void SetTarget(Vector3 point)
-    {
-        _targetPoint = point;
-        _targetEnemy = null;
+        if (target.TryGetFightebel(out _targetEnemy))
+            _targetPoint = _body.position;
+        else
+            _targetPoint = target.CurrentPosition();
     }
 
     public void SetNewDistanceToTarget(float distance)
@@ -53,7 +52,7 @@ public class CharacterMoveLogic
         _moveAgent.speed = _moveSpeed;
     }
 
-    public IEnumerator UpdatePathToTarget()
+    public IEnumerator ReachTarget()
     {
         while(true)
         {

@@ -62,7 +62,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _character.ShowedPerc += DorwAbility;
         _portrait.sprite = _character.Portrait;
         _name.text = _character.Name;
-        _profession.text = _character.Profission;
+        _profession.text = _character.Profession;
         _teamName.text = _character.TeamName;
         _flag.color = _character.TeamFlag;
     }

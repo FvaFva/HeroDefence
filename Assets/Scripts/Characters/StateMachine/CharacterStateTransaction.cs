@@ -5,30 +5,29 @@ public abstract class CharacterStateTransaction : MonoBehaviour
 {
     [SerializeField] private CharacterState _targetState;
 
-    protected IFightebel _target;
+    private ICharacterComander _comander;
 
-    public event Action<CharacterState> Activited;
+    public event Action<CharacterState, Target> Activited;
 
-    public void Init(IFightebel target)
+    public void Init(ICharacterComander comander, Target target)
     {
-        _target = target;
-        SubscribeToTarget();
+        _comander = comander;
+        comander!.ChoosedTarget += SetNewTarget;
     }
 
     public void Off()
-    {
-        DescribeToTarget();
-        _target = null;
+    {                
+        _comander!.ChoosedTarget -= SetNewTarget;
     }
     
-    public void SetNewTarget(IFightebel target)
+    protected void SetNewTarget(Target target)
     {
-        DescribeToTarget();
-        _target = target;
-        SubscribeToTarget();
+        if (IsSuitableTarget(target))
+        {            
+            _comander!.ChoosedTarget -= SetNewTarget;
+            Activited?.Invoke(_targetState, target);
+        }
     }
 
-    protected abstract void SubscribeToTarget();
-
-    protected abstract void DescribeToTarget();
+    protected abstract bool IsSuitableTarget(Target target);
 }

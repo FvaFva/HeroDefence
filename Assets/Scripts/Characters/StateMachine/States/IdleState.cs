@@ -2,7 +2,7 @@ using System.Collections;
 
 public class IdleState : CharacterState
 {
-    protected override IEnumerator Action(IFightebel _target)
+    public override IEnumerator Action()
     {
         yield return null;
     }

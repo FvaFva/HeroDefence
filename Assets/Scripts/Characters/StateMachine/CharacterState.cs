@@ -6,27 +6,23 @@ using UnityEngine;
 public abstract class CharacterState : MonoBehaviour
 {
     [SerializeField] private List<CharacterStateTransaction> _transactions = new List<CharacterStateTransaction>();
-    private Coroutine actionWorc;
 
-    public event Action<CharacterState> OnFindNextState;
+    protected IReachLogic _reacher;
 
-    public void Enter(IFightebel target)
+    public event Action<CharacterState, Target> OnFindNextState;
+
+    public void Init(IReachLogic reacher)
+    {
+        _reacher = reacher;
+    }
+
+    public void Enter(ICharacterComander comander, Target target)
     {
         foreach(CharacterStateTransaction transaction in _transactions)
         {
-            transaction.Init(target);
+            transaction.Init(comander, target);
             transaction.Activited += OnTansactionActivated;
         }
-
-        RestartAction(target);
-    }
-
-    public void SetNewTarget(IFightebel target)
-    {
-        foreach (CharacterStateTransaction transaction in _transactions)
-            transaction.SetNewTarget(target);
-
-        RestartAction(target);
     }
 
     public void Exit()
@@ -36,23 +32,12 @@ public abstract class CharacterState : MonoBehaviour
             transaction.Off();
             transaction.Activited -= OnTansactionActivated;
         }
-
-        RestartAction(null);
     }
 
-    private void RestartAction(IFightebel target)
+    private void OnTansactionActivated (CharacterState nextState, Target target)
     {
-        if (actionWorc != null)
-            StopCoroutine(actionWorc);
-
-        if(target != null)
-            actionWorc = StartCoroutine(Action(target));
+        OnFindNextState?.Invoke(nextState, target);
     }
 
-    private void OnTansactionActivated (CharacterState nextState)
-    {
-        OnFindNextState?.Invoke(nextState);
-    }
-
-    protected abstract IEnumerator Action(IFightebel target);
+    public abstract IEnumerator Action();
 }

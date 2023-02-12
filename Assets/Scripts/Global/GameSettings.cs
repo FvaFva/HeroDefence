@@ -6,6 +6,7 @@ public abstract class GameSettings
 {
     public const float Hundred = 100;
     public const float Zero = 0;
+    public const float HitingRange = 300;
 
     public static class Character
     {
@@ -75,7 +76,7 @@ public abstract class GameSettings
 
     public static class UI
     {
-       
+        public const float CameraMoveSpeed = 10;
     }
 
     public static class Animator
