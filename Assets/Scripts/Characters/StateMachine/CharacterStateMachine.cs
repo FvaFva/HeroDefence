@@ -3,33 +3,25 @@ using UnityEngine;
 
 public class CharacterStateMachine : MonoBehaviour
 {
-    [SerializeField] private CharacterState _baseState;
-
+    private CharacterState _baseState;
     private CharacterState _currentState;
     private Coroutine _currentStateAction;
-    private CharacterMoveLogic _moveLogic;
-    private CharacterFightLogic _fightLogic;
     private ICharacterComander _comander;
 
-    public void Init(CharacterMoveLogic moveLogic, CharacterFightLogic fightLogic)
+    public void Init(CharacterState baseStat)
     {
+        _baseState= baseStat;
+
         if (_baseState == null)
             enabled = true;
-        
-        _moveLogic = moveLogic;
-        _fightLogic = fightLogic;
-        Transit(_baseState, new());
     }
 
     public void SetNewComander(ICharacterComander comander)
     {
         _comander = comander;
-        Transit(_baseState, new());
-    }
 
-    private void OnEnable()
-    {
-        Transit(_baseState, new());
+        if(comander != null)
+            Transit(_baseState, new());
     }
 
     private void OnDisable()
@@ -43,7 +35,7 @@ public class CharacterStateMachine : MonoBehaviour
         if (_currentStateAction != null)
             StopCoroutine(_currentStateAction);
 
-        if (_currentStateAction == null)
+        if (_currentState == null)
             return;
         else
             _currentStateAction = StartCoroutine(StateAction());
@@ -51,7 +43,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     private IEnumerator StateAction()
     {
-        return _currentState.Action();
+        return _currentState.ReachTarget;
     }
 
     private void Transit(CharacterState nextState, Target target)
@@ -66,7 +58,6 @@ public class CharacterStateMachine : MonoBehaviour
 
         if (_currentState != null)
         {
-            _currentState.Init(_moveLogic, _fightLogic);
             _currentState.OnFindNextState += Transit;
             _currentState.Enter(_comander, target);
         }

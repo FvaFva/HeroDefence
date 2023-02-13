@@ -19,14 +19,14 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private IFightebel _target;
     private CharacterFightLogic _fightLogic;
     private CharacterMoveLogic _moveLogic;
+    private CharacterVisionLogic _visionLogic;
     private CharacterPercBag _percBag;
     private CharacterAttackLogic _attackLogic;
     private Anima _anima;
     private CharacterStateMachine _stateMachine;
 
     private Coroutine _staminaRegeneration;
-    private Coroutine _updateMovePath;
-    private Coroutine _attakEnemy;
+    private Coroutine _visionAction;
 
     public string Name { get; private set; }
     public string Profession { get; private set; }
@@ -49,22 +49,22 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         float distanceToTarget = SocialDistance;
 
         if (newTarget.TryGetFightebel(out IFightebel target))
-        {
-            CleaOldTargetEnemy();
+        {            
+            _moveLogic!.Reached += StartVisingTarget;
+            _visionLogic.SetTarget(newTarget);
 
             if (target != null && target.CheckFriendly(_team) == false)
             {
                 distanceToTarget = _attackLogic.AttackDistance;
                 SetNewEnemyTarget(target);
             }
-        }
-        else
-        {
-            CleaOldTargetEnemy();
+
+            _visionLogic.SetVisionDistance(distanceToTarget);
         }
 
-        _moveLogic.SetNewDistanceToTarget(distanceToTarget);
-        _moveLogic.SetTarget(newTarget);
+        CleaOldTargetEnemy();
+
+        _moveLogic.SetNewDistanceToTarget(distanceToTarget);        
     }
 
     public void SetNewComander (ICharacterComander comander)
@@ -94,7 +94,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         return _team == verifiableTeam;
     }
 
-    public void AhowAllInformations()
+    public void ShowAllInformations()
     {                
         _informationUI.SetCurrentCharacteristics(_fightLogic.HiPointsCoefficient, _anima.CurrentMPCoefficient);
         ChangedIndicators?.Invoke(_fightLogic.HiPointsCoefficient, _anima.CurrentMPCoefficient);
@@ -127,20 +127,29 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
 
     private void CleaOldTargetEnemy()
     {
-        if (_attakEnemy != null)
-            StopCoroutine(_attakEnemy);
-
         if (_target != null)
             _target.TakenDamage -= OnDamageDealing;
 
+        if(_visionAction!= null)
+            StopCoroutine(_visionAction);
+
+        _moveLogic!.Reached -= StartVisingTarget;
         _target = null;
+    }
+
+    private void StartVisingTarget()
+    {
+        if(_visionAction != null)
+            StopCoroutine(_visionAction);
+
+        _moveLogic.Reached -= StartVisingTarget;
+        _visionAction = StartCoroutine(_visionLogic.ReachTarget());
     }
 
     private void SetNewEnemyTarget(IFightebel target)
     {
         _target = target;
         _target.TakenDamage += OnDamageDealing;
-        _attakEnemy = StartCoroutine(AttackEnemy());
     }
 
     private void Awake()
@@ -152,40 +161,19 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     {        
         _fightLogic.HitPointsChanged += ShowHitManaPointsCoefficients;
         _fightLogic.Died += OnDied;
-
         _percBag.ShowedPerc += OnPercShowing;
-
         _staminaRegeneration = StartCoroutine(_fightLogic.Resting());
-        _updateMovePath = StartCoroutine(_moveLogic.UpdatePathToTarget());
-        AhowAllInformations();
+        ShowAllInformations();
     }
 
     private void OnDisable()
     {
         _fightLogic.HitPointsChanged -= ShowHitManaPointsCoefficients;
         _fightLogic.Died -= OnDied;
-
         _percBag.ShowedPerc -= (OnPercShowing);
 
         if (_staminaRegeneration != null)
-            StopCoroutine(_staminaRegeneration);
-        
-        if (_updateMovePath != null)
-            StopCoroutine(_updateMovePath);
-
-        if (_attakEnemy != null)
-            StopCoroutine(_attakEnemy);
-    }
-
-    private IEnumerator AttackEnemy()
-    {
-        while (true)
-        {
-            if (_moveLogic.IsMove == false)
-                _fightLogic.Attack(this, _target);
-
-            yield return GameSettings.Character.OptimizationDelay();
-        }
+            StopCoroutine(_staminaRegeneration);                
     }
 
     private void OnDied()
@@ -224,14 +212,16 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         TryGetComponent<NavMeshAgent>(out NavMeshAgent navigator);
         TryGetComponent<CharacterStateMachine>(out _stateMachine);
 
-        _stateMachine.Init(_moveLogic, _fightLogic);
         _percBag = new CharacterPercBag();
-        _moveLogic          = new CharacterMoveLogic(navigator, transform);
-        _speedCoefficient   = 1;
-        _anima              = new Anima(100, 1);
+        _moveLogic = new CharacterMoveLogic(navigator, transform);
+        _speedCoefficient = 1;
+        _visionLogic = new CharacterVisionLogic(transform, navigator.angularSpeed);
+        _anima = new Anima(100, 1);
 
         _informationUI.SetFlagGolod(TeamFlag);
         UpdateSpeed();
+
+        StateMachineLogicBuilder.Build(_stateMachine, _fightLogic, _moveLogic, _visionLogic, _team);
     }
 
     private void LoadPreset(CharacterPreset preset)

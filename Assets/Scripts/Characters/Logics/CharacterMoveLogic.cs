@@ -8,37 +8,30 @@ public class CharacterMoveLogic: IReachLogic
     private NavMeshAgent _moveAgent;
     private Transform _body;
     private IFightebel _targetEnemy;
-    private Quaternion _targetRotation;
-
-    private float _moveSpeed;
+  
     private float _distance;
-    private float _rotationSpeed;
-    
-    private Vector3 _targetPoint;
+        
     private Vector3 _currentTargetPoint;
-    private Vector3 _currentPosition;
+    private bool _isTargetMovebel;
 
     public event Action Reached;
     public event Action Failed;
 
-    public bool IsMove { get; private set; }
-
     public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body)
     {
         _moveAgent = moveAgent;
-        _moveAgent.enabled = true;
-        _rotationSpeed = moveAgent.angularSpeed;
-        _body = body;
-        _moveSpeed = 0;
-        IsMove = false;
+        _moveAgent.enabled = true;        
+        _body = body;       
     }
 
     public void SetTarget(Target target)
     {
-        if (target.TryGetFightebel(out _targetEnemy))
-            _targetPoint = _body.position;
+        _isTargetMovebel = target.TryGetFightebel(out _targetEnemy);
+
+        if (_isTargetMovebel)
+            SetNewTargetPointToAgent();
         else
-            _targetPoint = target.CurrentPosition();
+            SetNewTargetPointToAgent(target.CurrentPosition());
     }
 
     public void SetNewDistanceToTarget(float distance)
@@ -48,42 +41,33 @@ public class CharacterMoveLogic: IReachLogic
 
     public void SetMoveSpeed(float moveSpeed)
     {
-        _moveSpeed = Mathf.Max(0, moveSpeed);
-        _moveAgent.speed = _moveSpeed;
+        _moveAgent.speed = Mathf.Max(0, moveSpeed);
     }
 
     public IEnumerator ReachTarget()
     {
-        while(true)
-        {
-            _currentPosition = _body.position;            
-
-            if (_targetEnemy != null)
-            {                
-                if (Vector3.Distance(_currentPosition, _targetEnemy.CurrentPosition) > _distance + GameSettings.Character.RangeDelta)
-                {
-                    Vector3 newTarget = Vector3.MoveTowards(_targetEnemy.CurrentPosition, _currentPosition, _distance);
-                    SetNewTargetPointToAgent(newTarget);
-                }
-                else
-                {
-                    _targetRotation = Quaternion.LookRotation(_targetEnemy.CurrentPosition - _currentPosition);                    
-                    _body.rotation = Quaternion.Slerp(_body.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
-                }
-            }            
-            else if (_currentTargetPoint != _targetPoint)
-            {
-                SetNewTargetPointToAgent(_targetPoint);
+        while(_currentTargetPoint != _body.position)
+        {           
+            if (_isTargetMovebel)
+            {               
+                SetNewTargetPointToAgent();
             }
-
-            IsMove = _currentTargetPoint != _currentPosition;
 
             yield return GameSettings.Character.OptimizationDelay();
         }
+
+        Reached!.Invoke();
     }
 
     private void SetNewTargetPointToAgent(Vector3 newTarget)
     {
+        _currentTargetPoint = newTarget;
+        _moveAgent.SetDestination(newTarget);
+    }
+
+    private void SetNewTargetPointToAgent()
+    {
+        Vector3 newTarget = Vector3.MoveTowards(_targetEnemy.CurrentPosition, _body.position, _distance);
         _currentTargetPoint = newTarget;
         _moveAgent.SetDestination(newTarget);
     }

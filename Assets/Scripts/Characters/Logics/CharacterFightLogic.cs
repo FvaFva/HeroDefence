@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class CharacterFightLogic
+public class CharacterFightLogic : IReachLogic
 {
     private const float StaminaToAttack = GameSettings.Character.StaminaPointsToAtack;
 
@@ -14,13 +14,18 @@ public class CharacterFightLogic
     private float _armor;
     private float _damage;
 
-    public float HiPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
-
+    private IFightebel _enemy;
+    private IFightebel _attacker;
     private CharacterAttackLogic _attackLogic;
+
+    public float HiPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
 
     public FighterÑharacteristics Ñharacteristics => new (_attackSpeed, _damage, _hitPointsCurrent, _hitPointsCurrent, _hitPointsMax);
     public event Action Died;
     public event Action HitPointsChanged;
+
+    public event Action Reached;
+    public event Action Failed;
 
     public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed)
     {       
@@ -65,12 +70,12 @@ public class CharacterFightLogic
         HitPointsChanged.Invoke();
     }
 
-    public void Attack(IFightebel attacker, IFightebel enemy)
+    private void Attack()
     {
-        if (enemy == null || _currentStamina < StaminaToAttack)
+        if (_enemy == null || _currentStamina < StaminaToAttack)
             return;
        
-        _attackLogic.AttackEnemy(attacker, enemy, _damage);
+        _attackLogic.AttackEnemy(_attacker, _enemy, _damage);
         _currentStamina -= StaminaToAttack;
     }
 
@@ -89,5 +94,19 @@ public class CharacterFightLogic
     {        
         float armorImpact = Mathf.Pow(GameSettings.Character.ArmorUnitImpact, _armor);
         return armorImpact * damage;
+    }
+
+    public IEnumerator ReachTarget()
+    {
+        while(_enemy != null)
+        {
+            Attack();
+            yield return null;
+        }
+    }
+
+    public void SetTarget(Target target)
+    {
+        target.TryGetFightebel(out _enemy);
     }
 }

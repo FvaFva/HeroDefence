@@ -61,7 +61,7 @@ public class CharacterViewer : MonoBehaviour
             _name.text = character.Name;
             _portrait.sprite = _character.Portrait;
             _character.ChangedIndicators += SetCurrentCharacteristics;
-            character.AhowAllInformations();
+            character.ShowAllInformations();
             gameObject.SetActive(true);
             _flagImage.color = character.TeamFlag;
             _flagText.text = character.TeamName;

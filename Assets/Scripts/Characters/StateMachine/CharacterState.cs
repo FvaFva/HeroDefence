@@ -1,43 +1,54 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public abstract class CharacterState : MonoBehaviour
+public class CharacterState
 {
-    [SerializeField] private List<CharacterStateTransaction> _transactions = new List<CharacterStateTransaction>();
-
-    protected IReachLogic _reacher;
+    private List<ICharacterStateTransaction> _transactions = new List<ICharacterStateTransaction>();
+    private IReachLogic _reacher;
 
     public event Action<CharacterState, Target> OnFindNextState;
+    public IEnumerator ReachTarget => _reacher.ReachTarget();
 
-    public void Init(IReachLogic reacher)
+    public CharacterState(IReachLogic reacher)
     {
         _reacher = reacher;
     }
 
+    public void AddTransaction(ICharacterStateTransaction transaction)
+    {
+        if(transaction != null && _transactions.Contains(transaction) == false)
+            _transactions.Add(transaction);
+    }
+
+    public void AddTransaction(List<ICharacterStateTransaction> transactions)
+    {
+        foreach (ICharacterStateTransaction transaction in transactions)
+            AddTransaction(transaction);
+    }
+
     public void Enter(ICharacterComander comander, Target target)
     {
-        foreach(CharacterStateTransaction transaction in _transactions)
+        _reacher.SetTarget(target);
+
+        foreach(ICharacterStateTransaction transaction in _transactions)
         {
-            transaction.Init(comander, target);
-            transaction.Activited += OnTansactionActivated;
+            transaction.Activited += OnTransactionActivated;
+            transaction.Activate(comander);
         }
     }
 
     public void Exit()
     {
-        foreach (CharacterStateTransaction transaction in _transactions)
+        foreach (ICharacterStateTransaction transaction in _transactions)
         {
             transaction.Off();
-            transaction.Activited -= OnTansactionActivated;
+            transaction.Activited -= OnTransactionActivated;
         }
     }
 
-    private void OnTansactionActivated (CharacterState nextState, Target target)
+    private void OnTransactionActivated (CharacterState nextState, Target target)
     {
         OnFindNextState?.Invoke(nextState, target);
     }
-
-    public abstract IEnumerator Action();
 }
