@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class CharacterVisionLogic : IReachLogic
 {
-    private IFightebel _target;
-    private Transform _body;
     private float _distance;
     private float _rotationSpeed;
-    private Quaternion _targetRotation;
 
+    private IFightebel _target;
+    private Transform _body;
+    private Quaternion _targetRotation;
     private Vector3 _currentPosition;
 
-    public event Action Reached;
-    public event Action Failed;
+    public event Action<Target> Reached;
 
     public CharacterVisionLogic(Transform body, float rotationSpeed)
     {
@@ -38,7 +37,7 @@ public class CharacterVisionLogic : IReachLogic
             yield return GameSettings.Character.OptimizationDelay();
         }
 
-        Reached!.Invoke();
+        Reached?.Invoke(new Target(_body.position, _target));
     }
 
     public void SetTarget(Target target)

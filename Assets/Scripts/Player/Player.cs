@@ -38,38 +38,13 @@ public class Player : MonoBehaviour
 
     private void OnChoosNewTarget(Target target)
     {
-        if (target.TryGetFightebel(out IFightebel enemy))
-            SetCharactersTargetEnemy(enemy);
-        else
-            SetCharactersTargetPoint(target.CurrentPosition());
+        SetCharactersTarget(target);
     }
 
-    private void SetCharactersTargetEnemy(IFightebel enemy)
+    private void SetCharactersTarget(Target target)
     {
-       // foreach(Character character in _selectedPull)
-            //character.SetNewTarget(enemy);
-    }
-
-    private void SetCharactersTargetPoint(Vector3 target)
-    {
-        int coutCharacters = _selectedPull.Count;
-        int formationInRow = (int)Mathf.Sqrt(coutCharacters);
-        int inCurrenRow = 0;
-        float startX = target.x;
-
-        foreach (Character character in _selectedPull)
-        {
-            //character.SetNewTarget(target);
-            target.x++;
-            inCurrenRow++;
-
-            if (inCurrenRow == formationInRow)
-            {
-                inCurrenRow = 0;
-                target.z++;
-                target.x = startX;
-            }
-        }
+        foreach(Character character in _selectedPull)
+            character.SetNewTarget(target);
     }
 
     private void ClearSelectedCharacters()

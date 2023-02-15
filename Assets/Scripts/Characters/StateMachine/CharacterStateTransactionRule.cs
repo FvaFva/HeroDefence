@@ -16,15 +16,24 @@ public class CharacterStateTransactionRule : ICharacterStateTransaction
         _targetState = targetState;
     }
 
-    public void Activate(ICharacterComander comander)
+    public void TryOn(ICharacterComander comander)
     {
-        _comander = comander;
-        _comander!.ChoosedTarget += OnChooseNewTarget;
+        Off();
+        
+        if (comander != null)
+        {
+            _comander = comander;
+            _comander!.ChoosedTarget += OnChooseNewTarget;
+        }
     }
 
     public void Off()
-    {                
-        _comander!.ChoosedTarget -= OnChooseNewTarget;
+    {
+        if (_comander != null)
+        {
+            _comander.ChoosedTarget -= OnChooseNewTarget;
+            _comander = null;
+        }
     }
     
     protected void OnChooseNewTarget(Target target)

@@ -13,9 +13,12 @@ public class CharacterStateTransactionReach : ICharacterStateTransaction
         _targetState = targetState;
     }
 
-    public void Activate(ICharacterComander comander)
-    {   
-        _reacher!.Reached += OnReachTarget;
+    public void TryOn(ICharacterComander comander)
+    {
+        Off();
+
+        if (_reacher != null)
+            _reacher!.Reached += OnReachTarget;
     }
 
     public void Off()
@@ -23,9 +26,9 @@ public class CharacterStateTransactionReach : ICharacterStateTransaction
         _reacher!.Reached -= OnReachTarget;
     }    
 
-    private void OnReachTarget()
+    private void OnReachTarget(Target target)
     {
         _reacher!.Reached -= OnReachTarget;
-        Activited?.Invoke(_targetState, new());
+        Activited?.Invoke(_targetState, target);
     }
 }

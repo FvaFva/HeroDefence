@@ -24,8 +24,7 @@ public class CharacterFightLogic : IReachLogic
     public event Action Died;
     public event Action HitPointsChanged;
 
-    public event Action Reached;
-    public event Action Failed;
+    public event Action<Target> Reached;
 
     public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed)
     {       

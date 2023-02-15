@@ -34,7 +34,15 @@ public class CharacterState
         foreach(ICharacterStateTransaction transaction in _transactions)
         {
             transaction.Activited += OnTransactionActivated;
-            transaction.Activate(comander);
+            transaction.TryOn(comander);
+        }
+    }
+
+    public void SetNewComander(ICharacterComander comander)
+    {
+        foreach (ICharacterStateTransaction transaction in _transactions)
+        {
+            transaction.TryOn(comander);
         }
     }
 

@@ -10,24 +10,23 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void Init(CharacterState baseStat)
     {
-        _baseState= baseStat;
+        _baseState = baseStat;
 
         if (_baseState == null)
             enabled = true;
+
+        Transit(_baseState, new());
     }
 
     public void SetNewComander(ICharacterComander comander)
     {
         _comander = comander;
-
-        if(comander != null)
-            Transit(_baseState, new());
+        _currentState.SetNewComander(_comander);
     }
 
     private void OnDisable()
     {
         Transit(null, new());
-        RestarStateAction();
     }
 
     private void RestarStateAction()

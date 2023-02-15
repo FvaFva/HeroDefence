@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GameSettings
+public static class GameSettings
 {
     public const float Hundred = 100;
     public const float Zero = 0;
     public const float HitingRange = 300;
+
+    public static bool CheckCorrespondencePositions(Vector3 postion1, Vector3 position2)
+    {
+        float distance = Vector3.Distance(postion1, position2);
+        return distance <= Character.RangeDelta;
+    }
 
     public static class Character
     {
