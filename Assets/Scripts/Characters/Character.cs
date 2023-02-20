@@ -24,7 +24,8 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private CharacterStateMachine _stateMachine;
 
     private Coroutine _staminaRegeneration;
-    private Coroutine _visionAction;
+    private Coroutine _controleDistanceToTarget;
+    private Coroutine _controleAGleToTarget;
 
     public string Name { get; private set; }
     public string Profession { get; private set; }
@@ -44,16 +45,18 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
 
     public void SetNewTarget(Target newTarget)
     {
-        if (newTarget.TryGetFightebel(out IFightebel target))
-        {
-            CleaOldTargetEnemy();
-            _moveLogic!.Reached += StartVisingTarget;
+        CleaOldTarget();
 
-            if (target != null && target.CheckFriendly(_team) == false)
+        if (newTarget.TryGetFightebel(out IFightebel target) && target != null)
+        {
+            _moveLogic.Reached += StartControlDistanceToTarget;
+            _visionLogic.Reached += StartControlAgleToTarget;
+
+            if (target.IsFriendly(_team) == false)
             {                
                 SetNewEnemyTarget(target);
             }
-        }       
+        }        
     }
 
     public void SetNewComander (ICharacterComander comander)
@@ -78,9 +81,14 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         _fightLogic.ApplyHeal(heal);
     }
 
-    public bool CheckFriendly(Team verifiableTeam)
+    public bool IsFriendly(Team verifiableTeam)
     {
         return _team == verifiableTeam;
+    }
+
+    public bool IsFriendly(IFightebel verifiableIFightebel)
+    {
+        return verifiableIFightebel.IsFriendly(_team);
     }
 
     public void ShowAllInformations()
@@ -114,26 +122,55 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
             _percBag.ExecuteActionDepenceAction(this, enemy, damage, PercActionType.OnDamageDelay);
     }
 
-    private void CleaOldTargetEnemy()
+    private void CleaOldTarget()
     {
+        if(_controleDistanceToTarget!= null)
+            StopCoroutine(_controleDistanceToTarget);
+
+        if (_controleAGleToTarget != null)
+            StopCoroutine(_controleAGleToTarget);
+
         if (_target != null)
-            _target.TakenDamage -= OnDamageDealing;
+            _target!.TakenDamage -= OnDamageDealing;
 
-        if(_visionAction!= null)
-            StopCoroutine(_visionAction);
-
-        _moveLogic!.Reached -= StartVisingTarget;
+        _moveLogic.Reached -= StartControlDistanceToTarget;
+        _moveLogic.ChoosedTarget -= StopControlDistanceToTarget;
+        _visionLogic.Reached -= StartControlAgleToTarget;
+        _visionLogic.ChoosedTarget -= StopControlAgleToTarget;
         _target = null;
     }
 
-    private void StartVisingTarget(Target target)
-    {
-        if(_visionAction != null)
-            StopCoroutine(_visionAction);
+    private void StartControlDistanceToTarget(Target target)
+    {        
+        if (_controleDistanceToTarget != null)
+            StopCoroutine(_controleDistanceToTarget);
 
-        _moveLogic.Reached -= StartVisingTarget;
-        _visionLogic.SetTarget(target);
-        _visionAction = StartCoroutine(_visionLogic.ReachTarget());
+        _moveLogic.ChoosedTarget += StopControlDistanceToTarget;
+        _moveLogic.Reached -= StartControlDistanceToTarget;
+        _controleDistanceToTarget = StartCoroutine(_moveLogic.CheckTargetInRadius());
+    }
+
+    private void StartControlAgleToTarget(Target target)
+    {
+        if (_controleAGleToTarget != null)
+            StopCoroutine(_controleAGleToTarget);
+
+        _visionLogic.ChoosedTarget += StopControlAgleToTarget;
+        _controleAGleToTarget = StartCoroutine(_visionLogic.VisionTargetInViewField());
+    }
+
+    private void StopControlAgleToTarget(Target target)
+    {
+        StopCoroutine(_controleAGleToTarget);
+        _visionLogic.ChoosedTarget -= StopControlAgleToTarget;
+        _visionLogic.Reached += StartControlAgleToTarget;
+    }
+
+    private void StopControlDistanceToTarget(Target target)
+    {        
+        StopCoroutine(_controleDistanceToTarget);
+        _moveLogic.ChoosedTarget -= StopControlDistanceToTarget;
+        _moveLogic.Reached += StartControlDistanceToTarget;
     }
 
     private void SetNewEnemyTarget(IFightebel target)
@@ -193,7 +230,6 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private void UpdateAttackLogic(CharacterAttackLogic logic)
     {
         _attackLogic = logic;
-        _visionLogic.SetVisionDistance(logic.AttackDistance);
         _moveLogic.SetNewDistanceToTarget(logic.AttackDistance);
         _fightLogic.SetNewAttackLogic(_attackLogic);
     }
@@ -205,7 +241,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         TryGetComponent<CharacterStateMachine>(out _stateMachine);
 
         _percBag = new CharacterPercBag();
-        _moveLogic = new CharacterMoveLogic(navigator, transform, _team);
+        _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
         _speedCoefficient = 1;
         _visionLogic = new CharacterVisionLogic(transform, navigator.angularSpeed);
         _anima = new Anima(100, 1);
@@ -213,14 +249,14 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
 
         UpdateSpeed();
         UpdateAttackLogic(_attackLogic);
-
-        StateMachineLogicBuilder.Build(_stateMachine, _fightLogic, _moveLogic, _visionLogic, _team);
+        StateMachineLogicBuilder builder = new StateMachineLogicBuilder();
+        builder.Build(_stateMachine, _fightLogic, _moveLogic, _visionLogic, this);
     }
 
     private void LoadPreset(CharacterPreset preset)
     {        
         _speed      = preset.MoveSpeed;        
-        _fightLogic = new CharacterFightLogic(preset.HitPoints, preset.Armor, preset.Damage, preset.AttacSpeed);
+        _fightLogic = new CharacterFightLogic(preset.HitPoints, preset.Armor, preset.Damage, preset.AttacSpeed, this);
         _attackLogic = preset.AttackLogic;
 
         Name        = preset.Name;

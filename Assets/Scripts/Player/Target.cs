@@ -26,5 +26,10 @@ public struct Target
     {
         target = _target;
         return target != null;
+    } 
+    
+    public bool IsIFightebelMatches(IFightebel checker)
+    {
+        return _target == checker;
     }
 }

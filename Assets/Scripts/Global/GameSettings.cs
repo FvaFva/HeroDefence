@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,10 +7,10 @@ public static class GameSettings
     public const float Zero = 0;
     public const float HitingRange = 300;
 
-    public static bool CheckCorrespondencePositions(Vector3 postion1, Vector3 position2)
+    public static bool CheckCorrespondencePositions(Vector3 postion1, Vector3 position2, float range = 0)
     {
         float distance = Vector3.Distance(postion1, position2);
-        return distance <= Character.RangeDelta;
+        return distance - range <= Character.RangeDelta;
     }
 
     public static class Character
@@ -20,8 +19,12 @@ public static class GameSettings
         private static List<string> _namesPool = new List<string>();
 
         public const float RangeDelta = 0.1f;
+        public const float AngleDelta = 0.95f;
         public const float SocialDistance = 2f;
         public const float ArmorUnitImpact = 0.97f;
+        public const float MinMoveSpeed = 2;
+        public const float MaxMoveSpeed = 15;
+        public const float AttackAngle = 0.30f;
 
         public const int StaminaPointsToAtack = 1000;        
 

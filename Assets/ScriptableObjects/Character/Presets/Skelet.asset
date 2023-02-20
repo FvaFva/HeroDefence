@@ -18,5 +18,6 @@ MonoBehaviour:
   _class: Chmo
   _armor: 10
   _damage: 40
+  _height: 0.58
   _portrait: {fileID: 21300000, guid: 06d70eeeaeef0704f82df886a2b6d7c0, type: 3}
   _attackLogic: {fileID: 11400000, guid: 32da876eb6492e945971dc6f5d7c8583, type: 2}

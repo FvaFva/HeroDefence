@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CharacterState
 {
     private List<ICharacterStateTransaction> _transactions = new List<ICharacterStateTransaction>();
-    private IReachLogic _reacher;
+    public IReachLogic _reacher;
 
     public event Action<CharacterState, Target> OnFindNextState;
     public IEnumerator ReachTarget => _reacher.ReachTarget();

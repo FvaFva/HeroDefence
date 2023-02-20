@@ -1,62 +1,110 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class StateMachineLogicBuilder
+public class StateMachineLogicBuilder
 {
-    private static RuleMoveToPoint _toPoint = ScriptableObject.CreateInstance<RuleMoveToPoint>();
-    private static RuleMoveToFightable _toFightable = ScriptableObject.CreateInstance<RuleMoveToFightable>();
+    private RuleMoveToPoint _toPoint = ScriptableObject.CreateInstance<RuleMoveToPoint>();
+    private RuleMoveToEnemy _toEnemy = ScriptableObject.CreateInstance<RuleMoveToEnemy>();
+    private RuleMoveToAlly _toAlly = ScriptableObject.CreateInstance<RuleMoveToAlly>();
 
-    private static List<ICharacterStateTransaction> _controlebel = new List<ICharacterStateTransaction>();
-    private static Dictionary<IReachLogic, ICharacterStateTransaction> _rechers = new Dictionary<IReachLogic, ICharacterStateTransaction>();
-    private static CharacterState _idle;
+    private List<ICharacterStateTransaction> _userInpuTransactions = new List<ICharacterStateTransaction>();
+    private List<CharacterState> _activeState = new List<CharacterState>();
+    private CharacterState _idle;
 
-    public static void Build(CharacterStateMachine machine, CharacterFightLogic attacker, CharacterMoveLogic mover, CharacterVisionLogic vision,Team team)
-    {
-        CreateIdleState();
-        CreateReachersTransction(attacker, mover);
-        CreateControlebelTransactions(attacker, mover, vision,team);
-        _idle.AddTransaction(_controlebel);
+    public void Build(CharacterStateMachine machine, CharacterFightLogic attacker, CharacterMoveLogic mover, CharacterVisionLogic vision, IFightebel current)
+    {        
+        CreateLogics(attacker, mover, vision, current);
         machine.Init(_idle);
         Clear();
     }
 
-    private static void  CreateIdleState()
+    private void CreateIdleState()
     {
-        _idle = new CharacterState(new CharacterIdleLogic());        
+        _idle = new CharacterState(new CharacterIdleLogic());
+        _activeState.Add(_idle);
+    }    
+
+    private void CreateLogics(CharacterFightLogic attacker, CharacterMoveLogic mover, CharacterVisionLogic vision, IFightebel current)
+    {
+        CreateIdleState();
+        CreateTargetPointLogic(mover, current);
+        CreateTargetAllyLogic(mover, vision , current);
+        CreateTargetEnemyLogic(mover, vision, attacker, current);
+
+        LoadToActiveStatrInputTransactions();
     }
 
-    private static void CreateReachersTransction(CharacterFightLogic attacker, CharacterMoveLogic mover)
-    {
-        _rechers.Add(mover, new CharacterStateTransactionReach(mover, _idle));
-        _rechers.Add(attacker, new CharacterStateTransactionReach(attacker, _idle));
-    }
-
-    private static void CreateVisionTransaction(IReachLogic vision, CharacterState moveToFighter)
-    {
-        _rechers.Add(vision, new CharacterStateTransactionReach(vision, moveToFighter));
-    }
-
-    private static void CreateControlebelTransactions(CharacterFightLogic attacker, CharacterMoveLogic mover, CharacterVisionLogic vision, Team team)
+    private void CreateTargetPointLogic(CharacterMoveLogic mover, IFightebel current)
     {
         CharacterState moveToPoint = new CharacterState(mover);
-        CharacterState moveToFighter = new CharacterState(mover);
-
-        _controlebel.Add(new CharacterStateTransactionRule(_toFightable, team, moveToFighter));
-        _controlebel.Add(new CharacterStateTransactionRule(_toPoint, team, moveToPoint));
-
-        moveToPoint.AddTransaction(_rechers[mover]);
-        moveToPoint.AddTransaction(_controlebel);
-        CreateVisionTransaction(vision, moveToFighter);
-
-        moveToFighter.AddTransaction(_rechers[mover]);
-        moveToFighter.AddTransaction(_controlebel);
-        moveToFighter.AddTransaction(_rechers[vision]);
+        _activeState.Add(moveToPoint);
+        ICharacterStateTransaction stateAfterMove = new CharacterStateTransactionReach(mover, _idle);              
+        moveToPoint.AddTransaction(stateAfterMove);
+        _userInpuTransactions.Add(new CharacterStateTransactionComander(_toPoint, current, moveToPoint));
     }
 
-    private static void Clear()
+    private void CreateTargetAllyLogic(CharacterMoveLogic mover, CharacterVisionLogic vision, IFightebel current)
     {
-        _controlebel.Clear();
-        _rechers.Clear();
+        CharacterState moveToAlly = new CharacterState(mover);
+        CharacterState rotateToAlly = new CharacterState(vision);
+
+        _activeState.Add(moveToAlly);
+        _activeState.Add(rotateToAlly);
+
+        ICharacterStateTransaction moveWhenLostAgleAlly = new CharacterStateTransactionComander(_toAlly, current, moveToAlly, vision);
+        ICharacterStateTransaction moveWhenLostDistanceAlly = new CharacterStateTransactionComander(_toAlly, current, moveToAlly, mover);
+        ICharacterStateTransaction rotateAfterMoveToAlly = new CharacterStateTransactionReach(mover, rotateToAlly);
+        ICharacterStateTransaction stateAfterRotate = new CharacterStateTransactionReach(vision, _idle);
+
+        _idle.AddTransaction(moveWhenLostDistanceAlly);
+        _idle.AddTransaction(moveWhenLostAgleAlly);
+
+        rotateToAlly.AddTransaction(stateAfterRotate);
+        rotateToAlly.AddTransaction(moveWhenLostDistanceAlly);
+
+        moveToAlly.AddTransaction(rotateAfterMoveToAlly);
+
+        _userInpuTransactions.Add(new CharacterStateTransactionComander(_toAlly, current, moveToAlly));
+    }
+
+    private void CreateTargetEnemyLogic(CharacterMoveLogic mover, CharacterVisionLogic vision, CharacterFightLogic attacker, IFightebel current)
+    {
+        CharacterState moveToEnemy = new CharacterState(mover);
+        CharacterState rotateToEnemy = new CharacterState(vision);
+        CharacterState fight = new CharacterState(attacker);
+
+        _activeState.Add(moveToEnemy);
+        _activeState.Add(rotateToEnemy);
+        _activeState.Add(fight);
+
+        ICharacterStateTransaction moveWhenLostDistanceEnemy = new CharacterStateTransactionComander(_toEnemy, current, moveToEnemy, mover);
+        ICharacterStateTransaction rotateWhenLostAgleEnemy = new CharacterStateTransactionComander(_toEnemy, current, rotateToEnemy, vision);
+        ICharacterStateTransaction stateAfterFight = new CharacterStateTransactionReach(attacker, _idle);
+        ICharacterStateTransaction rotateAfterMoveToEnemy = new CharacterStateTransactionReach(mover, rotateToEnemy);
+        ICharacterStateTransaction fightAfterRotate = new CharacterStateTransactionReach(vision, fight);
+
+        moveToEnemy.AddTransaction(rotateAfterMoveToEnemy);
+        rotateToEnemy.AddTransaction(fightAfterRotate);
+
+        fight.AddTransaction(stateAfterFight);
+        fight.AddTransaction(moveWhenLostDistanceEnemy);
+        fight.AddTransaction(rotateWhenLostAgleEnemy);
+
+        _userInpuTransactions.Add(new CharacterStateTransactionComander(_toEnemy, current, moveToEnemy));
+    }
+
+    private void LoadToActiveStatrInputTransactions()
+    {
+        foreach(CharacterState state in _activeState)
+        {
+            state.AddTransaction(_userInpuTransactions);
+        }
+    }
+
+    private void Clear()
+    {
+        _userInpuTransactions.Clear();
+        _activeState.Clear();
         _idle = null;
     }
 }

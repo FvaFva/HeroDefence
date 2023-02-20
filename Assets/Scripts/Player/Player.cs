@@ -44,7 +44,8 @@ public class Player : MonoBehaviour
     private void SetCharactersTarget(Target target)
     {
         foreach(Character character in _selectedPull)
-            character.SetNewTarget(target);
+            if(target.IsIFightebelMatches(character) == false)
+                character.SetNewTarget(target);
     }
 
     private void ClearSelectedCharacters()
@@ -85,7 +86,7 @@ public class Player : MonoBehaviour
 
     private void UpdateCharacterControllability(Character character)
     {
-        bool newCharacterControllability = character.CheckFriendly(_team);
+        bool newCharacterControllability = character.IsFriendly(_team);
 
         if (_isControllabilityCharacter == false || newCharacterControllability == false)
             ClearSelectedCharacters();

@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class CharacterVisionLogic : IReachLogic
+public class CharacterVisionLogic : IReachLogic, ICharacterComander
 {
-    private float _distance;
     private float _rotationSpeed;
 
     private IFightebel _target;
@@ -13,6 +12,7 @@ public class CharacterVisionLogic : IReachLogic
     private Vector3 _currentPosition;
 
     public event Action<Target> Reached;
+    public event Action<Target> ChoosedTarget;
 
     public CharacterVisionLogic(Transform body, float rotationSpeed)
     {
@@ -20,16 +20,12 @@ public class CharacterVisionLogic : IReachLogic
         _rotationSpeed = rotationSpeed;
     }
 
-    public void SetVisionDistance(float distance)
-    {        
-        _distance = Mathf.Clamp(distance, 0, float.MaxValue);
-    }
-
     public IEnumerator ReachTarget()
     {
         _currentPosition = _body.position;
+        _targetRotation = Quaternion.LookRotation(_target.CurrentPosition - _currentPosition);
 
-        while (Vector3.Distance(_currentPosition, _target.CurrentPosition) < _distance + GameSettings.Character.RangeDelta)
+        while (CheckTargetInViewField(GameSettings.Character.AngleDelta) == false)
         {
             _currentPosition = _body.position;
             _targetRotation = Quaternion.LookRotation(_target.CurrentPosition - _currentPosition);
@@ -40,8 +36,27 @@ public class CharacterVisionLogic : IReachLogic
         Reached?.Invoke(new Target(_body.position, _target));
     }
 
+    public IEnumerator VisionTargetInViewField()
+    {
+        while (CheckTargetInViewField(GameSettings.Character.AttackAngle))
+        {
+            yield return GameSettings.Character.OptimizationDelay();
+        }
+
+        ChoosedTarget?.Invoke(new Target(_body.position, _target));
+    }
+
     public void SetTarget(Target target)
     {
         target.TryGetFightebel(out _target);
+    }
+
+    private bool CheckTargetInViewField(float checkAgle)
+    {
+        checkAgle = Mathf.Clamp(checkAgle, -1.0f, 1.0f);
+        Vector3 toTargetNormalize = _target.CurrentPosition - _currentPosition;
+        toTargetNormalize.Normalize();
+        bool isInAngle = Vector3.Dot(_body.forward, toTargetNormalize) > checkAgle;
+        return isInAngle;
     }
 }

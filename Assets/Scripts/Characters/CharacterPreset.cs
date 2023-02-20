@@ -11,6 +11,7 @@ public class CharacterPreset : ScriptableObject
     [SerializeField] private string _class;
     [SerializeField] private float _armor;
     [SerializeField] private float _damage;
+    [SerializeField] private float _height;
     [SerializeField] private Sprite _portrait;
     [SerializeField] private CharacterAttackLogic _attackLogic;
 
@@ -19,6 +20,7 @@ public class CharacterPreset : ScriptableObject
     public string Profission => _class;
     public float MoveSpeed => _moveSpeed;
     public float Damage => _damage;
+    public float Height => _height;
     public float Armor => _armor;
     public Sprite Portrait => _portrait;
     public string Name => GameSettings.Character.GetRandomName();

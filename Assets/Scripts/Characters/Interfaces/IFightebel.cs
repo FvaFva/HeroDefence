@@ -10,5 +10,6 @@ public interface IFightebel
 
     public void ApplyHeal(float heal);
     public void ApplyDamage(IFightebel attacker, float damage, bool isPercTrigered = true);
-    public bool CheckFriendly(Team verifiableTeam);
+    public bool IsFriendly(Team verifiableTeam);
+    public bool IsFriendly(IFightebel verifiableIFightebel);
 }

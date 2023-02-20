@@ -26,7 +26,7 @@ public class CharacterFightLogic : IReachLogic
 
     public event Action<Target> Reached;
 
-    public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed)
+    public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed, IFightebel attacker)
     {       
         _hitPointsMax = hitPoints;
         _armor = armor;
@@ -35,6 +35,7 @@ public class CharacterFightLogic : IReachLogic
         _hitPointsCurrent= hitPoints;
         _attackSpeedCoefficient = 1;
         _currentStamina = StaminaToAttack;
+        _attacker = attacker;
     }
     
     public void SetNewAttackLogic(CharacterAttackLogic newLogic)
@@ -100,12 +101,12 @@ public class CharacterFightLogic : IReachLogic
         while(_enemy != null)
         {
             Attack();
-            yield return null;
+            yield return GameSettings.Character.OptimizationDelay();
         }
     }
 
     public void SetTarget(Target target)
     {
         target.TryGetFightebel(out _enemy);
-    }
+    }    
 }

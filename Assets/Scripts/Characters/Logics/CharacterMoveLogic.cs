@@ -3,27 +3,28 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CharacterMoveLogic: IReachLogic
+public class CharacterMoveLogic: IReachLogic, ICharacterComander
 {    
-    private NavMeshAgent _moveAgent;
     private Transform _body;
     private Team _team;
-    private IFightebel _targetEnemy;
+
     private ToPoint _pointChecker;
     private ToAlly _allyChecker;
     private ToEnemy _enemyChecker;
     private ReachingChecker _currentChecker;
-    private float _distance;        
+
+    private IFightebel _target;
+    private float _distance;
 
     public event Action<Target> Reached;
+    public event Action<Target> ChoosedTarget;
 
-    public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body, Team team)
+    public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body, Team team, float _height)
     {
-        _moveAgent = moveAgent;
-        _moveAgent.enabled = true;
+        moveAgent.enabled = true;
         _body = body;
         _team = team;
-        _pointChecker = new ToPoint(moveAgent);
+        _pointChecker = new ToPoint(moveAgent, _height);
         _allyChecker = new ToAlly(moveAgent);
         _enemyChecker = new ToEnemy(_distance, moveAgent);
         _currentChecker = _pointChecker;
@@ -31,14 +32,14 @@ public class CharacterMoveLogic: IReachLogic
 
     public void SetTarget(Target target)
     {
-        if (target.TryGetFightebel(out _targetEnemy))
-            if (_targetEnemy.CheckFriendly(_team))
+        if (target.TryGetFightebel(out _target))
+            if (_target.IsFriendly(_team))
                 _currentChecker = _allyChecker;
             else
                 _currentChecker = _enemyChecker;
         else
             _currentChecker = _pointChecker;
-
+        
         _currentChecker.SetTarget(target, _body.position);
     }
 
@@ -50,17 +51,26 @@ public class CharacterMoveLogic: IReachLogic
 
     public void SetMoveSpeed(float moveSpeed)
     {
-        _moveAgent.speed = Mathf.Max(0, moveSpeed);
+        _currentChecker.SetMoveSpeed(moveSpeed);
     }
 
     public IEnumerator ReachTarget()
+    {        
+        while (_currentChecker.CheckPathEnd(_body.position))
+        {
+            yield return GameSettings.Character.OptimizationDelay();
+        }
+        Reached?.Invoke(new Target(_body.position, _target));
+    }
+
+    public IEnumerator CheckTargetInRadius()
     {
-        while(_currentChecker.CheckReaching(_body.position))
-        {                       
+        while (_currentChecker.CheckDistance(_body.position))
+        {
             yield return GameSettings.Character.OptimizationDelay();
         }
 
-        Reached!.Invoke(new Target(_body.position, _targetEnemy));
+        ChoosedTarget?.Invoke(new Target(_body.position, _target));
     }
 
     private abstract class ReachingChecker
@@ -68,14 +78,33 @@ public class CharacterMoveLogic: IReachLogic
         protected float _distance;
         protected NavMeshAgent _moveAgent;
         protected Vector3 _currentTargetPoint;
+        protected IFightebel _target;
 
-        public abstract bool CheckReaching(Vector3 currentPosition);
+        public virtual bool CheckPathEnd(Vector3 currentPosition)
+        {
+            if (_target == null || CheckDistance(currentPosition))
+            {
+                return false;
+            }    
+            else
+                SetNewTargetPointToAgent(currentPosition, _target.CurrentPosition);
+
+            return true;
+        }
+
+        public bool CheckDistance(Vector3 currentPosition)
+        {
+            if(_target == null)
+                return true;
+
+            return GameSettings.CheckCorrespondencePositions(currentPosition, _target.CurrentPosition, _distance);
+        }
         
         public abstract void SetTarget(Target target, Vector3 currentPosition);
 
-        public virtual void SetDistance(float distance)
+        public void SetMoveSpeed(float moveSpeed)
         {
-            _distance = Mathf.Max(0, distance);
+            _moveAgent.speed = Mathf.Clamp(moveSpeed, GameSettings.Character.MinMoveSpeed, GameSettings.Character.MaxMoveSpeed);
         }
 
         protected void SetNewTargetPointToAgent(Vector3 currentPosition, Vector3 targetPosition)
@@ -87,13 +116,16 @@ public class CharacterMoveLogic: IReachLogic
     }
 
     private class ToPoint : ReachingChecker
-    {                
-        public ToPoint(NavMeshAgent moveAgent)
+    {
+        float _height;
+
+        public ToPoint(NavMeshAgent moveAgent, float height)
         {
             _moveAgent = moveAgent;
+            _height = height;
         }
 
-        public override bool CheckReaching(Vector3 currentPosition)
+        public override bool CheckPathEnd(Vector3 currentPosition)
         {
             return GameSettings.CheckCorrespondencePositions(currentPosition, _currentTargetPoint) == false;
         }
@@ -101,63 +133,42 @@ public class CharacterMoveLogic: IReachLogic
         public override void SetTarget(Target target, Vector3 currentPosition)
         {
             SetNewTargetPointToAgent(currentPosition, target.CurrentPosition());
+            _currentTargetPoint.y += _height;
         }
     }
 
     private class ToAlly : ReachingChecker
-    {
-        private IFightebel _ally;
-
+    {        
         public ToAlly(NavMeshAgent moveAgent)
         {
             _moveAgent = moveAgent;
             _distance = GameSettings.Character.SocialDistance;
         }
 
-        public override bool CheckReaching(Vector3 currentPosition)
-        {
-            if (_ally == null)            
-                return false;            
-            else            
-                SetNewTargetPointToAgent(currentPosition, _ally.CurrentPosition);                            
-
-            return true;
-        }
-
         public override void SetTarget(Target target, Vector3 currentPosition)
         {
-            target.TryGetFightebel(out _ally);
+            target.TryGetFightebel(out _target);
             SetNewTargetPointToAgent(currentPosition, target.CurrentPosition());
         }
     }
 
     private class ToEnemy : ReachingChecker
-    {
-        private IFightebel _enemy;        
-        
+    {                        
         public ToEnemy(float distance, NavMeshAgent moveAgent)
         {
             _distance = distance;
             _moveAgent = moveAgent;
         }
 
-        public override bool CheckReaching(Vector3 currentPosition)
+        public void SetDistance(float distance)
         {
-            if(GameSettings.CheckCorrespondencePositions(currentPosition, _currentTargetPoint) || _enemy == null)
-            {
-                return false;
-            }
-            else
-            {
-                SetNewTargetPointToAgent(currentPosition, _enemy.CurrentPosition);
-                return true;
-            }
+            _distance = Mathf.Max(0, distance);
         }
 
         public override void SetTarget(Target target, Vector3 currentPosition)
         {
-            target.TryGetFightebel(out _enemy);
-            SetNewTargetPointToAgent(currentPosition, _enemy.CurrentPosition);
+            target.TryGetFightebel(out _target);
+            SetNewTargetPointToAgent(currentPosition, _target.CurrentPosition);
         }
     }
 }
