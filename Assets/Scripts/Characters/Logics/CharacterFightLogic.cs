@@ -72,11 +72,11 @@ public class CharacterFightLogic : IReachLogic
 
     private void Attack()
     {
-        if (_enemy == null || _currentStamina < StaminaToAttack)
-            return;
-       
-        _attackLogic.AttackEnemy(_attacker, _enemy, _damage);
-        _currentStamina -= StaminaToAttack;
+        if (_currentStamina >= StaminaToAttack)
+        {
+            _attackLogic.AttackEnemy(_attacker, _enemy, _damage);
+            _currentStamina -= StaminaToAttack;
+        }        
     }
 
     public IEnumerator Resting()
@@ -103,6 +103,8 @@ public class CharacterFightLogic : IReachLogic
             Attack();
             yield return GameSettings.Character.OptimizationDelay();
         }
+
+        Reached!.Invoke(new Target(Vector3.zero, _enemy));
     }
 
     public void SetTarget(Target target)

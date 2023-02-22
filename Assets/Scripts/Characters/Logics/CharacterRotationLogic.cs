@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class CharacterVisionLogic : IReachLogic, ICharacterComander
+public class CharacterRotationLogic : IReachLogic, ICharacterComander
 {
     private float _rotationSpeed;
 
@@ -14,7 +14,7 @@ public class CharacterVisionLogic : IReachLogic, ICharacterComander
     public event Action<Target> Reached;
     public event Action<Target> ChoosedTarget;
 
-    public CharacterVisionLogic(Transform body, float rotationSpeed)
+    public CharacterRotationLogic(Transform body, float rotationSpeed)
     {
         _body = body;
         _rotationSpeed = rotationSpeed;
@@ -25,7 +25,7 @@ public class CharacterVisionLogic : IReachLogic, ICharacterComander
         _currentPosition = _body.position;
         _targetRotation = Quaternion.LookRotation(_target.CurrentPosition - _currentPosition);
 
-        while (CheckTargetInViewField(GameSettings.Character.AngleDelta) == false)
+        while (CheckRotateToTerget(GameSettings.Character.AngleDelta) == false)
         {
             _currentPosition = _body.position;
             _targetRotation = Quaternion.LookRotation(_target.CurrentPosition - _currentPosition);
@@ -36,9 +36,9 @@ public class CharacterVisionLogic : IReachLogic, ICharacterComander
         Reached?.Invoke(new Target(_body.position, _target));
     }
 
-    public IEnumerator VisionTargetInViewField()
+    public IEnumerator ObserveRotateToTarget()
     {
-        while (CheckTargetInViewField(GameSettings.Character.AttackAngle))
+        while (CheckRotateToTerget(GameSettings.Character.AttackAngle))
         {
             yield return GameSettings.Character.OptimizationDelay();
         }
@@ -51,7 +51,7 @@ public class CharacterVisionLogic : IReachLogic, ICharacterComander
         target.TryGetFightebel(out _target);
     }
 
-    private bool CheckTargetInViewField(float checkAgle)
+    private bool CheckRotateToTerget(float checkAgle)
     {
         checkAgle = Mathf.Clamp(checkAgle, -1.0f, 1.0f);
         Vector3 toTargetNormalize = _target.CurrentPosition - _currentPosition;

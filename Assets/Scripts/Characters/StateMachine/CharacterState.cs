@@ -5,14 +5,16 @@ using System.Collections.Generic;
 public class CharacterState
 {
     private List<ICharacterStateTransaction> _transactions = new List<ICharacterStateTransaction>();
-    public IReachLogic _reacher;
-
+    private IReachLogic _reacher;
+    
+    public string Name { get; private set; }
     public event Action<CharacterState, Target> OnFindNextState;
     public IEnumerator ReachTarget => _reacher.ReachTarget();
 
-    public CharacterState(IReachLogic reacher)
+    public CharacterState(IReachLogic reacher, string name)
     {
         _reacher = reacher;
+        Name = name;
     }
 
     public void AddTransaction(ICharacterStateTransaction transaction)

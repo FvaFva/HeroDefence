@@ -63,7 +63,7 @@ public class CharacterMoveLogic: IReachLogic, ICharacterComander
         Reached?.Invoke(new Target(_body.position, _target));
     }
 
-    public IEnumerator CheckTargetInRadius()
+    public IEnumerator ObserveDistanceToTarget()
     {
         while (_currentChecker.CheckDistance(_body.position))
         {

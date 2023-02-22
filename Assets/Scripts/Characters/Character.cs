@@ -14,10 +14,10 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private float _speed;
     private float _speedCoefficient;
 
-    private IFightebel _target;
+    private IFightebel _enemy;
     private CharacterFightLogic _fightLogic;
     private CharacterMoveLogic _moveLogic;
-    private CharacterVisionLogic _visionLogic;
+    private CharacterRotationLogic _visionLogic;
     private CharacterPercBag _percBag;
     private CharacterAttackLogic _attackLogic;
     private Anima _anima;
@@ -130,14 +130,14 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         if (_controleAGleToTarget != null)
             StopCoroutine(_controleAGleToTarget);
 
-        if (_target != null)
-            _target!.TakenDamage -= OnDamageDealing;
+        if (_enemy != null)
+            _enemy!.TakenDamage -= OnDamageDealing;
 
         _moveLogic.Reached -= StartControlDistanceToTarget;
         _moveLogic.ChoosedTarget -= StopControlDistanceToTarget;
         _visionLogic.Reached -= StartControlAgleToTarget;
         _visionLogic.ChoosedTarget -= StopControlAgleToTarget;
-        _target = null;
+        _enemy = null;
     }
 
     private void StartControlDistanceToTarget(Target target)
@@ -147,7 +147,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
 
         _moveLogic.ChoosedTarget += StopControlDistanceToTarget;
         _moveLogic.Reached -= StartControlDistanceToTarget;
-        _controleDistanceToTarget = StartCoroutine(_moveLogic.CheckTargetInRadius());
+        _controleDistanceToTarget = StartCoroutine(_moveLogic.ObserveDistanceToTarget());
     }
 
     private void StartControlAgleToTarget(Target target)
@@ -156,7 +156,8 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
             StopCoroutine(_controleAGleToTarget);
 
         _visionLogic.ChoosedTarget += StopControlAgleToTarget;
-        _controleAGleToTarget = StartCoroutine(_visionLogic.VisionTargetInViewField());
+        _visionLogic.Reached -= StartControlAgleToTarget;
+        _controleAGleToTarget = StartCoroutine(_visionLogic.ObserveRotateToTarget());
     }
 
     private void StopControlAgleToTarget(Target target)
@@ -175,8 +176,8 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
 
     private void SetNewEnemyTarget(IFightebel target)
     {
-        _target = target;
-        _target.TakenDamage += OnDamageDealing;
+        _enemy = target;
+        _enemy.TakenDamage += OnDamageDealing;
     }
 
     private void Awake()
@@ -198,6 +199,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         _fightLogic.HitPointsChanged -= ShowHitManaPointsCoefficients;
         _fightLogic.Died -= OnDied;
         _percBag.ShowedPerc -= (OnPercShowing);
+        CleaOldTarget();
 
         if (_staminaRegeneration != null)
             StopCoroutine(_staminaRegeneration);                
@@ -206,6 +208,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
     private void OnDied()
     {
         Died?.Invoke();
+        CleaOldTarget();
         gameObject.SetActive(false);        
     }
 
@@ -243,7 +246,7 @@ public class Character : MonoBehaviour, IPercBag, IFightebel
         _percBag = new CharacterPercBag();
         _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
         _speedCoefficient = 1;
-        _visionLogic = new CharacterVisionLogic(transform, navigator.angularSpeed);
+        _visionLogic = new CharacterRotationLogic(transform, navigator.angularSpeed);
         _anima = new Anima(100, 1);
         _informationUI.SetFlagGolod(TeamFlag);
 

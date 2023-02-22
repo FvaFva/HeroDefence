@@ -6,14 +6,24 @@ public class CharacterStateMachine : MonoBehaviour
     private CharacterState _baseState;
     private CharacterState _currentState;
     private Coroutine _currentStateAction;
+    private Coroutine _oldStateAction;
     private ICharacterComander _comander;
+
+    private void Update()
+    {
+        if(_currentStateAction != _oldStateAction)
+        {
+            Debug.Log($"Changed form {_oldStateAction} to {_currentStateAction}");
+            _oldStateAction = _currentStateAction;
+        }
+    }
 
     public void Init(CharacterState baseStat)
     {
         _baseState = baseStat;
 
         if (_baseState == null)
-            enabled = true;
+            enabled = false;
 
         Transit(_baseState, new());
     }
@@ -29,26 +39,14 @@ public class CharacterStateMachine : MonoBehaviour
         Transit(null, new());
     }
 
-    private void RestarStateAction()
-    {
-        if (_currentStateAction != null)
-            StopCoroutine(_currentStateAction);
-
-        if (_currentState == null)
-            return;
-        else
-            _currentStateAction = StartCoroutine(StateAction());
-    }
-
-    private IEnumerator StateAction()
-    {
-        return _currentState.ReachTarget;
-    }
-
     private void Transit(CharacterState nextState, Target target)
     {
         if (_currentState != null)
         {
+            if (_currentStateAction != null)
+                StopCoroutine(_currentStateAction);
+
+            Debug.Log($"Exit {_currentState.Name}");
             _currentState.OnFindNextState -= Transit;
             _currentState.Exit();
         }
@@ -57,10 +55,10 @@ public class CharacterStateMachine : MonoBehaviour
 
         if (_currentState != null)
         {
+            Debug.Log($"Enter {_currentState.Name}");
             _currentState.OnFindNextState += Transit;
             _currentState.Enter(_comander, target);
+            _currentStateAction = StartCoroutine(_currentState.ReachTarget);
         }
-
-        RestarStateAction();
     }
 }
