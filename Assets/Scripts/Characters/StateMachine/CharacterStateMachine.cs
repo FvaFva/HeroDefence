@@ -6,17 +6,7 @@ public class CharacterStateMachine : MonoBehaviour
     private CharacterState _baseState;
     private CharacterState _currentState;
     private Coroutine _currentStateAction;
-    private Coroutine _oldStateAction;
     private ICharacterComander _comander;
-
-    private void Update()
-    {
-        if(_currentStateAction != _oldStateAction)
-        {
-            Debug.Log($"Changed form {_oldStateAction} to {_currentStateAction}");
-            _oldStateAction = _currentStateAction;
-        }
-    }
 
     public void Init(CharacterState baseStat)
     {
@@ -46,7 +36,6 @@ public class CharacterStateMachine : MonoBehaviour
             if (_currentStateAction != null)
                 StopCoroutine(_currentStateAction);
 
-            Debug.Log($"Exit {_currentState.Name}");
             _currentState.OnFindNextState -= Transit;
             _currentState.Exit();
         }
@@ -55,7 +44,6 @@ public class CharacterStateMachine : MonoBehaviour
 
         if (_currentState != null)
         {
-            Debug.Log($"Enter {_currentState.Name}");
             _currentState.OnFindNextState += Transit;
             _currentState.Enter(_comander, target);
             _currentStateAction = StartCoroutine(_currentState.ReachTarget);

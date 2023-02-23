@@ -3,12 +3,12 @@ using UnityEngine;
 public struct Target 
 {
     private Vector3 _point;
-    private IFightebel _target;
+    private IFightable _target;
 
     public bool IsFightebel => _target != null;
     public bool IstEmpte => _point != Vector3.zero || _target != null;
 
-    public Target(Vector3 point, IFightebel target = null)
+    public Target(Vector3 point, IFightable target = null)
     {
         _point = point;
         _target = target;
@@ -22,13 +22,13 @@ public struct Target
             return _target.CurrentPosition;
     }
 
-    public bool TryGetFightebel(out IFightebel target)
+    public bool TryGetFightebel(out IFightable target)
     {
         target = _target;
         return target != null;
     } 
     
-    public bool IsIFightebelMatches(IFightebel checker)
+    public bool IsIFightebelMatches(IFightable checker)
     {
         return _target == checker;
     }

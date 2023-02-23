@@ -21,7 +21,7 @@ public class Perc : Ability
             _triggers.Add(new ActionTrigger(_actions[i], _chances[i], _percActionTypes[i]));
     }
 
-    public void ExecuteDepenceAction(IFightebel root, IFightebel target, float damage, PercActionType type)
+    public void ExecuteDepenceAction(IFightable root, IFightable target, float damage, PercActionType type)
     {
         foreach (ActionTrigger action in _triggers.Where(act => act.PercActionType == type))
             action.ExecuteActionIfRandomize(root, target, damage);
@@ -66,7 +66,7 @@ public struct ActionTrigger
         _percActionType = percActionType;
     }
 
-    public void ExecuteActionIfRandomize(IFightebel root, IFightebel target, float damage)
+    public void ExecuteActionIfRandomize(IFightable root, IFightable target, float damage)
     {
         if (_action != null && _chance > Random.Range(GameSettings.Zero, GameSettings.Hundred))
         {

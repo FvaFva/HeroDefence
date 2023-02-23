@@ -1,13 +1,13 @@
 using System;
 
-public class CharacterStateTransactionReach : ICharacterStateTransaction
+public class TransactionReachObserver : ITransaction
 {
     private CharacterState _targetState;
     private IReachLogic _reacher;
 
     public event Action<CharacterState, Target> Activited;
 
-    public CharacterStateTransactionReach(IReachLogic reacher, CharacterState targetState)
+    public TransactionReachObserver(IReachLogic reacher, CharacterState targetState)
     {
         _reacher = reacher;
         _targetState = targetState;

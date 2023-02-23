@@ -1,6 +1,6 @@
 using System;
 
-public interface ICharacterStateTransaction
+public interface ITransaction
 {
     public event Action<CharacterState, Target> Activited;
     public void TryOn(ICharacterComander comander);

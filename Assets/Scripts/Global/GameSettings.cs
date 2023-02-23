@@ -24,7 +24,9 @@ public static class GameSettings
         public const float ArmorUnitImpact = 0.97f;
         public const float MinMoveSpeed = 2;
         public const float MaxMoveSpeed = 15;
-        public const float AttackAngle = 0.30f;
+        public const float AngleAttack = 0.30f;
+        public const float AngularSpeed = 100;
+        public const float DistanceDeltaToPoint = 0.4f;
 
         public const int StaminaPointsToAtack = 1000;        
 

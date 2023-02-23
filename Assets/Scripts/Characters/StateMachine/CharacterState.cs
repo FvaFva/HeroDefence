@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CharacterState
 {
-    private List<ICharacterStateTransaction> _transactions = new List<ICharacterStateTransaction>();
+    private List<ITransaction> _transactions = new List<ITransaction>();
     private IReachLogic _reacher;
     
     public string Name { get; private set; }
@@ -17,15 +17,15 @@ public class CharacterState
         Name = name;
     }
 
-    public void AddTransaction(ICharacterStateTransaction transaction)
+    public void AddTransaction(ITransaction transaction)
     {
         if(transaction != null && _transactions.Contains(transaction) == false)
             _transactions.Add(transaction);
     }
 
-    public void AddTransaction(List<ICharacterStateTransaction> transactions)
+    public void AddTransaction(List<ITransaction> transactions)
     {
-        foreach (ICharacterStateTransaction transaction in transactions)
+        foreach (ITransaction transaction in transactions)
             AddTransaction(transaction);
     }
 
@@ -33,7 +33,7 @@ public class CharacterState
     {
         _reacher.SetTarget(target);
 
-        foreach(ICharacterStateTransaction transaction in _transactions)
+        foreach(ITransaction transaction in _transactions)
         {
             transaction.Activited += OnTransactionActivated;
             transaction.TryOn(comander);
@@ -42,7 +42,7 @@ public class CharacterState
 
     public void SetNewComander(ICharacterComander comander)
     {
-        foreach (ICharacterStateTransaction transaction in _transactions)
+        foreach (ITransaction transaction in _transactions)
         {
             transaction.TryOn(comander);
         }
@@ -50,7 +50,7 @@ public class CharacterState
 
     public void Exit()
     {
-        foreach (ICharacterStateTransaction transaction in _transactions)
+        foreach (ITransaction transaction in _transactions)
         {
             transaction.Off();
             transaction.Activited -= OnTransactionActivated;

@@ -9,7 +9,7 @@ public abstract class CharacterAttackLogic : ScriptableObject
     
     public float AttackDistance => _attackDistance;
   
-    public virtual void AttackEnemy(IFightebel attacker, IFightebel enemy, float damage, bool isPercTrigered = true)
+    public virtual void AttackEnemy(IFightable attacker, IFightable enemy, float damage, bool isPercTrigered = true)
     {        
         enemy.ApplyDamage(attacker, damage, isPercTrigered);
     }

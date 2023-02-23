@@ -14,8 +14,8 @@ public class CharacterFightLogic : IReachLogic
     private float _armor;
     private float _damage;
 
-    private IFightebel _enemy;
-    private IFightebel _attacker;
+    private IFightable _enemy;
+    private IFightable _attacker;
     private CharacterAttackLogic _attackLogic;
 
     public float HiPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
@@ -26,7 +26,7 @@ public class CharacterFightLogic : IReachLogic
 
     public event Action<Target> Reached;
 
-    public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed, IFightebel attacker)
+    public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed, IFightable attacker)
     {       
         _hitPointsMax = hitPoints;
         _armor = armor;
@@ -86,6 +86,7 @@ public class CharacterFightLogic : IReachLogic
             if (_currentStamina < StaminaToAttack)
                 _currentStamina += _attackSpeed * _attackSpeedCoefficient * Time.deltaTime;
 
+            var Delay = GameSettings.Character.OptimizationDelay();
             yield return null;
         }
     }

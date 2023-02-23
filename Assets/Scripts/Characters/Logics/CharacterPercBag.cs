@@ -30,7 +30,7 @@ public class CharacterPercBag
         }
     }
 
-    public void ExecuteActionDepenceAction(IFightebel root, IFightebel target, float damage, PercActionType type)
+    public void ExecuteActionDepenceAction(IFightable root, IFightable target, float damage, PercActionType type)
     {
         foreach (Perc perc in _percs)
         {

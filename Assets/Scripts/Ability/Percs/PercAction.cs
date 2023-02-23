@@ -6,5 +6,5 @@ public abstract class PercAction : ScriptableObject
 
     public string Description => _description;
 
-    public abstract void DoAction(IFightebel root, IFightebel target, float damage);
+    public abstract void DoAction(IFightable root, IFightable target, float damage);
 }

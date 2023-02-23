@@ -1,17 +1,16 @@
 using System;
-using UnityEngine;
 
-public class CharacterStateTransactionComander : ICharacterStateTransaction
+public class TransactionComandObserver : ITransaction
 {
     private CharacterState _targetState;
     private ICharacterComander _comander;
-    private IFightebel _current;
+    private IFightable _current;
     private TransactionRule _rule;
     private bool _staticComander;
 
     public event Action<CharacterState, Target> Activited;
 
-    public CharacterStateTransactionComander(TransactionRule rule, IFightebel current, CharacterState targetState, ICharacterComander comander = null)
+    public TransactionComandObserver(TransactionRule rule, IFightable current, CharacterState targetState, ICharacterComander comander = null)
     {
         _rule = rule;
         _current = current;

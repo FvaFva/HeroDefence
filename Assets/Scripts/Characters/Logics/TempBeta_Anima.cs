@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class Anima
+public class TempBeta_Anima
 {
     private List<Spell> _spellBook = new List<Spell>();
 
@@ -16,7 +14,7 @@ public class Anima
     public event Action<Spell> CastedSpell;
     public event Action<Spell> AddedSpell;
 
-    public Anima(float manaPoints, float manaRegen)
+    public TempBeta_Anima(float manaPoints, float manaRegen)
     {      
         ManaPointsCurrent = manaPoints;
         ManaPointsMax = manaPoints;
