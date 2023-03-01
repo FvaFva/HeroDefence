@@ -84,10 +84,9 @@ public class CharacterFightLogic : IReachLogic
         while(true)
         {
             if (_currentStamina < StaminaToAttack)
-                _currentStamina += _attackSpeed * _attackSpeedCoefficient * Time.deltaTime;
+                _currentStamina += _attackSpeed * _attackSpeedCoefficient * GameSettings.Character.SecondsDelay;
 
-            var Delay = GameSettings.Character.OptimizationDelay();
-            yield return null;
+            yield return GameSettings.Character.OptimizationDelay;
         }
     }
 
@@ -99,10 +98,12 @@ public class CharacterFightLogic : IReachLogic
 
     public IEnumerator ReachTarget()
     {
-        while(_enemy != null)
+        yield return GameSettings.Character.OptimizationDelay;
+
+        while (_enemy != null)
         {
             Attack();
-            yield return GameSettings.Character.OptimizationDelay();
+            yield return GameSettings.Character.OptimizationDelay;
         }
 
         Reached!.Invoke(new Target(Vector3.zero, _enemy));

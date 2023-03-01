@@ -11,5 +11,6 @@ public class CharacterIdleLogic : IReachLogic
 
     public void SetTarget(Target target)
     {
+        Reached?.Invoke(target);
     }
 }

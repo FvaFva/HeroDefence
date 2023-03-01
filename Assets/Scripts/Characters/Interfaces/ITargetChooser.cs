@@ -1,6 +1,6 @@
 using System;
 
-public interface ICharacterComander
+public interface ITargetChooser
 {
     public event Action<Target> ChoosedTarget;
 }

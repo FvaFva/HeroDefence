@@ -1,8 +1,11 @@
 using System;
 
-public interface ITransaction
+namespace CharacterTransactions
 {
-    public event Action<CharacterState, Target> Activited;
-    public void TryOn(ICharacterComander comander);
-    public void Off();
+    public interface ITransaction
+    {
+        public event Action<CharacterState, Target> NewStatusAvailable;
+        public void TryOn();
+        public void Off();
+    }
 }

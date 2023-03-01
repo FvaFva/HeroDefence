@@ -15,29 +15,27 @@ public static class GameSettings
 
     public static class Character
     {
-        private static WaitForSeconds _optimizationDelay = new WaitForSeconds(0.1f);
         private static List<string> _namesPool = new List<string>();
 
         public const float RangeDelta = 0.1f;
-        public const float AngleDelta = 0.95f;
-        public const float SocialDistance = 2f;
+        public const float AngleDelta = 0.97f;
+        public const float SocialDistance = 1.2f;
         public const float ArmorUnitImpact = 0.97f;
         public const float MinMoveSpeed = 2;
         public const float MaxMoveSpeed = 15;
-        public const float AngleAttack = 0.30f;
-        public const float AngularSpeed = 100;
+        public const float AngleAttack = 0.40f;
+        public const float AngularSpeed = 10;
         public const float DistanceDeltaToPoint = 0.4f;
+        public const float SecondsDelay = 0.1f;
+        public const float FlightDethHeght = 30;
+
+        public static readonly WaitForSeconds OptimizationDelay = new WaitForSeconds(SecondsDelay);
 
         public const int StaminaPointsToAtack = 1000;        
 
         static Character()
         {
             FillNamePool();
-        }
-
-        public static WaitForSeconds OptimizationDelay()
-        {
-            return _optimizationDelay;
         }
 
         public static string GetRandomName()
@@ -76,13 +74,6 @@ public static class GameSettings
             _namesPool.Add("Adam");
             _namesPool.Add("Daniel");
         }
-
-        public enum SexType
-        {
-            Female = 0,
-            Male,
-            Being
-        }
     }    
 
     public static class UI
@@ -98,11 +89,4 @@ public static class GameSettings
             public const string Run = "Run";
         }
     }
-}
-
-public enum PercActionType
-{
-    OnAttack = 0,
-    OnDamageDelay,
-    OnDefence
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CharacterMoveLogic: IReachLogic, ICharacterComander
+public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObserver
 {
     private const float AngleVision = GameSettings.Character.AngleAttack;
     private const float AngleDelta = GameSettings.Character.AngleDelta;
@@ -23,6 +23,8 @@ public class CharacterMoveLogic: IReachLogic, ICharacterComander
 
     public event Action<Target> Reached;
     public event Action<Target> ChoosedTarget;
+    public event Action<IFightable> LostTarget;
+    public event Action<IFightable> FoundTarget;
 
     public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body, Team team, float _height)
     {
@@ -64,30 +66,34 @@ public class CharacterMoveLogic: IReachLogic, ICharacterComander
     }
 
     public IEnumerator ReachTarget()
-    {        
+    {
+        yield return GameSettings.Character.OptimizationDelay;
+
         while (_currentChecker.CheckPathEnd(_body.position))
         {
-            var delay = GameSettings.Character.OptimizationDelay();
-            yield return null;
+            yield return GameSettings.Character.OptimizationDelay;
         }
 
         while (_turner.CheckRotateToTarget(AngleDelta) == false) 
         {
             _turner.RotateToTarget();
-            var delay = GameSettings.Character.OptimizationDelay();
-            yield return null;
+            yield return GameSettings.Character.OptimizationDelay;
         }
 
         Reached?.Invoke(new Target(_body.position, _target));
+        FoundTarget?.Invoke(_target);
     }
 
     public IEnumerator ObserveTarget()
     {
+        yield return GameSettings.Character.OptimizationDelay; 
+
         while (_currentChecker.CheckDistance(_body.position) && _turner.CheckRotateToTarget(AngleVision))
         {
-            yield return GameSettings.Character.OptimizationDelay();
+            yield return GameSettings.Character.OptimizationDelay;
         }
 
         ChoosedTarget?.Invoke(new Target(_body.position, _target));
+        LostTarget?.Invoke(_target);
     }
 }

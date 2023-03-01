@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(CharacterStateMachine))]
+[RequireComponent(typeof(CharacterTargetObserveLogic))]
 public class Character : MonoBehaviour, IPercBag, IFightable
 {        
     [SerializeField] private CharacterInformation _informationUI;
@@ -14,17 +14,16 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     private float _speed;
     private float _speedCoefficient;
 
-    private IFightable _enemy;
     private CharacterFightLogic _fightLogic;
     private CharacterMoveLogic _moveLogic;
     private CharacterPercBag _percBag;
     private CharacterAttackLogic _attackLogic;
     private TempBeta_Anima _anima;
     private CharacterStateMachine _stateMachine;
+    private NavMeshAgent _navigator;
 
     private Coroutine _staminaRegeneration;
-    private Coroutine _ObservingTarget;
-    private Coroutine _controleAGleToTarget;
+    private IFightable _target;
 
     public string Name { get; private set; }
     public string Profession { get; private set; }
@@ -45,19 +44,14 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     public void SetNewTarget(Target newTarget)
     {
         CleaOldTarget();
-
+        
         if (newTarget.TryGetFightebel(out IFightable target) && target != null)
         {
-            _moveLogic.Reached += StartObserveToTarget;
-
-            if (target.IsFriendly(_team) == false)
-            {                
-                SetNewEnemyTarget(target);
-            }
-        }        
+            SetNewTarget(target);
+        }
     }
 
-    public void SetNewComander (ICharacterComander comander)
+    public void SetNewComander (ITargetChooser comander)
     {
         _stateMachine.SetNewComander(comander);
     }
@@ -121,42 +115,19 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     }
 
     private void CleaOldTarget()
+    {    
+        if (_target != null && _target.IsFriendly(_team) == false)
+            _target!.TakenDamage -= OnDamageDealing;
+
+        _target = null;
+    }
+
+    private void SetNewTarget(IFightable target)
     {
-        if(_ObservingTarget!= null)
-            StopCoroutine(_ObservingTarget);
+        _target = target;
 
-        if (_controleAGleToTarget != null)
-            StopCoroutine(_controleAGleToTarget);
-
-        if (_enemy != null)
-            _enemy!.TakenDamage -= OnDamageDealing;
-
-        _moveLogic.Reached -= StartObserveToTarget;
-        _moveLogic.ChoosedTarget -= StopObserveTarget;
-        _enemy = null;
-    }
-
-    private void StartObserveToTarget(Target target)
-    {        
-        if (_ObservingTarget != null)
-            StopCoroutine(_ObservingTarget);
-
-        _moveLogic.ChoosedTarget += StopObserveTarget;
-        _moveLogic.Reached -= StartObserveToTarget;
-        _ObservingTarget = StartCoroutine(_moveLogic.ObserveTarget());
-    }
-
-    private void StopObserveTarget(Target target)
-    {        
-        StopCoroutine(_ObservingTarget);
-        _moveLogic.ChoosedTarget -= StopObserveTarget;
-        _moveLogic.Reached += StartObserveToTarget;
-    }
-
-    private void SetNewEnemyTarget(IFightable target)
-    {
-        _enemy = target;
-        _enemy.TakenDamage += OnDamageDealing;
+        if (target.IsFriendly(_team) == false)
+            _target.TakenDamage += OnDamageDealing;
     }
 
     private void Awake()
@@ -186,9 +157,8 @@ public class Character : MonoBehaviour, IPercBag, IFightable
 
     private void OnDied()
     {
+        _navigator.enabled = false;     
         Died?.Invoke();
-        CleaOldTarget();
-        gameObject.SetActive(false);        
     }
 
     private void ShowHitManaPointsCoefficients()
@@ -219,19 +189,22 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     private void Init()
     {
         LoadPreset(_preset);
-        TryGetComponent<NavMeshAgent>(out NavMeshAgent navigator);
-        TryGetComponent<CharacterStateMachine>(out _stateMachine);
+        TryGetComponent(out _navigator);
+        TryGetComponent(out _stateMachine);
+        TryGetComponent(out CharacterTargetObserveLogic targetObserver);
 
         _percBag = new CharacterPercBag();
-        _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
+        _moveLogic = new CharacterMoveLogic(_navigator, transform, _team, _preset.Height);
+        targetObserver.Init(_moveLogic);
         _speedCoefficient = 1;
         _anima = new TempBeta_Anima(100, 1);
         _informationUI.SetFlagGolod(TeamFlag);
 
         UpdateSpeed();
         UpdateAttackLogic(_attackLogic);
+        AllLogics logics = new AllLogics(_fightLogic, new CharacterDieingLogic(transform, _speed), targetObserver, _moveLogic);
         StateMachineLogicBuilder builder = new StateMachineLogicBuilder();
-        builder.Build(_stateMachine, _fightLogic, _moveLogic, this);
+        builder.Build(_stateMachine, logics, this);
     }
 
     private void LoadPreset(CharacterPreset preset)

@@ -23,7 +23,7 @@ namespace MovementSystem
         {
             _currentPosition = _body.position;
             _targetRotation = Quaternion.LookRotation(_target.CurrentPosition() - _currentPosition);
-            _body.rotation = Quaternion.Slerp(_body.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
+            _body.rotation = Quaternion.Slerp(_body.rotation, _targetRotation, _rotationSpeed * GameSettings.Character.SecondsDelay);
         }
 
         public void SetTarget(Target target)

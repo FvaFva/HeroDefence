@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerInputSystem : MonoBehaviour, ICharacterComander
+public class PlayerInputSystem : MonoBehaviour, ITargetChooser
 {
     private const float CameraSpeed = GameSettings.UI.CameraMoveSpeed;
 
