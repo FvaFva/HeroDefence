@@ -7,6 +7,7 @@ public class PercActionDamageTarget : PercAction
 
     public override void DoAction(IFightable root, IFightable target, float damage)
     {
-        target.ApplyDamage(root, damage * _coefficientOfDamage, false);
+        float newDamage = damage * _coefficientOfDamage;
+        target.TryApplyDamage(root, ref newDamage, false);
     }
 }

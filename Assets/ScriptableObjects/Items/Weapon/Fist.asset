@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07133810e6ad03e468df7c722b10184d, type: 3}
+  m_Name: Fist
+  m_EditorClassIdentifier: 
+  _name: Fist
+  _itemType: 1
+  _perc: {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
+  _icon: {fileID: 1969842499, guid: acb038c18e2486e41b3e2afd290d515c, type: 3}
+  _minAttackSpeed: 110
+  _maxAttackSpeed: 120
+  _minArmor: 0
+  _maxArmor: 0
+  _minSpeed: 0
+  _maxSpeed: 0
+  _minManaRegen: 0
+  _maxManaRegen: 0
+  _minHitPoints: 0
+  _maxHitPoints: 0
+  _minDamage: 10
+  _maxDamage: 15
+  _minManaPoints: 0
+  _maxManaPoints: 0

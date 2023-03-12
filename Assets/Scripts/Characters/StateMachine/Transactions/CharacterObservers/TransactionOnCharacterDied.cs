@@ -2,7 +2,7 @@
 {
     public class TransactionOnCharacterDied : BaseTransactionCharacterObserver
     {
-        public TransactionOnCharacterDied(CharacterState targetState, IFightable character, TypesOfTransaction type) : base(targetState, character, type){}
+        public TransactionOnCharacterDied(CharacterState targetState, IFightable character, TransactionType type) : base(targetState, character, type){}
 
         public override void Off()
         {

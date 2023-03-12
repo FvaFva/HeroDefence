@@ -7,12 +7,12 @@ using UnityEngine.Events;
 public class EffectImpact
 {
     private EffectLogic _effect;
-    private TempBeta_Anima _caster;
+    private CharacterAnimaLogic _caster;
     private float _durationSecond;
 
     public event Action<EffectImpact> EndingEffctDuration;
 
-    public EffectImpact(EffectLogic effect, TempBeta_Anima caster, float secondDuration)
+    public EffectImpact(EffectLogic effect, CharacterAnimaLogic caster, float secondDuration)
     {
         _caster = caster;
         _effect = effect;

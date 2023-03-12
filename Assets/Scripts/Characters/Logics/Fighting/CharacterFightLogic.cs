@@ -7,7 +7,6 @@ public class CharacterFightLogic : IReachLogic
     private const float StaminaToAttack = GameSettings.Character.StaminaPointsToAtack;
 
     private float _attackSpeed;
-    private float _attackSpeedCoefficient;
     private float _currentStamina;
     private float _hitPointsMax;
     private float _hitPointsCurrent;
@@ -16,29 +15,32 @@ public class CharacterFightLogic : IReachLogic
 
     private IFightable _enemy;
     private IFightable _attacker;
-    private CharacterAttackLogic _attackLogic;
+    private IAttackLogic _attackLogic;
 
-    public float HiPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
-
-    public Fighter—haracteristics —haracteristics => new (_attackSpeed, _damage, _hitPointsCurrent, _hitPointsCurrent, _hitPointsMax);
+    public float HitPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
     public event Action Died;
     public event Action HitPointsChanged;
 
     public event Action<Target> Reached;
 
-    public CharacterFightLogic(float hitPoints, float armor, float damage, float attackSpeed, IFightable attacker)
-    {       
-        _hitPointsMax = hitPoints;
-        _armor = armor;
-        _damage = damage;
-        _attackSpeed = attackSpeed;
-        _hitPointsCurrent= hitPoints;
-        _attackSpeedCoefficient = 1;
+    public CharacterFightLogic(Fighter—haracteristics Òharacteristics, IFightable attacker)
+    {               
+        _hitPointsCurrent= Òharacteristics.HitPoints;
         _currentStamina = StaminaToAttack;
+        ApplyNewCharacteristics(Òharacteristics);
         _attacker = attacker;
     }
     
-    public void SetNewAttackLogic(CharacterAttackLogic newLogic)
+    public void ApplyNewCharacteristics(Fighter—haracteristics Òharacteristics)
+    {
+        _hitPointsMax = Òharacteristics.HitPoints;
+        _hitPointsCurrent = Òharacteristics.HitPoints * HitPointsCoefficient;
+        _armor = Òharacteristics.Armor;
+        _damage = Òharacteristics.Damage;
+        _attackSpeed = Òharacteristics.AttackSpeed;
+    }
+
+    public void SetNewAttackLogic(IAttackLogic newLogic)
     {
         if (newLogic == null || newLogic == _attackLogic)
             return;        
@@ -84,7 +86,7 @@ public class CharacterFightLogic : IReachLogic
         while(true)
         {
             if (_currentStamina < StaminaToAttack)
-                _currentStamina += _attackSpeed * _attackSpeedCoefficient * GameSettings.Character.SecondsDelay;
+                _currentStamina += _attackSpeed * GameSettings.Character.SecondsDelay;
 
             yield return GameSettings.Character.OptimizationDelay;
         }

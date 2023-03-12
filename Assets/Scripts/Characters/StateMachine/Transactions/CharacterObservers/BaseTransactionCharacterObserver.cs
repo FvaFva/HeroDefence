@@ -8,9 +8,9 @@ namespace CharacterTransactions
         protected CharacterState _targetState;
 
         public event Action<CharacterState, Target> NewStatusAvailable;
-        public TypesOfTransaction Type { get; private set; }
+        public TransactionType Type { get; private set; }
 
-        public BaseTransactionCharacterObserver(CharacterState targetState, IFightable character, TypesOfTransaction type)
+        public BaseTransactionCharacterObserver(CharacterState targetState, IFightable character, TransactionType type)
         {
             _targetState = targetState;
             _character = character;

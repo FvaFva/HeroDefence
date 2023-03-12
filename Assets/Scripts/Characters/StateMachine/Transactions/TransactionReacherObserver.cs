@@ -7,10 +7,10 @@ namespace CharacterTransactions
         private CharacterState _targetState;
         private IReachLogic _reacher;
 
-        public TypesOfTransaction Type { get; private set; }
+        public TransactionType Type { get; private set; }
         public event Action<CharacterState, Target> NewStatusAvailable;
 
-        public TransactionReacherObserver(IReachLogic reacher, CharacterState targetState, TypesOfTransaction type)
+        public TransactionReacherObserver(IReachLogic reacher, CharacterState targetState, TransactionType type)
         {
             _reacher = reacher;
             _targetState = targetState;

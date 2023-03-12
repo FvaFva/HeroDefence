@@ -1,6 +1,6 @@
 ﻿namespace CharacterTransactions
 {
-    public enum TypesOfTransaction
+    public enum TransactionType
     {
         ReacherObserver = 0,
         ChooserObserver,

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -27,8 +25,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         {
             _character.ChangedIndicators -= UpdateBarsInfo;
             _character.ChangedCharacteristics -= UpdateCharacteristicsInfo;
-            _character.ChangedSpeed -= UpdateMoveSpeedInfo;
-            _character.ShowedPerc -= DorwAbility;
+            _character.ShowedPerc -= DrowAbility;
         }
 
         _character = character;
@@ -58,18 +55,12 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     {
         _character.ChangedIndicators += UpdateBarsInfo;
         _character.ChangedCharacteristics += UpdateCharacteristicsInfo;
-        _character.ChangedSpeed += UpdateMoveSpeedInfo;
-        _character.ShowedPerc += DorwAbility;
+        _character.ShowedPerc += DrowAbility;
         _portrait.sprite = _character.Portrait;
         _name.text = _character.Name;
         _profession.text = _character.Profession;
-        _teamName.text = _character.TeamName;
-        _flag.color = _character.TeamFlag;
-    }
-
-    private void UpdateMoveSpeedInfo(float speed)
-    {
-        _moveSpeed.text = speed.ToString();
+        _teamName.text = _character.Team.Name;
+        _flag.color = _character.Team.Flag;
     }
 
     private void UpdateCharacteristicsInfo(Fighter—haracteristics Òharacteristics)
@@ -77,6 +68,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _damage.text = Òharacteristics.Damage.ToString();
         _armor.text = Òharacteristics.Armor.ToString();
         _attackSpeed.text = Òharacteristics.AttackSpeed.ToString();
+        _moveSpeed.text = Òharacteristics.Speed.ToString();
     }
 
     private void UpdateBarsInfo(float hitPointsCoefficient, float manaPointsCoefficient)
@@ -85,7 +77,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _manaPoints.value = manaPointsCoefficient;
     }
 
-    private void DorwAbility(Ability ability)
+    private void DrowAbility(Ability ability)
     {
         _currentCharacterAbility.Render(ability);
     }

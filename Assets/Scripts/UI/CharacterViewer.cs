@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -9,14 +8,14 @@ public class CharacterViewer : MonoBehaviour
 {
     [SerializeField] private Slider _hitPointsBar;
     [SerializeField] private Slider _manaPointsBar;
-    [SerializeField] private Image _portrait;
-    [SerializeField] private ScrollRect _effectPlace;
-    [SerializeField] private Button _selectSharacter;
     [SerializeField] private TMP_Text _name;
-    [SerializeField] private Color _targetebleColor;
-    [SerializeField] private Image _flagImage;
     [SerializeField] private TMP_Text _flagText;
+    [SerializeField] private Image _portrait;
+    [SerializeField] private Image _flagImage;
     [SerializeField] private Image _currentMask;
+    [SerializeField] private Color _targetebleColor;
+    [SerializeField] private Button _selectSharacter;
+    [SerializeField] private ScrollRect _effectPlace;
 
     private Character _character;
     private Color _baseColor;
@@ -32,7 +31,7 @@ public class CharacterViewer : MonoBehaviour
     private void OnEnable()
     {
         if(_character != null)
-            _character.ChangedIndicators += SetCurrentCharacteristics;
+            _character.ChangedIndicators += SetCurrentIndicators;
 
         _selectSharacter.onClick.AddListener(Selected);
     }
@@ -58,13 +57,12 @@ public class CharacterViewer : MonoBehaviour
         {
             IsUsed = true;
             _character = character;
-            _name.text = character.Name;
+            _character.ChangedIndicators += SetCurrentIndicators;
+            _name.text = _character.Name;
             _portrait.sprite = _character.Portrait;
-            _character.ChangedIndicators += SetCurrentCharacteristics;
-            character.ShowAllInformations();
+            _flagImage.color = _character.Team.Flag;
+            _flagText.text = _character.Team.Name;
             gameObject.SetActive(true);
-            _flagImage.color = character.TeamFlag;
-            _flagText.text = character.TeamName;
         }
     }
 
@@ -79,7 +77,7 @@ public class CharacterViewer : MonoBehaviour
         _character = null;
         _name.text = "|||||";
         _portrait.sprite = null;
-        SetCurrentCharacteristics(0, 0);
+        SetCurrentIndicators(0, 0);
         IsUsed = false;
         gameObject.SetActive(false);
     }
@@ -87,10 +85,10 @@ public class CharacterViewer : MonoBehaviour
     private void RemoveListenersFromCharacter()
     {
         if (_character != null)
-            _character.ChangedIndicators -= SetCurrentCharacteristics;
+            _character.ChangedIndicators -= SetCurrentIndicators;
     }
 
-    private void SetCurrentCharacteristics(float hitPointsCoeffecient, float manaPointsCoeffecient)
+    private void SetCurrentIndicators(float hitPointsCoeffecient, float manaPointsCoeffecient)
     {
         _hitPointsBar.value = hitPointsCoeffecient;
         _manaPointsBar.value = manaPointsCoeffecient;

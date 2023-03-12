@@ -25,7 +25,7 @@ public class CharacterInformation : MonoBehaviour
         _flag.color = color;
     }
 
-    public void SetCurrentCharacteristics(float hitPointsCoeffecient, float manaPointsCoeffecient)
+    public void SetCurrentIndicators(float hitPointsCoeffecient, float manaPointsCoeffecient)
     {
         _hitPointsBar.value = hitPointsCoeffecient;
         _manaPointsBar.value = manaPointsCoeffecient;

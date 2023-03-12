@@ -12,9 +12,9 @@ namespace CharacterTransactions
         private bool _isObserving;
 
         public event Action<CharacterState, Target> NewStatusAvailable;
-        public TypesOfTransaction Type { get; private set; }
+        public TransactionType Type { get; private set; }
 
-        public TransactionChooserObserver(TransactionRule rule, IFightable current, CharacterState targetState, TypesOfTransaction type, ITargetChooser comander = null)
+        public TransactionChooserObserver(TransactionRule rule, IFightable current, CharacterState targetState, TransactionType type, ITargetChooser comander = null)
         {
             _rule = rule;
             _current = current;
@@ -36,7 +36,6 @@ namespace CharacterTransactions
                 {
                     _comander = comander;
                 }
-
             }
         }
 

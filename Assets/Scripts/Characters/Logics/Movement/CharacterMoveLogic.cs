@@ -54,7 +54,7 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
         _turner.SetTarget(target);
     }
 
-    public void SetNewDistanceToTarget(float distance)
+    public void SetNewDistanceToEnemy(float distance)
     {
         _distance = distance;
         _enemyChecker.SetDistance(distance);

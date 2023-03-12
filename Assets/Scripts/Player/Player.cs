@@ -26,27 +26,13 @@ public class Player : MonoBehaviour
     {
         _mainUI.OnCharacterSelect += SetCurrentCharacter;
         _playerInputSystem.ChoosedCharacter += SetCurrentCharacter;
-        _playerInputSystem.ChoosedTarget += OnChoosNewTarget;
     }
 
     private void OnDisable()
     {
         _mainUI.OnCharacterSelect -= SetCurrentCharacter;
         _playerInputSystem.ChoosedCharacter -= SetCurrentCharacter;
-        _playerInputSystem.ChoosedTarget -= OnChoosNewTarget;
     }   
-
-    private void OnChoosNewTarget(Target target)
-    {
-        SetCharactersTarget(target);
-    }
-
-    private void SetCharactersTarget(Target target)
-    {
-        foreach(Character character in _selectedPull)
-            if(target.IsIFightebelMatches(character) == false)
-                character.SetNewTarget(target);
-    }
 
     private void ClearSelectedCharacters()
     {

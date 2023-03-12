@@ -30,7 +30,7 @@ public class StateMachineLogicBuilder
     private void CreateBasicLogics(CharacterTargetObserveLogic targetObserve)
     {
         _idle = new CharacterState(new CharacterIdleLogic(), "Idle");
-        _stopWhenTargetDie = new TransactionChooserObserver(_toEmpty, null, _idle, TypesOfTransaction.TargetDieObserver, targetObserve);
+        _stopWhenTargetDie = new TransactionChooserObserver(_toEmpty, null, _idle, TransactionType.TargetDieObserver, targetObserve);
         _activeState.Add(_idle);
     }    
 
@@ -50,9 +50,9 @@ public class StateMachineLogicBuilder
     {
         CharacterState move = new CharacterState(mover, "Move to point");
         _activeState.Add(move);
-        ITransaction stateAfterMove = new TransactionReacherObserver(mover, _idle, TypesOfTransaction.ReacherObserver);              
+        ITransaction stateAfterMove = new TransactionReacherObserver(mover, _idle, TransactionType.ReacherObserver);              
         move.AddTransaction(stateAfterMove);
-        _userInpuTransactions.Add(new TransactionChooserObserver(_toPoint, current, move, TypesOfTransaction.ChooserObserver));
+        _userInpuTransactions.Add(new TransactionChooserObserver(_toPoint, current, move, TransactionType.ChooserObserver));
     }
 
     private void CreateTargetAllyLogic(CharacterMoveLogic mover, IFightable current)
@@ -61,14 +61,14 @@ public class StateMachineLogicBuilder
 
         _activeState.Add(move);
 
-        ITransaction moveWhenLostTarget = new TransactionChooserObserver(_toAlly, current, move,TypesOfTransaction.StaticChooserObserver, mover);
-        ITransaction stateAfterMove = new TransactionReacherObserver(mover, _idle, TypesOfTransaction.ReacherObserver);
+        ITransaction moveWhenLostTarget = new TransactionChooserObserver(_toAlly, current, move,TransactionType.StaticChooserObserver, mover);
+        ITransaction stateAfterMove = new TransactionReacherObserver(mover, _idle, TransactionType.ReacherObserver);
 
         _idle.AddTransaction(moveWhenLostTarget);
         move.AddTransaction(stateAfterMove);
         move.AddTransaction(_stopWhenTargetDie);
 
-        _userInpuTransactions.Add(new TransactionChooserObserver(_toAlly, current, move, TypesOfTransaction.ChooserObserver));
+        _userInpuTransactions.Add(new TransactionChooserObserver(_toAlly, current, move, TransactionType.ChooserObserver));
     }
 
     private void CreateTargetEnemyLogic(CharacterMoveLogic mover, CharacterFightLogic attacker, IFightable current)
@@ -79,9 +79,9 @@ public class StateMachineLogicBuilder
         _activeState.Add(move);
         _activeState.Add(attack);
 
-        ITransaction moveWhenLostTarget = new TransactionChooserObserver(_toEnemy, current, move, TypesOfTransaction.StaticChooserObserver, mover);
-        ITransaction attackAfterMove = new TransactionReacherObserver(mover, attack, TypesOfTransaction.ReacherObserver);
-        ITransaction stateAfterAttack = new TransactionReacherObserver(attacker, _idle, TypesOfTransaction.ReacherObserver);
+        ITransaction moveWhenLostTarget = new TransactionChooserObserver(_toEnemy, current, move, TransactionType.StaticChooserObserver, mover);
+        ITransaction attackAfterMove = new TransactionReacherObserver(mover, attack, TransactionType.ReacherObserver);
+        ITransaction stateAfterAttack = new TransactionReacherObserver(attacker, _idle, TransactionType.ReacherObserver);
 
         move.AddTransaction(attackAfterMove);
         move.AddTransaction(_stopWhenTargetDie);
@@ -89,7 +89,7 @@ public class StateMachineLogicBuilder
         attack.AddTransaction(moveWhenLostTarget);
         attack.AddTransaction(_stopWhenTargetDie);
 
-        _userInpuTransactions.Add(new TransactionChooserObserver(_toEnemy, current, move, TypesOfTransaction.ChooserObserver));
+        _userInpuTransactions.Add(new TransactionChooserObserver(_toEnemy, current, move, TransactionType.ChooserObserver));
     }
 
     private void CreatDethLogic(CharacterDieingLogic dier, IFightable current)
@@ -97,11 +97,11 @@ public class StateMachineLogicBuilder
         CharacterState dieing = new CharacterState(dier, "Dieing");
         _uncontrollabaleState.Add(dieing);
 
-        ITransaction offAfterDieing = new TransactionReacherObserver(dier, null, TypesOfTransaction.ReacherObserver);
+        ITransaction offAfterDieing = new TransactionReacherObserver(dier, null, TransactionType.ReacherObserver);
 
         dieing.AddTransaction(offAfterDieing);
 
-        _uncontrollabaleTransactions.Add(new TransactionOnCharacterDied(dieing, current, TypesOfTransaction.CharacterDieObserver));
+        _uncontrollabaleTransactions.Add(new TransactionOnCharacterDied(dieing, current, TransactionType.CharacterDieObserver));
     }
 
     private void LoadToActiveStatrAllTransactions()
