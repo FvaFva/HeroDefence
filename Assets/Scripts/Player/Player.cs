@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(PlayerInputSystem))]
 public class Player : MonoBehaviour
@@ -9,13 +7,26 @@ public class Player : MonoBehaviour
     [SerializeField] private MainUi _mainUI;
     [SerializeField] private Team _team;
 
+    private Inventory _inventory = new Inventory();
     private Character _currentCharacter;
     private List<Character> _selectedPull = new List<Character>();
     private bool _isControllabilityCharacter;
     private PlayerInputSystem _playerInputSystem;
 
-    public string TeamName => _team.Name;
-    public Color TeamFlag => _team.Flag;
+    public void GetCurrentCharacterItem(Item item)
+    {
+        if(item != null && _currentCharacter != null)
+            if(_inventory.TryDropItem(item))
+                if(_currentCharacter.TryPutOnItem(item) == false)
+                    _inventory.TryTakeItem(item);
+    }
+
+    public void StreapCurrentCharacterSlot(ItemType slot)
+    {
+        if (_currentCharacter != null && _currentCharacter.TryDropItem(slot, out Item dropItem))
+            if (_inventory.TryTakeItem(dropItem) == false)
+                _currentCharacter.TryPutOnItem(dropItem);
+    }
 
     private void Awake()
     {

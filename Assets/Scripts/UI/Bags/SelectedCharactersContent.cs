@@ -4,19 +4,21 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(ContentViewerSezer))]
-public class SelectedCharactersContent : Content—oncealer
+[RequireComponent(typeof(Content—oncealer))]
+public class SelectedCharactersContent : MonoBehaviour
 {
     [SerializeField] private CharacterViewer _tempViewer;
 
     private List<CharacterViewer> _characterViewersPool = new List<CharacterViewer>();
-    private ContentViewerSezer _contentSizer;
+    private ContentViewerSezer _sizer;
+    private Content—oncealer _Òoncealer;
 
     public event Action<Character> OnCharacterSelect;
 
     private void Awake()
     {
-        InitContentAdaptor();
-        TryGetComponent<ContentViewerSezer>(out _contentSizer);
+        TryGetComponent<ContentViewerSezer>(out _sizer);
+        TryGetComponent<Content—oncealer>(out _Òoncealer);
     }
 
     public void ClearSelectedChaViewers()
@@ -27,8 +29,8 @@ public class SelectedCharactersContent : Content—oncealer
             viewer.Render(null);
         }
 
-        StartMovePanel(false);
-        _contentSizer.UpdateViewersSize(0);
+        _Òoncealer.StartMovePanel(false);
+        _sizer.UpdateViewersSize(0);
     }
 
     public void RenderCharacter(Character character)
@@ -50,8 +52,8 @@ public class SelectedCharactersContent : Content—oncealer
         newViewer.Render(character);
         newViewer.SelectSharacter += UpdateSelectedViewer;
         SetMainViewer(newViewer);
-        StartMovePanel(++countUsedViewers > 1);
-        _contentSizer.UpdateViewersSize(++countUsedViewers);
+        _Òoncealer.StartMovePanel(++countUsedViewers > 1);
+        _sizer.UpdateViewersSize(++countUsedViewers);
     }
 
     private void UpdateSelectedViewer(Character character, CharacterViewer viewer)

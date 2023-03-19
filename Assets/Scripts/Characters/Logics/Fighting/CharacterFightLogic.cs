@@ -81,15 +81,10 @@ public class CharacterFightLogic : IReachLogic
         }        
     }
 
-    public IEnumerator Resting()
+    public void StaminaRegeneration(float delay)
     {
-        while(true)
-        {
-            if (_currentStamina < StaminaToAttack)
-                _currentStamina += _attackSpeed * GameSettings.Character.SecondsDelay;
-
-            yield return GameSettings.Character.OptimizationDelay;
-        }
+        if (_currentStamina < StaminaToAttack)
+            _currentStamina += _attackSpeed * delay;
     }
 
     private float GetRealDamage(float damage)

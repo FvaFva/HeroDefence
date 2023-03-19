@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fist
   m_EditorClassIdentifier: 
   _name: Fist
-  _itemType: 1
+  _itemType: 0
   _perc: {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
   _icon: {fileID: 1969842499, guid: acb038c18e2486e41b3e2afd290d515c, type: 3}
   _minAttackSpeed: 110
@@ -26,7 +26,7 @@ MonoBehaviour:
   _maxManaRegen: 0
   _minHitPoints: 0
   _maxHitPoints: 0
-  _minDamage: 10
-  _maxDamage: 15
+  _minDamage: 100
+  _maxDamage: 150
   _minManaPoints: 0
   _maxManaPoints: 0

@@ -1,48 +1,39 @@
 using System.Collections.Generic;
-using System;
+using System.Linq;
 
 public class CharacterPercBag
 {
-    private List<Perc> _percs;
+    private List<PercSlot> _slots = new List<PercSlot>();
 
-    public event Action<Perc> ShowedPerc;
+    public IReadOnlyList<Ability> Percs => _slots.Select(ps => ps.Perc).ToList().AsReadOnly();
 
-    public CharacterPercBag()
+    public bool TryAddPerc(IPercSource source, Perc perc)
     {
-        _percs = new List<Perc>();
+        PercSlot newSlot = new PercSlot(source, perc);
+        bool isCanAdd = _slots.Contains(newSlot) == false;
+
+        if (isCanAdd)
+            _slots.Add(newSlot);
+
+        return isCanAdd;
     }
 
-    public void AddPerc(Perc perc)
+    public bool TryRemovePerc(IPercSource source, Perc perc)
     {
-        _percs.Add(perc);
-    }
+        PercSlot newSlot = new PercSlot(source, perc);
+        bool isCanRemove = _slots.Contains(newSlot) == false;
 
-    public bool TryRemovePerc(Perc perc)
-    {
-        if(_percs.Contains(perc))
-        {
-            _percs.Remove(perc);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (isCanRemove)
+            _slots.Remove(newSlot);
+
+        return isCanRemove;
     }
 
     public void ExecuteActionDepenceAction(IFightable root, IFightable target, float damage, PercActionType type)
     {
-        foreach (Perc perc in _percs)
+        foreach (Perc perc in _slots.Select(ps => ps.Perc))
         {
             perc.ExecuteDepenceAction(root, target, damage, type);
-        }
-    }
-
-    public void ShowPercs()
-    {
-        foreach (Perc perc in _percs)
-        {
-            ShowedPerc?.Invoke(perc);
         }
     }
 }

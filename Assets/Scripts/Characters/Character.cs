@@ -1,38 +1,42 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(CharacterStateMachine))]
 [RequireComponent(typeof(CharacterTargetObserveLogic))]
-public class Character : MonoBehaviour, IPercBag, IFightable
+public class Character : MonoBehaviour, IFightable
 {        
-    [SerializeField] private CharacterInformation _informationUI;
+    [SerializeField] private CharacterIndicatorsPanel _informationUI;
     [SerializeField] private CharacterPreset _preset;
     [SerializeField] private Team _team;
 
+    private Ammunition _ammunition = new Ammunition();
     private Characteristics _characteristics;
     private CharacterFightLogic _fightLogic;
     private CharacterMoveLogic _moveLogic;
-    private CharacterPercBag _percBag;
     private CharacterAnimaLogic _animaLogic;
+    private CharacterPercBag _percBag;
+
     private Weapon _baseWeapon;
     private Weapon _currentWeapon;
-    private CharacterStateMachine _stateMachine;
 
-    private Coroutine _staminaRegeneration;
+    private CharacterStateMachine _stateMachine;
+    private Coroutine _resting;
 
     public string Name { get; private set; }
     public string Profession { get; private set; }
     public Sprite Portrait{ get; private set; }
     public Team Team => _team;
+
     public Vector3 CurrentPosition => transform.position;
-    public FighterÑharacteristics Ñharacteristics => _characteristics.Current;
 
     public event Action<float, float> ChangedIndicators;
     public event Action<FighterÑharacteristics> ChangedCharacteristics;
-    public event Action<Perc> ShowedPerc;
-    public event Action<Perc> RemovedPerc;
+    public event Action<IReadOnlyList<Ability>> ChangedAbilitiesKit;
+    public event Action<IReadOnlyDictionary<ItemType, Item>> ChangedAmmunition;
     public event Action Died;
 
     public void SetNewComander (ITargetChooser comander)
@@ -70,22 +74,55 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     public void ShowAllInformations()
     {                
         ChangedCharacteristics?.Invoke(_characteristics.Current);
-        _percBag.ShowPercs();
-        UpdateLogicsCharacteristics();
+        ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+        ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
+        ShowIndicators();
     }
 
-    public void AddPerc(Perc perc)
+    public void RemovePerc(IPercSource source, Perc perc)
     {
-        ShowedPerc?.Invoke(perc);
-        _percBag.AddPerc(perc);
+        if (_percBag.TryRemovePerc(source, perc))
+            ChangedAbilitiesKit?.Invoke(_percBag.Percs);
     }
 
-    public void RemovePerc(Perc perc)
+    public bool TryDropItem(ItemType itemType, out Item dropItem)
     {
-        if(_percBag.TryRemovePerc(perc))
+        if (_ammunition.TryDropType(itemType, out dropItem))
         {
-            RemovedPerc?.Invoke(perc);
+            if (_percBag.TryRemovePerc(dropItem, dropItem.Perc))
+                ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+
+            _characteristics?.RemoveBuff(dropItem);
+
+            if (itemType == ItemType.Weapon)
+                TryPutOnItem(_baseWeapon);
+            else
+                ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
+
+            return true;
         }
+
+        return false;
+    }
+
+    public bool TryPutOnItem(Item item)
+    {
+        if(_ammunition.TryPutOnItem(item))
+        {
+            if (_percBag.TryAddPerc(item, item.Perc))
+                ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+
+            _characteristics?.ApplyBuff(item);
+
+            if (item.ItemType == ItemType.Weapon)
+                SetNewWeapon((Weapon)item);
+
+            ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
+
+            return true;
+        }
+
+        return false;
     }
 
     private void OnDamageDealing(IFightable enemy, float damage, bool triggeredDamage)
@@ -103,8 +140,7 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     {        
         _fightLogic.HitPointsChanged += ShowIndicators;
         _fightLogic.Died += OnDied;
-        _percBag.ShowedPerc += OnPercShowing;
-        _staminaRegeneration = StartCoroutine(_fightLogic.Resting());
+        _resting = StartCoroutine(Resting());
         _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
         ShowAllInformations();
     }
@@ -113,11 +149,10 @@ public class Character : MonoBehaviour, IPercBag, IFightable
     {
         _fightLogic.HitPointsChanged -= ShowIndicators;
         _fightLogic.Died -= OnDied;
-        _percBag.ShowedPerc -= OnPercShowing;
         _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
 
-        if (_staminaRegeneration != null)
-            StopCoroutine(_staminaRegeneration);                
+        if (_resting != null)
+            StopCoroutine(_resting);                
     }
 
     private void OnDied()
@@ -130,11 +165,6 @@ public class Character : MonoBehaviour, IPercBag, IFightable
         _informationUI.SetCurrentIndicators(_fightLogic.HitPointsCoefficient, _animaLogic.ManaPointsCoefficient);
         ChangedIndicators?.Invoke(_fightLogic.HitPointsCoefficient, _animaLogic.ManaPointsCoefficient);
     }    
-
-    private void OnPercShowing(Perc showePerc)
-    {
-        ShowedPerc?.Invoke(showePerc);
-    }
 
     private void UpdateLogicsCharacteristics()
     {
@@ -150,7 +180,6 @@ public class Character : MonoBehaviour, IPercBag, IFightable
         if (_currentWeapon != null)
         {
             _currentWeapon.AttackLogic.DamageDealed -= OnDamageDealing;
-            _characteristics.RemoveBuff(weapon);
         }
         
         if(weapon == null)
@@ -161,16 +190,14 @@ public class Character : MonoBehaviour, IPercBag, IFightable
         _currentWeapon.AttackLogic.DamageDealed += OnDamageDealing;
         _moveLogic.SetNewDistanceToEnemy(_currentWeapon.AttackDistance);
         _fightLogic.SetNewAttackLogic(_currentWeapon.AttackLogic);
-        _characteristics.ApplyBuff(weapon);
-        UpdateLogicsCharacteristics();
     }
 
     private void Init()
     {
         LoadPreset(_preset);
         TryGetComponent(out NavMeshAgent navigator);
-        TryGetComponent(out _stateMachine);
         TryGetComponent(out CharacterTargetObserveLogic targetObserver);
+        TryGetComponent(out _stateMachine);
         
         _percBag = new CharacterPercBag();
         _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
@@ -179,11 +206,24 @@ public class Character : MonoBehaviour, IPercBag, IFightable
         targetObserver.Init(_moveLogic);
 
         UpdateLogicsCharacteristics();
-        SetNewWeapon(_baseWeapon);
+        TryPutOnItem(_baseWeapon);
         AllLogics logics = new AllLogics(_fightLogic, new CharacterDieingLogic(transform, _characteristics.Current.Speed), targetObserver, _moveLogic);
         StateMachineLogicBuilder builder = new StateMachineLogicBuilder();
 
         builder.Build(_stateMachine, logics, this);
+    }
+
+    private IEnumerator Resting()
+    {
+        float delay = GameSettings.Character.SecondsDelay;
+        yield return GameSettings.Character.OptimizationDelay;
+
+        while (true)
+        {
+            _fightLogic.StaminaRegeneration(delay);
+            _animaLogic.ManaRegeneration(delay);
+            yield return GameSettings.Character.OptimizationDelay;
+        }    
     }
 
     private void LoadPreset(CharacterPreset preset)

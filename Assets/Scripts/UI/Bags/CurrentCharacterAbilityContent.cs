@@ -17,7 +17,10 @@ public class CurrentCharacterAbilityContent : MonoBehaviour
 
     public void Render(Ability ability)
     {
-        var unusedViewer = _viewerPool.Where(abi => abi.IsUsed == false).ToList();
+        if (_viewerPool.Where(abi => abi.Ability == ability).Count() > 0)
+            return;
+
+        var unusedViewer = _viewerPool.Where(abi => abi.Ability == null).ToList();
         AbilityViewer newViewer = null;
 
         if (unusedViewer.Count == 0)
@@ -37,10 +40,8 @@ public class CurrentCharacterAbilityContent : MonoBehaviour
 
     public void ClearAllRenderedViewers()
     {
-        foreach (AbilityViewer viewer in _viewerPool.Where(abi => abi.IsUsed == true))
-        {
+        foreach (AbilityViewer viewer in _viewerPool.Where(abi => abi.Ability != null))
             viewer.Clear();
-        }
 
         _contentSizer.UpdateViewersSize(0);
     }

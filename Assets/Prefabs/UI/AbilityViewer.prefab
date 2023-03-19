@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2337371487423984447}
   - component: {fileID: 8250622262356702957}
   m_Layer: 5
-  m_Name: AbilityWindow
+  m_Name: AbilityViewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,10 +36,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 625.2284, y: -135.12839}
-  m_SizeDelta: {x: 71.2568, y: 71.2568}
+  m_AnchorMin: {x: 0.48200002, y: 0.46400002}
+  m_AnchorMax: {x: 0.518, y: 0.52900004}
+  m_AnchoredPosition: {x: 0, y: -0.17070007}
+  m_SizeDelta: {x: -0.74320006, y: -1.0846}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9048151651526174103
 CanvasRenderer:

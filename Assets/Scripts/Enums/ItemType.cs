@@ -1,5 +1,10 @@
 ﻿public enum ItemType
 {
-    Empty =0,
-    Weapon,
+    Weapon = 0,
+    Helm,
+    Chest,
+    Hand,
+    Leg,
+    Ring,
+    Necle
 }

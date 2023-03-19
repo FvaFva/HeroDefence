@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class CurrentCharacterInfoPanel : MonoBehaviour
 {
@@ -13,8 +14,9 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     [SerializeField] private TMP_Text _armor;
     [SerializeField] private TMP_Text _attackSpeed;
     [SerializeField] private TMP_Text _moveSpeed;
-    [SerializeField] private Image _flag;
     [SerializeField] private TMP_Text _teamName;
+    [SerializeField] private Image _flag;
+    [SerializeField] private AmmunitionViewer _ammunition;
     [SerializeField] private CurrentCharacterAbilityContent _currentCharacterAbility;
 
     private Character _character;
@@ -23,9 +25,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     {
         if (_character != null)
         {
-            _character.ChangedIndicators -= UpdateBarsInfo;
+            _character.ChangedIndicators -= UpdateIndicators;
             _character.ChangedCharacteristics -= UpdateCharacteristicsInfo;
-            _character.ShowedPerc -= DrowAbility;
+            _character.ChangedAbilitiesKit -= DrowAbilities;
+            _character.ChangedAmmunition -= _ammunition.DrowThingsWorn;
         }
 
         _character = character;
@@ -39,7 +42,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     public void Clear()
     {        
         _portrait.sprite = null;
-        UpdateBarsInfo(0, 0);
+        UpdateIndicators(0, 0);
         _currentCharacterAbility.ClearAllRenderedViewers();
         _name.text = "";
         _profession.text = "";
@@ -48,19 +51,22 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _attackSpeed.text = "";
         _moveSpeed.text = "";
         _teamName.text = "";
+        _ammunition.Clear();
         _flag.color = Color.white;
     }
 
     private void DrowCharacter()
     {
-        _character.ChangedIndicators += UpdateBarsInfo;
+        _character.ChangedIndicators += UpdateIndicators;
         _character.ChangedCharacteristics += UpdateCharacteristicsInfo;
-        _character.ShowedPerc += DrowAbility;
+        _character.ChangedAbilitiesKit += DrowAbilities;
+        _character.ChangedAmmunition += _ammunition.DrowThingsWorn;
         _portrait.sprite = _character.Portrait;
         _name.text = _character.Name;
         _profession.text = _character.Profession;
         _teamName.text = _character.Team.Name;
         _flag.color = _character.Team.Flag;
+        _character.ShowAllInformations();
     }
 
     private void UpdateCharacteristicsInfo(Fighter—haracteristics Òharacteristics)
@@ -71,14 +77,15 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _moveSpeed.text = Òharacteristics.Speed.ToString();
     }
 
-    private void UpdateBarsInfo(float hitPointsCoefficient, float manaPointsCoefficient)
+    private void UpdateIndicators(float hitPointsCoefficient, float manaPointsCoefficient)
     {
         _hitPoints.value = hitPointsCoefficient;
         _manaPoints.value = manaPointsCoefficient;
     }
 
-    private void DrowAbility(Ability ability)
+    private void DrowAbilities(IReadOnlyList<Ability> abilities)
     {
-        _currentCharacterAbility.Render(ability);
+        foreach (Ability ability in abilities)
+            _currentCharacterAbility.Render(ability);
     }
 }

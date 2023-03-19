@@ -7,7 +7,7 @@ public class AbilityViewer : MonoBehaviour
     
     private string _description;
 
-    public bool IsUsed;
+    public Ability Ability { get; private set; }
 
     public void Render(Ability ability)
     {
@@ -15,16 +15,16 @@ public class AbilityViewer : MonoBehaviour
             Clear();
 
         gameObject.SetActive(true);
-        IsUsed = true;
         _icon.sprite = ability.Icon;
         _description = ability.GetDescription();
+        Ability = ability;
     }
 
     public void Clear()
     {
         _icon.sprite = null;
         _description = null;
-        IsUsed = false;
+        Ability = null;
         gameObject.SetActive(false);
     }
 }

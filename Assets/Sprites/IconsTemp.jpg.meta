@@ -272,7 +272,7 @@ TextureImporter:
         width: 50
         height: 49
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -280,6 +280,27 @@ TextureImporter:
       bones: []
       spriteID: 8d28e42f16adab8419ce0e6c78ec8b2e
       internalID: 1969842499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EmptyItem
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 552
+        width: 48
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 193cf710693295648a7c48920906c729
+      internalID: 1874692523
       vertices: []
       indices: 
       edges: []
@@ -297,6 +318,7 @@ TextureImporter:
     nameFileIdTable:
       Fist: 1969842499
       Heal: -1477305303
+      EmptyItem: 1874692523
       Damage: 1878284616
       MoveSpeed: -2081407151
       AttckSpeed: -2107664141

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Item: ICharacteristicsSource
+public class Item: ICharacteristicsSource, IPercSource
 {
     private FighterСharacteristics _characteristics;
 

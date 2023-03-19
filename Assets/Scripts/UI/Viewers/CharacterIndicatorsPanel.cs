@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
 [RequireComponent(typeof(Canvas))]
-public class CharacterInformation : MonoBehaviour
+public class CharacterIndicatorsPanel : MonoBehaviour
 {
     [SerializeField] private Slider _hitPointsBar;
     [SerializeField] private Slider _manaPointsBar;

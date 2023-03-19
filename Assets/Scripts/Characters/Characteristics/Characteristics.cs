@@ -37,6 +37,7 @@ public class Characteristics
             CharacteristicsChanged?.Invoke();
         }
     }
+
     private void CurrentСharacteristicsUpdate()
     {
         FighterСharacteristics current = _base;

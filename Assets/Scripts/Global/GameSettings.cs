@@ -6,6 +6,7 @@ public static class GameSettings
     public const float Hundred = 100;
     public const float Zero = 0;
     public const float HitingRange = 300;
+    public const int PlayerBagSize = 100;
 
     public static bool CheckCorrespondencePositions(Vector3 postion1, Vector3 position2, float range = 0)
     {
