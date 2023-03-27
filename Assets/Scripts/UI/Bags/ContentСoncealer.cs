@@ -1,11 +1,9 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class Content—oncealer : MonoBehaviour
 {
-    [SerializeField] private ScrollRect _panel;
+    [SerializeField] private UIPanel _panel;
     [SerializeField] private Vector2 _UnshowDirection;
 
     private float _showingPanelSpeed = 1000;
@@ -19,7 +17,7 @@ public class Content—oncealer : MonoBehaviour
             StopCoroutine(_panelMoving);
 
         Vector3 targetPosition = show ? _showingPosition : _unshowingPosition;
-        StartCoroutine(MovePanel(targetPosition));
+        _panelMoving = StartCoroutine(MovePanel(targetPosition));
     }
 
     private IEnumerator MovePanel(Vector3 position)

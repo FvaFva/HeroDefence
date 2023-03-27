@@ -2,14 +2,14 @@
 
 public class Inventory
 {
-    private List<Item> _bag;
+    private List<Item> _bag = new List<Item>();
 
     public IReadOnlyList<Item> Bug => _bag;
     public int Count => _bag.Count;
 
     public bool TryTakeItem(Item item)
     {
-        bool isTaken = item == null && _bag.Contains(item) == false && _bag.Count <= GameSettings.PlayerBagSize;
+        bool isTaken = item != null && _bag.Contains(item) == false && _bag.Count <= GameSettings.PlayerBagSize;
 
         if(isTaken)
             _bag.Add(item);

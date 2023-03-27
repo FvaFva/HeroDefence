@@ -25,7 +25,8 @@ public class CharacterFightLogic : IReachLogic
 
     public CharacterFightLogic(Fighter—haracteristics Òharacteristics, IFightable attacker)
     {               
-        _hitPointsCurrent= Òharacteristics.HitPoints;
+        _hitPointsCurrent = Òharacteristics.HitPoints;
+        _hitPointsMax = Òharacteristics.HitPoints;
         _currentStamina = StaminaToAttack;
         ApplyNewCharacteristics(Òharacteristics);
         _attacker = attacker;
@@ -33,8 +34,9 @@ public class CharacterFightLogic : IReachLogic
     
     public void ApplyNewCharacteristics(Fighter—haracteristics Òharacteristics)
     {
+        float tempHitPointsCoefficient = HitPointsCoefficient;
         _hitPointsMax = Òharacteristics.HitPoints;
-        _hitPointsCurrent = Òharacteristics.HitPoints * HitPointsCoefficient;
+        _hitPointsCurrent = Òharacteristics.HitPoints * tempHitPointsCoefficient;
         _armor = Òharacteristics.Armor;
         _damage = Òharacteristics.Damage;
         _attackSpeed = Òharacteristics.AttackSpeed;
@@ -70,6 +72,11 @@ public class CharacterFightLogic : IReachLogic
         _hitPointsCurrent += heal;
         _hitPointsCurrent = (_hitPointsMax < _hitPointsCurrent) ? _hitPointsMax : _hitPointsCurrent;
         HitPointsChanged.Invoke();
+    }
+
+    public void ApplyStamina(int count)
+    {
+        _currentStamina += count;
     }
 
     private void Attack()

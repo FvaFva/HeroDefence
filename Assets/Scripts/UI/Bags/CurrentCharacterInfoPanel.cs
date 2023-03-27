@@ -2,24 +2,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 public class CurrentCharacterInfoPanel : MonoBehaviour
 {
     [SerializeField] private Image _portrait;
+    [SerializeField] private Image _flag;
+
     [SerializeField] private Slider _hitPoints;
     [SerializeField] private Slider _manaPoints;
+
     [SerializeField] private TMP_Text _name;
     [SerializeField] private TMP_Text _profession;
-    [SerializeField] private TMP_Text _damage;
-    [SerializeField] private TMP_Text _armor;
-    [SerializeField] private TMP_Text _attackSpeed;
-    [SerializeField] private TMP_Text _moveSpeed;
     [SerializeField] private TMP_Text _teamName;
-    [SerializeField] private Image _flag;
+
+    [SerializeField] private CharacteristicViewer _damage;
+    [SerializeField] private CharacteristicViewer _attackSpeed;
+    [SerializeField] private CharacteristicViewer _armor;
+    [SerializeField] private CharacteristicViewer _moveSpeed;
+
     [SerializeField] private AmmunitionViewer _ammunition;
     [SerializeField] private CurrentCharacterAbilityContent _currentCharacterAbility;
 
     private Character _character;
+
+    public event Action<Item> ShoseAmmunitionsItem;
 
     public void SetNewCurrentCharacter(Character character)
     {
@@ -46,10 +53,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _currentCharacterAbility.ClearAllRenderedViewers();
         _name.text = "";
         _profession.text = "";
-        _damage.text = "";
-        _armor.text = "";
-        _attackSpeed.text = "";
-        _moveSpeed.text = "";
+        _damage.ShowCharacteristic(0);
+        _armor.ShowCharacteristic(0);
+        _attackSpeed.ShowCharacteristic(0);
+        _moveSpeed.ShowCharacteristic(0);
         _teamName.text = "";
         _ammunition.Clear();
         _flag.color = Color.white;
@@ -71,10 +78,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
 
     private void UpdateCharacteristicsInfo(Fighter—haracteristics Òharacteristics)
     {
-        _damage.text = Òharacteristics.Damage.ToString();
-        _armor.text = Òharacteristics.Armor.ToString();
-        _attackSpeed.text = Òharacteristics.AttackSpeed.ToString();
-        _moveSpeed.text = Òharacteristics.Speed.ToString();
+        _damage.ShowCharacteristic((int)Òharacteristics.Damage);
+        _armor.ShowCharacteristic((int)Òharacteristics.Armor);
+        _attackSpeed.ShowCharacteristic((int)Òharacteristics.AttackSpeed);
+        _moveSpeed.ShowCharacteristic((int)Òharacteristics.Speed);
     }
 
     private void UpdateIndicators(float hitPointsCoefficient, float manaPointsCoefficient)
@@ -87,5 +94,20 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     {
         foreach (Ability ability in abilities)
             _currentCharacterAbility.Render(ability);
+    }
+
+    private void OnItemChoose(Item item)
+    {
+        ShoseAmmunitionsItem?.Invoke(item);
+    }
+
+    private void OnEnable()
+    {
+        _ammunition.ChoseItem += OnItemChoose;
+    }
+
+    private void OnDisable()
+    {
+        _ammunition.ChoseItem -= OnItemChoose;
     }
 }

@@ -15,14 +15,13 @@ public class CharacterPreset : ScriptableObject, ICharacteristicsSource
     [SerializeField] private string _class;
     [SerializeField] private Sprite _portrait;
     [SerializeField] private ItemPreset _baseWeaponCharacteristics;
-    [SerializeField] private WeaponType _baseWeaponType;
     [SerializeField] private float _baseWeaponAttackDistance;
 
-    public string Profission => _class;
+    public string Profession => _class;
     public float Height => _height;
     public Sprite Portrait => _portrait;
     public string Name => GameSettings.Character.GetRandomName();
-    public Weapon Weapon => new Weapon(_baseWeaponCharacteristics, _baseWeaponAttackDistance, _baseWeaponType);
+    public Weapon Weapon => new Weapon(_baseWeaponCharacteristics, new MeleeAttackLogic(), _baseWeaponAttackDistance, null);
 
     public Fighter—haracteristics GetCharacteristics()
     {

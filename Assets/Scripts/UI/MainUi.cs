@@ -1,26 +1,42 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class MainUi : MonoBehaviour
 {
     [SerializeField] private CurrentCharacterInfoPanel _currentCharacter; 
     [SerializeField] private SelectedCharactersContent _selectedCharacters;
+    [SerializeField] private InventoryViewer _inventory;
+    [SerializeField] private ItemDetailedViewer _itemDetails;
 
     public event Action<Character> OnCharacterSelect;
+    public event Action<Item, bool> ItemWearChanged;
 
     private void OnEnable()
     {
         _selectedCharacters.OnCharacterSelect += SetMainCharacter;
+        _inventory.ChoseItem += ShowPutOnItemDetails;
+        _currentCharacter.ShoseAmmunitionsItem += ShowPutOffItemDetails;
+        _itemDetails.ItemWearChanged += OnItemWearChanging;
     }
 
     private void OnDisable()
     {
         _selectedCharacters.OnCharacterSelect -= SetMainCharacter;
+        _inventory.ChoseItem -= ShowPutOnItemDetails;
+        _currentCharacter.ShoseAmmunitionsItem -= ShowPutOffItemDetails;
+        _itemDetails.ItemWearChanged -= OnItemWearChanging;
     }
 
+    public void DrowInventory(IReadOnlyList<Item> bug)
+    {
+        _inventory.DrowInventory(bug);
+    }   
+    
     public void DrawCurrentCharacter(Character character, bool isNewInPool)
     {
         _currentCharacter.SetNewCurrentCharacter(character);
+        _itemDetails.SetItem(null);
 
         if (isNewInPool)
         {
@@ -37,5 +53,20 @@ public class MainUi : MonoBehaviour
     private void SetMainCharacter(Character character)
     {
         OnCharacterSelect?.Invoke(character);
+    }
+
+    private void ShowPutOnItemDetails(Item item)
+    {
+        _itemDetails.SetItem(item, true);
+    }
+
+    private void ShowPutOffItemDetails(Item item)
+    {
+        _itemDetails.SetItem(item, false);
+    }
+
+    private void OnItemWearChanging(Item item, bool isPutOn)
+    {
+        ItemWearChanged?.Invoke(item, isPutOn);
     }
 }

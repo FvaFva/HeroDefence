@@ -9,10 +9,13 @@ public class AbilityViewer : MonoBehaviour
 
     public Ability Ability { get; private set; }
 
-    public void Render(Ability ability)
+    public void ShowAbility(Ability ability)
     {
         if (ability == null)
+        {
             Clear();
+            return;
+        }
 
         gameObject.SetActive(true);
         _icon.sprite = ability.Icon;
@@ -20,7 +23,7 @@ public class AbilityViewer : MonoBehaviour
         Ability = ability;
     }
 
-    public void Clear()
+    private void Clear()
     {
         _icon.sprite = null;
         _description = null;

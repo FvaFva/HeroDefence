@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07133810e6ad03e468df7c722b10184d, type: 3}
-  m_Name: Fist
+  m_Name: Sword
   m_EditorClassIdentifier: 
-  _name: Fist
+  _name: Sword
   _itemType: 0
   _rarity: 0
-  _icon: {fileID: 1969842499, guid: acb038c18e2486e41b3e2afd290d515c, type: 3}
-  _minAttackSpeed: 50
-  _maxAttackSpeed: 70
+  _icon: {fileID: -463859395, guid: 60fca0c5ac840b64fa12e16c05f3496a, type: 3}
+  _minAttackSpeed: 100
+  _maxAttackSpeed: 120
   _minArmor: 0
-  _maxArmor: 0
+  _maxArmor: 5
   _minSpeed: 0
-  _maxSpeed: 0
+  _maxSpeed: 5
   _minManaRegen: 0
   _maxManaRegen: 0
   _minHitPoints: 0
   _maxHitPoints: 0
-  _minDamage: 10
+  _minDamage: 15
   _maxDamage: 20
   _minManaPoints: 0
   _maxManaPoints: 0

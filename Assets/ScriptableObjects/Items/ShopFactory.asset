@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ee97f8177a9c464ba4f560bfa594566, type: 3}
+  m_Name: ShopFactory
+  m_EditorClassIdentifier: 
+  _presets:
+  - {fileID: 11400000, guid: 3ede48cdc5af5344c8d9975b39148ddf, type: 2}
+  - {fileID: 11400000, guid: 08944e4446e66ca4e97c88a9be2b4886, type: 2}
+  - {fileID: 11400000, guid: 63a67e036dc61544082822adec1569bc, type: 2}
+  - {fileID: 11400000, guid: fefc2f9284dfdaa43922f908efc39c0f, type: 2}
+  _commonPercs:
+  - {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
+  - {fileID: 11400000, guid: 77b35bef3dab7b24f92b43e7477e2567, type: 2}
+  - {fileID: 11400000, guid: 23fa0ce6be459c84ea2395be0ef9fa87, type: 2}
+  _uncommonPercs: []
+  _rarePercs: []
+  _epickPercs: []
+  _legandaryPercs: []

@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07133810e6ad03e468df7c722b10184d, type: 3}
-  m_Name: Fist
+  m_Name: Armor
   m_EditorClassIdentifier: 
-  _name: Fist
-  _itemType: 0
+  _name: Armor
+  _itemType: 2
   _rarity: 0
-  _icon: {fileID: 1969842499, guid: acb038c18e2486e41b3e2afd290d515c, type: 3}
-  _minAttackSpeed: 50
-  _maxAttackSpeed: 70
-  _minArmor: 0
-  _maxArmor: 0
-  _minSpeed: 0
+  _icon: {fileID: 2084170666, guid: 10de1cc45106e304a8ea2c524321f0b9, type: 3}
+  _minAttackSpeed: 0
+  _maxAttackSpeed: 0
+  _minArmor: 10
+  _maxArmor: 50
+  _minSpeed: -5
   _maxSpeed: 0
   _minManaRegen: 0
   _maxManaRegen: 0
   _minHitPoints: 0
-  _maxHitPoints: 0
-  _minDamage: 10
-  _maxDamage: 20
+  _maxHitPoints: 500
+  _minDamage: 0
+  _maxDamage: 0
   _minManaPoints: 0
   _maxManaPoints: 0

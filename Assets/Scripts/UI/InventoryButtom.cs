@@ -4,8 +4,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class InventoryButtom : MonoBehaviour
 {
-    [SerializeField] InventoryViewer _inventory;
-
+    [SerializeField] Content—oncealer _inventory;
+    private bool _isVisibale = false;
     private Button _openInventory;
 
     private void Awake()
@@ -25,6 +25,7 @@ public class InventoryButtom : MonoBehaviour
 
     private void ChangeVisionInventory()
     {
-        _inventory.ChangeVision();
+        _isVisibale = !_isVisibale;
+        _inventory.StartMovePanel(_isVisibale);
     }
 }

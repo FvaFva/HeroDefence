@@ -33,7 +33,7 @@ public class CurrentCharacterAbilityContent : MonoBehaviour
             newViewer = unusedViewer.First();
         }
 
-        newViewer.Render(ability);
+        newViewer.ShowAbility(ability);
         int countUsedViewers = _viewerPool.Count - unusedViewer.Count;
         _contentSizer.UpdateViewersSize(countUsedViewers);
     }
@@ -41,7 +41,7 @@ public class CurrentCharacterAbilityContent : MonoBehaviour
     public void ClearAllRenderedViewers()
     {
         foreach (AbilityViewer viewer in _viewerPool.Where(abi => abi.Ability != null))
-            viewer.Clear();
+            viewer.ShowAbility(null);
 
         _contentSizer.UpdateViewersSize(0);
     }

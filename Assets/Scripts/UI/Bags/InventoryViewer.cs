@@ -1,27 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
-[RequireComponent(typeof(ContentViewerSezer))]
-[RequireComponent(typeof(Content—oncealer))]
 public class InventoryViewer : MonoBehaviour
 {
     [SerializeField] private ItemViewer _tempViewer;
 
     private List<ItemViewer> _viewersPool = new List<ItemViewer>();
-    private ContentViewerSezer _sizer;
-    private bool _isVisibale = false;
-    private Content—oncealer _Òoncealer;
 
-    public void ChangeVision()
-    {
-        _isVisibale = !_isVisibale;
-        _Òoncealer.StartMovePanel(_isVisibale);
-    }
+    public event Action<Item> ChoseItem;
 
     public void DrowInventory(IReadOnlyList<Item> bug)
     {
-        foreach(Item item in bug)
+        Clear();
+
+        foreach (Item item in bug)
             GetFreeViewer().DrowItem(item);
     }
 
@@ -30,13 +24,13 @@ public class InventoryViewer : MonoBehaviour
         foreach(ItemViewer cell in _viewersPool)
         {
             cell.DrowItem(null);
-            cell.enabled = false;
+            cell.ChoseItem -= OnItemChoose;
         }
     }
 
     private ItemViewer GetFreeViewer()
     {
-        ItemViewer freeCell = _viewersPool.First(cell=>cell.IsUsed = false);
+        ItemViewer freeCell = _viewersPool.Where(cell => cell.IsUsed == false).FirstOrDefault();
 
         if (freeCell == null)
         {
@@ -44,12 +38,18 @@ public class InventoryViewer : MonoBehaviour
             _viewersPool.Add(freeCell);
         }
 
+        freeCell.ChoseItem += OnItemChoose;
         return freeCell;
     }
 
     private void Awake()
     {
-        TryGetComponent<ContentViewerSezer>(out _sizer);
-        TryGetComponent<Content—oncealer>(out _Òoncealer);
+        for (int i = 0; i < GameSettings.PlayerBagSize; i++)
+            _viewersPool.Add(Instantiate(_tempViewer, transform));
+    }
+
+    private void OnItemChoose(Item item)
+    {
+        ChoseItem?.Invoke(item);
     }
 }

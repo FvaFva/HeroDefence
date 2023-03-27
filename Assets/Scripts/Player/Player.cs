@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private MainUi _mainUI;
     [SerializeField] private Team _team;
+    [SerializeField] private Shop _shop;
 
     private Inventory _inventory = new Inventory();
     private Character _currentCharacter;
@@ -13,19 +14,34 @@ public class Player : MonoBehaviour
     private bool _isControllabilityCharacter;
     private PlayerInputSystem _playerInputSystem;
 
-    public void GetCurrentCharacterItem(Item item)
+    private void GetCurrentCharacterItem(Item item)
     {
-        if(item != null && _currentCharacter != null)
-            if(_inventory.TryDropItem(item))
-                if(_currentCharacter.TryPutOnItem(item) == false)
+        if (item != null && _currentCharacter != null)
+            if (_inventory.TryDropItem(item))
+                if (_currentCharacter.TryPutOnItem(item) == false)
                     _inventory.TryTakeItem(item);
+                else
+                    _mainUI.DrowInventory(_inventory.Bug);
     }
 
-    public void StreapCurrentCharacterSlot(ItemType slot)
+    private void StreapCurrentCharacterSlot(ItemType slot)
     {
         if (_currentCharacter != null && _currentCharacter.TryDropItem(slot, out Item dropItem))
             if (_inventory.TryTakeItem(dropItem) == false)
                 _currentCharacter.TryPutOnItem(dropItem);
+            else
+                _mainUI.DrowInventory(_inventory.Bug);
+    }
+
+    private bool TakeItem(Item item)
+    {
+        if(_inventory.TryTakeItem(item))
+        {
+            _mainUI.DrowInventory(_inventory.Bug);
+            return true;
+        }
+
+        return false;
     }
 
     private void Awake()
@@ -36,14 +52,23 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         _mainUI.OnCharacterSelect += SetCurrentCharacter;
+        _mainUI.ItemWearChanged += OnItemWearChange;
         _playerInputSystem.ChoosedCharacter += SetCurrentCharacter;
+        _shop.SoldItem += BuyItem;
     }
 
     private void OnDisable()
     {
         _mainUI.OnCharacterSelect -= SetCurrentCharacter;
+        _mainUI.ItemWearChanged -= OnItemWearChange;
         _playerInputSystem.ChoosedCharacter -= SetCurrentCharacter;
-    }   
+        _shop.SoldItem -= BuyItem;
+    }
+
+    private void BuyItem(Item item)
+    {
+        TakeItem(item);
+    }
 
     private void ClearSelectedCharacters()
     {
@@ -79,6 +104,14 @@ public class Player : MonoBehaviour
         {
             ClearSelectedCharacters();
         }
+    }
+
+    private void OnItemWearChange(Item item, bool isPutOn)
+    {
+        if (isPutOn)
+            GetCurrentCharacterItem(item);
+        else
+            StreapCurrentCharacterSlot(item.ItemType);
     }
 
     private void UpdateCharacterControllability(Character character)

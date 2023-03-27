@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: acb038c18e2486e41b3e2afd290d515c
+guid: 10de1cc45106e304a8ea2c524321f0b9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 50
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: CharDamage
+      name: voidRing
       rect:
         serializedVersion: 2
-        x: 261
-        y: 147
-        width: 49
-        height: 50
+        x: 10
+        y: 1102
+        width: 137
+        height: 140
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7199559dcb6f09348987a8dbf55be399
-      internalID: 1878284616
+      spriteID: f513d976692e5a340851225e0a286185
+      internalID: 236885293
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: CharAttckSpeed
+      name: voidHelm
       rect:
         serializedVersion: 2
-        x: 384
-        y: 29
-        width: 49
-        height: 50
+        x: 1037
+        y: 1102
+        width: 135
+        height: 140
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,20 +152,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bc24f87f266f1ce4495c907ba4523e75
-      internalID: -2107664141
+      spriteID: 84fe3cc4d58d6ea4f84ac83e4bf2cdcf
+      internalID: -1649039406
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: CharMoveSpeed
+      name: voidNecle
       rect:
         serializedVersion: 2
-        x: 507
-        y: 264
-        width: 49
-        height: 50
+        x: 1797
+        y: 1103
+        width: 135
+        height: 139
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b3a3b331ed690e1498c081cc58482656
-      internalID: -2081407151
+      spriteID: 89b9ff895ebe5bf44a2db398313d6615
+      internalID: -1345763990
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: CharArmor
+      name: voidChest
       rect:
         serializedVersion: 2
-        x: 76
-        y: 380
-        width: 49
-        height: 48
+        x: 11
+        y: 924
+        width: 136
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,20 +194,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d93e81a15fea8844e858f37efb50280b
-      internalID: 854237141
+      spriteID: 2cb03a7f36c92204886028e6509ea17b
+      internalID: -1721281268
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TempAbility
+      name: voidHand
       rect:
         serializedVersion: 2
-        x: 384
-        y: 493
-        width: 49
-        height: 50
+        x: 452
+        y: 1104
+        width: 138
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -215,20 +215,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 195363558e6d1394784730d47ade2ee6
-      internalID: 1002156697
+      spriteID: 7088300321e61564d917eb4085cb95aa
+      internalID: -1562782640
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heal
+      name: voidLeg
       rect:
         serializedVersion: 2
-        x: 446
-        y: 552
-        width: 48
-        height: 50
+        x: 1186
+        y: 1103
+        width: 137
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,125 +236,41 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1748af34a58073342bba232dcd27775c
-      internalID: -1477305303
+      spriteID: 51a6adde3c2f7f24faa9a0733c530972
+      internalID: 247876226
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Thorn
+      name: Ring
       rect:
         serializedVersion: 2
-        x: 137
-        y: 30
-        width: 49
-        height: 49
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 321
+        y: 80
+        width: 138
+        height: 138
+      alignment: 9
+      pivot: {x: 0.3900861, y: 0.5732749}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5571706de93c047489e4eb51d2833862
-      internalID: 1425255154
+      spriteID: 2d9cd766bab20ae4ba250685dadc32d4
+      internalID: -855581885
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Fist
+      name: Armor
       rect:
         serializedVersion: 2
-        x: 383
-        y: 436
-        width: 50
-        height: 49
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8d28e42f16adab8419ce0e6c78ec8b2e
-      internalID: 1969842499
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Bug
-      rect:
-        serializedVersion: 2
-        x: 76
-        y: 552
-        width: 48
-        height: 49
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 193cf710693295648a7c48920906c729
-      internalID: 1874692523
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Buy
-      rect:
-        serializedVersion: 2
-        x: 261
-        y: 380
-        width: 49
-        height: 49
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a6ed4fec96a82c943bc03c5300cb7129
-      internalID: 1039777932
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: CharHitPoint
-      rect:
-        serializedVersion: 2
-        x: 199
-        y: 437
-        width: 49
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5adc0f4d369f59b47860d7c4ba1e79aa
-      internalID: 1228614994
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: CharMana
-      rect:
-        serializedVersion: 2
-        x: 322
-        y: 89
-        width: 49
-        height: 48
+        x: 1798
+        y: 271
+        width: 139
+        height: 140
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -362,29 +278,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2d92f59e902ded74cbfb919ab237b513
-      internalID: 892087956
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: CharManaRegen
-      rect:
-        serializedVersion: 2
-        x: 505
-        y: 89
-        width: 51
-        height: 49
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2077fc0904e784241900241317bab2c5
-      internalID: -750999338
+      spriteID: 72ab83dcf6f1ed147b725902d3ffd014
+      internalID: 2084170666
       vertices: []
       indices: 
       edges: []
@@ -392,7 +287,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e7aaa2b120f9bbf4f954a9163ff5d367
+    spriteID: 43c7da177e55bea489a5627b9865600b
     internalID: 0
     vertices: []
     indices: 
@@ -400,19 +295,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      CharAttckSpeed: -2107664141
-      Fist: 1969842499
-      Heal: -1477305303
-      CharMoveSpeed: -2081407151
-      CharHitPoint: 1228614994
-      CharMana: 892087956
-      CharArmor: 854237141
-      Bug: 1874692523
-      CharDamage: 1878284616
-      CharManaRegen: -750999338
-      Buy: 1039777932
-      Thorn: 1425255154
-      TempAbility: 1002156697
+      voidChest: -1721281268
+      voidHand: -1562782640
+      voidNecle: -1345763990
+      voidRing: 236885293
+      Ring: -855581885
+      voidHelm: -1649039406
+      Armor: 2084170666
+      voidLeg: 247876226
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

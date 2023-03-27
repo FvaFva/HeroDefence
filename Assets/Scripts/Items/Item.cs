@@ -10,11 +10,11 @@ public class Item: ICharacteristicsSource, IPercSource
     public ItemType ItemType { get; private set; }
     public Sprite Icon { get; private set; }
 
-    public Item(ItemPreset preset)
+    public Item(ItemPreset preset, Perc perc)
     {
         _characteristics = preset.GetCharacteristics();
         Name = preset.Name;
-        Perc = preset.Perc;
+        Perc = perc;
         Icon = preset.Icon;
         ItemType = preset.ItemType;
     }

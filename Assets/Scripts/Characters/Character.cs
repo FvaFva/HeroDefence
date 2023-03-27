@@ -44,6 +44,11 @@ public class Character : MonoBehaviour, IFightable
         _stateMachine.SetNewComander(comander);
     }
 
+    public void ApplyStamina(int count)
+    {
+
+    }
+
     public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTrigered = true)
     {
         bool isDamageTaken = _fightLogic.TryApplyDamage(ref damage);
@@ -95,9 +100,9 @@ public class Character : MonoBehaviour, IFightable
             _characteristics?.RemoveBuff(dropItem);
 
             if (itemType == ItemType.Weapon)
-                TryPutOnItem(_baseWeapon);
-            else
-                ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
+                SetNewWeapon(_baseWeapon);
+
+            ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
 
             return true;
         }
@@ -206,7 +211,7 @@ public class Character : MonoBehaviour, IFightable
         targetObserver.Init(_moveLogic);
 
         UpdateLogicsCharacteristics();
-        TryPutOnItem(_baseWeapon);
+        SetNewWeapon(_baseWeapon);
         AllLogics logics = new AllLogics(_fightLogic, new CharacterDieingLogic(transform, _characteristics.Current.Speed), targetObserver, _moveLogic);
         StateMachineLogicBuilder builder = new StateMachineLogicBuilder();
 
@@ -235,7 +240,7 @@ public class Character : MonoBehaviour, IFightable
 
         _baseWeapon = preset.Weapon;
         Name        = preset.Name;
-        Profession  = preset.Profission;
+        Profession  = preset.Profession;
         Portrait    = preset.Portrait;
     }    
 }

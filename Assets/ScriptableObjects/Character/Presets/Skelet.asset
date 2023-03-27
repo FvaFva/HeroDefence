@@ -23,5 +23,5 @@ MonoBehaviour:
   _class: Chmo
   _portrait: {fileID: 21300000, guid: a0b9a852ea1ab7f418a1a1d23300eed6, type: 3}
   _baseWeaponCharacteristics: {fileID: 11400000, guid: 3ede48cdc5af5344c8d9975b39148ddf, type: 2}
-  _baseWeaponType: 0
+  _baseWeaponPerc: {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
   _baseWeaponAttackDistance: 1.5

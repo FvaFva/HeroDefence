@@ -5,7 +5,7 @@ public class ItemPreset: ScriptableObject, ICharacteristicsSource
 {
     [SerializeField] private string _name;
     [SerializeField] private ItemType _itemType;
-    [SerializeField] private Perc _perc;
+    [SerializeField] private ItemRarity _rarity;
     [SerializeField] private Sprite _icon;
 
     [SerializeField] private float _minAttackSpeed;
@@ -31,7 +31,7 @@ public class ItemPreset: ScriptableObject, ICharacteristicsSource
 
     public string Name => _name;
     public ItemType ItemType => _itemType;
-    public Perc Perc => _perc;
+    public ItemRarity Rarity => _rarity;
     public Sprite Icon => _icon;
 
     public FighterСharacteristics GetCharacteristics()

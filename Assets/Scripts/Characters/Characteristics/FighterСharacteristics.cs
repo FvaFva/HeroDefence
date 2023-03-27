@@ -1,9 +1,9 @@
 public struct Fighter—haracteristics
 {
-    public float AttackSpeed;
-    public float HitPoints;
-    public float Armor;
     public float Damage;
+    public float AttackSpeed;
+    public float Armor;
+    public float HitPoints;
     public float Speed;
     public float ManaPoints;
     public float ManaRegen;
@@ -11,8 +11,8 @@ public struct Fighter—haracteristics
     public Fighter—haracteristics(float attackSpeed, float damage, float armor, float hitPointsMax, float speed,
                                   float manaRegen, float manaPoints)
     {
-        AttackSpeed = attackSpeed;
         Damage = damage;
+        AttackSpeed = attackSpeed;
         Armor = armor;
         HitPoints = hitPointsMax;
         Speed = speed;
