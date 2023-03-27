@@ -162,6 +162,7 @@ public class Character : MonoBehaviour, IFightable
 
     private void OnDied()
     {
+        _moveLogic.OffNavMashAgent();
         Died?.Invoke();
     }
 

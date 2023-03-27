@@ -12,6 +12,7 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
     private Transform _body;
     private Team _team;
     private CharacterRotationLogic _turner;
+    private NavMeshAgent _moveAgent;
 
     private ReachingCheckerToPoint _pointChecker;
     private ReachingCheckerToAlly _allyChecker;
@@ -28,13 +29,14 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
 
     public CharacterMoveLogic(NavMeshAgent moveAgent, Transform body, Team team, float _height)
     {
-        moveAgent.enabled = true;
+        _moveAgent = moveAgent;
+        _moveAgent.enabled = true;
         _body = body;
         _team = team;
 
-        _pointChecker = new ReachingCheckerToPoint(moveAgent, _height);
-        _allyChecker = new ReachingCheckerToAlly(moveAgent);
-        _enemyChecker = new ReachingCheckerToEnemy(_distance, moveAgent);
+        _pointChecker = new ReachingCheckerToPoint(_moveAgent, _height);
+        _allyChecker = new ReachingCheckerToAlly(_moveAgent);
+        _enemyChecker = new ReachingCheckerToEnemy(_distance, _moveAgent);
         _turner = new CharacterRotationLogic(body, GameSettings.Character.AngularSpeed, _height);
 
         _currentChecker = _pointChecker;
@@ -52,6 +54,11 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
         
         _currentChecker.SetTarget(target, _body.position);
         _turner.SetTarget(target);
+    }
+
+    public void OffNavMashAgent()
+    {
+        _moveAgent.enabled = false;
     }
 
     public void SetNewDistanceToEnemy(float distance)

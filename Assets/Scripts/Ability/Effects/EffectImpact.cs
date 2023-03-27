@@ -1,42 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class EffectImpact
+[CreateAssetMenu(fileName = "New spell effect", menuName ="Ability/Spells/NewSpellEffect", order = 51)]
+public class EffectImpact : ScriptableObject
 {
-    private EffectLogic _effect;
-    private CharacterAnimaLogic _caster;
-    private float _durationSecond;
+    [SerializeField] private float _coefficientMoveSpeed;
+    [SerializeField] private float _coefficientAttackSpeed;
+    [SerializeField] private float _coefficientDamage;
+    [SerializeField] private float _coefficientArmor;
+    [SerializeField] private float _healtPerSec;
+    [SerializeField] private float _healtCoefficientPerSec;
 
-    public event Action<EffectImpact> EndingEffctDuration;
-
-    public EffectImpact(EffectLogic effect, CharacterAnimaLogic caster, float secondDuration)
+    public Fighter—haracteristics ApplyEffect(Fighter—haracteristics Òharacteristics)
     {
-        _caster = caster;
-        _effect = effect;
-        _durationSecond = secondDuration;
+        Fighter—haracteristics tempCharacteristics = Òharacteristics;
+        tempCharacteristics.Armor *= _coefficientArmor;
+        tempCharacteristics.AttackSpeed *= _coefficientAttackSpeed;
+        tempCharacteristics.Damage *= _coefficientDamage;
+        tempCharacteristics.Speed *= _coefficientMoveSpeed;
+        return tempCharacteristics;
     }
 
-    public void UpdateEffect(out float slowMove, out float slowAttack, out float hitPontsChange)
+    public float GetHealthPerSec(float muliplace)
     {
-        float delta = Time.deltaTime;
-        _durationSecond -= delta;
-
-        if (_effect.IsBlockMove)
-            slowMove = 1;
-        else
-            slowMove = _effect.ProcentMoveSlow;
-
-        if (_effect.IsBlockFight)
-            slowAttack = 1;
-        else
-            slowAttack = _effect.ProcentAttackSlow;
-
-        hitPontsChange = (_effect.HealPersSecond + _effect.DamagePersSecond) * delta;
-
-        if (_durationSecond <= 0)
-            EndingEffctDuration?.Invoke(this);
+        return _healtCoefficientPerSec * muliplace + _healtPerSec;
     }
 }
