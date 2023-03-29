@@ -34,9 +34,9 @@ public class ItemPreset: ScriptableObject, ICharacteristicsSource
     public ItemRarity Rarity => _rarity;
     public Sprite Icon => _icon;
 
-    public FighterСharacteristics GetCharacteristics()
+    public FighterCharacteristics GetCharacteristics()
     {
-        FighterСharacteristics characteristics = new FighterСharacteristics();
+        FighterCharacteristics characteristics = new FighterCharacteristics();
 
         characteristics.Armor           = Random.Range(_minArmor, _maxArmor);
         characteristics.HitPoints       = Random.Range(_minHitPoints, _maxHitPoints);

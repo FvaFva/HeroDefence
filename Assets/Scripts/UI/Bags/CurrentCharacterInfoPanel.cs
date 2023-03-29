@@ -9,8 +9,8 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     [SerializeField] private Image _portrait;
     [SerializeField] private Image _flag;
 
-    [SerializeField] private Slider _hitPoints;
-    [SerializeField] private Slider _manaPoints;
+    [SerializeField] private IndicatorSlider _hitPoints;
+    [SerializeField] private IndicatorSlider _manaPoints;
 
     [SerializeField] private TMP_Text _name;
     [SerializeField] private TMP_Text _profession;
@@ -27,6 +27,16 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     private Character _character;
 
     public event Action<Item> ShoseAmmunitionsItem;
+
+    private void OnEnable()
+    {
+        _ammunition.ChoseItem += OnItemChoose;
+    }
+
+    private void OnDisable()
+    {
+        _ammunition.ChoseItem -= OnItemChoose;
+    }
 
     public void SetNewCurrentCharacter(Character character)
     {
@@ -57,6 +67,8 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _armor.ShowCharacteristic(0);
         _attackSpeed.ShowCharacteristic(0);
         _moveSpeed.ShowCharacteristic(0);
+        _hitPoints.SetMaxValue(1);
+        _manaPoints.SetMaxValue(1);
         _teamName.text = "";
         _ammunition.Clear();
         _flag.color = Color.white;
@@ -76,22 +88,26 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _character.ShowAllInformations();
     }
 
-    private void UpdateCharacteristicsInfo(Fighter—haracteristics Òharacteristics)
+    private void UpdateCharacteristicsInfo(FighterCharacteristics characteristics)
     {
-        _damage.ShowCharacteristic((int)Òharacteristics.Damage);
-        _armor.ShowCharacteristic((int)Òharacteristics.Armor);
-        _attackSpeed.ShowCharacteristic((int)Òharacteristics.AttackSpeed);
-        _moveSpeed.ShowCharacteristic((int)Òharacteristics.Speed);
+        _damage.ShowCharacteristic((int)characteristics.Damage);
+        _armor.ShowCharacteristic((int)characteristics.Armor);
+        _attackSpeed.ShowCharacteristic((int)characteristics.AttackSpeed);
+        _moveSpeed.ShowCharacteristic((int)characteristics.Speed);
+        _hitPoints.SetMaxValue(characteristics.HitPoints);
+        _manaPoints.SetMaxValue(characteristics.ManaPoints);
     }
 
     private void UpdateIndicators(float hitPointsCoefficient, float manaPointsCoefficient)
     {
-        _hitPoints.value = hitPointsCoefficient;
-        _manaPoints.value = manaPointsCoefficient;
+        _hitPoints.SetCurrentCoefficient(hitPointsCoefficient);
+        _manaPoints.SetCurrentCoefficient(manaPointsCoefficient);
     }
 
     private void DrowAbilities(IReadOnlyList<Ability> abilities)
     {
+        _currentCharacterAbility.ClearAllRenderedViewers();
+
         foreach (Ability ability in abilities)
             _currentCharacterAbility.Render(ability);
     }
@@ -99,15 +115,5 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     private void OnItemChoose(Item item)
     {
         ShoseAmmunitionsItem?.Invoke(item);
-    }
-
-    private void OnEnable()
-    {
-        _ammunition.ChoseItem += OnItemChoose;
-    }
-
-    private void OnDisable()
-    {
-        _ammunition.ChoseItem -= OnItemChoose;
     }
 }

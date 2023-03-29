@@ -19,6 +19,16 @@ public class ItemViewer : MonoBehaviour
     public event Action<Item> ChoseItem;
     public bool IsUsed { get; private set; }
 
+    private void OnEnable()
+    {
+        _button.onClick.AddListener(OnButtonClick);
+    }
+
+    private void OnDisable()
+    {
+        _button.onClick.RemoveListener(OnButtonClick);
+    }
+
     public void DrowItem(Item item)
     {
         _item = item;
@@ -35,16 +45,6 @@ public class ItemViewer : MonoBehaviour
         }
 
         ChangeElementsVision();
-    }
-
-    private void OnEnable()
-    {
-        _button.onClick.AddListener(OnButtonClick);
-    }
-
-    private void OnDisable()
-    {
-        _button.onClick.RemoveListener(OnButtonClick);
     }
 
     private void OnButtonClick()

@@ -34,10 +34,34 @@ public class Character : MonoBehaviour, IFightable
     public Vector3 CurrentPosition => transform.position;
 
     public event Action<float, float> ChangedIndicators;
-    public event Action<FighterÑharacteristics> ChangedCharacteristics;
+    public event Action<FighterCharacteristics> ChangedCharacteristics;
     public event Action<IReadOnlyList<Ability>> ChangedAbilitiesKit;
     public event Action<IReadOnlyDictionary<ItemType, Item>> ChangedAmmunition;
     public event Action Died;
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    private void OnEnable()
+    {
+        _fightLogic.HitPointsChanged += ShowIndicators;
+        _fightLogic.Died += OnDied;
+        _resting = StartCoroutine(Resting());
+        _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
+        ShowAllInformations();
+    }
+
+    private void OnDisable()
+    {
+        _fightLogic.HitPointsChanged -= ShowIndicators;
+        _fightLogic.Died -= OnDied;
+        _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
+
+        if (_resting != null)
+            StopCoroutine(_resting);
+    }
 
     public void SetNewComander (ITargetChooser comander)
     {
@@ -46,7 +70,7 @@ public class Character : MonoBehaviour, IFightable
 
     public void ApplyStamina(int count)
     {
-
+        _fightLogic.ApplyStamina(count);
     }
 
     public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTrigered = true)
@@ -84,9 +108,9 @@ public class Character : MonoBehaviour, IFightable
         ShowIndicators();
     }
 
-    public void RemovePerc(IPercSource source, Perc perc)
+    public void RemovePerc(IPercSource source)
     {
-        if (_percBag.TryRemovePerc(source, perc))
+        if (_percBag.TryRemovePerc(source))
             ChangedAbilitiesKit?.Invoke(_percBag.Percs);
     }
 
@@ -94,7 +118,7 @@ public class Character : MonoBehaviour, IFightable
     {
         if (_ammunition.TryDropType(itemType, out dropItem))
         {
-            if (_percBag.TryRemovePerc(dropItem, dropItem.Perc))
+            if (_percBag.TryRemovePerc(dropItem))
                 ChangedAbilitiesKit?.Invoke(_percBag.Percs);
 
             _characteristics?.RemoveBuff(dropItem);
@@ -114,7 +138,7 @@ public class Character : MonoBehaviour, IFightable
     {
         if(_ammunition.TryPutOnItem(item))
         {
-            if (_percBag.TryAddPerc(item, item.Perc))
+            if (_percBag.TryAddPerc(item))
                 ChangedAbilitiesKit?.Invoke(_percBag.Percs);
 
             _characteristics?.ApplyBuff(item);
@@ -134,30 +158,6 @@ public class Character : MonoBehaviour, IFightable
     {
         if (triggeredDamage)
             _percBag.ExecuteActionDepenceAction(this, enemy, damage, PercActionType.OnDamageDelay);
-    }
-
-    private void Awake()
-    {
-        Init();
-    }
-
-    private void OnEnable()
-    {        
-        _fightLogic.HitPointsChanged += ShowIndicators;
-        _fightLogic.Died += OnDied;
-        _resting = StartCoroutine(Resting());
-        _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
-        ShowAllInformations();
-    }
-
-    private void OnDisable()
-    {
-        _fightLogic.HitPointsChanged -= ShowIndicators;
-        _fightLogic.Died -= OnDied;
-        _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
-
-        if (_resting != null)
-            StopCoroutine(_resting);                
     }
 
     private void OnDied()

@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Characteristics
 {
-    private FighterСharacteristics _base;
-    private Dictionary<ICharacteristicsSource, FighterСharacteristics> _baffs = new Dictionary<ICharacteristicsSource, FighterСharacteristics>();
+    private FighterCharacteristics _base;
+    private Dictionary<ICharacteristicsSource, FighterCharacteristics> _baffs = new Dictionary<ICharacteristicsSource, FighterCharacteristics>();
 
-    public FighterСharacteristics BaseСharacteristics => _base;
+    public FighterCharacteristics BaseCharacteristics => _base;
     public event Action CharacteristicsChanged;
 
-    public FighterСharacteristics Current;
+    public FighterCharacteristics Current;
 
-    public Characteristics(FighterСharacteristics baseСharacteristics)
+    public Characteristics(FighterCharacteristics baseCharacteristics)
     {
-        _base = baseСharacteristics;
-        CurrentСharacteristicsUpdate();
+        _base = baseCharacteristics;
+        CurrentCharacteristicsUpdate();
     }
 
     public void ApplyBuff(ICharacteristicsSource source)
@@ -23,7 +23,7 @@ public class Characteristics
         if(_baffs.ContainsKey(source) == false)
         {
             _baffs.Add(source, source.GetCharacteristics());
-            CurrentСharacteristicsUpdate();
+            CurrentCharacteristicsUpdate();
             CharacteristicsChanged?.Invoke();
         }
     }
@@ -33,18 +33,18 @@ public class Characteristics
         if (_baffs.ContainsKey(source))
         {
             _baffs.Remove(source);
-            CurrentСharacteristicsUpdate();
+            CurrentCharacteristicsUpdate();
             CharacteristicsChanged?.Invoke();
         }
     }
 
-    private void CurrentСharacteristicsUpdate()
+    private void CurrentCharacteristicsUpdate()
     {
-        FighterСharacteristics current = _base;
+        FighterCharacteristics current = _base;
 
-        foreach (FighterСharacteristics сharacteristics in _baffs.Values)
+        foreach (FighterCharacteristics characteristics in _baffs.Values)
         {
-            current.ApplyCharacteristics(сharacteristics);
+            current.ApplyCharacteristics(characteristics);
         }
 
         Mathf.Clamp(current.HitPoints, 1, float.MaxValue);

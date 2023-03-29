@@ -14,6 +14,22 @@ public class Player : MonoBehaviour
     private bool _isControllabilityCharacter;
     private PlayerInputSystem _playerInputSystem;
 
+    private void OnEnable()
+    {
+        _mainUI.OnCharacterSelect += SetCurrentCharacter;
+        _mainUI.ItemWearChanged += OnItemWearChange;
+        _playerInputSystem.ChoosedCharacter += SetCurrentCharacter;
+        _shop.SoldItem += BuyItem;
+    }
+
+    private void OnDisable()
+    {
+        _mainUI.OnCharacterSelect -= SetCurrentCharacter;
+        _mainUI.ItemWearChanged -= OnItemWearChange;
+        _playerInputSystem.ChoosedCharacter -= SetCurrentCharacter;
+        _shop.SoldItem -= BuyItem;
+    }
+
     private void GetCurrentCharacterItem(Item item)
     {
         if (item != null && _currentCharacter != null)
@@ -47,22 +63,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         TryGetComponent(out _playerInputSystem);
-    }
-
-    private void OnEnable()
-    {
-        _mainUI.OnCharacterSelect += SetCurrentCharacter;
-        _mainUI.ItemWearChanged += OnItemWearChange;
-        _playerInputSystem.ChoosedCharacter += SetCurrentCharacter;
-        _shop.SoldItem += BuyItem;
-    }
-
-    private void OnDisable()
-    {
-        _mainUI.OnCharacterSelect -= SetCurrentCharacter;
-        _mainUI.ItemWearChanged -= OnItemWearChange;
-        _playerInputSystem.ChoosedCharacter -= SetCurrentCharacter;
-        _shop.SoldItem -= BuyItem;
     }
 
     private void BuyItem(Item item)

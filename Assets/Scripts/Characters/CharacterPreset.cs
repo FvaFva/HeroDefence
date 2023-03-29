@@ -23,8 +23,8 @@ public class CharacterPreset : ScriptableObject, ICharacteristicsSource
     public string Name => GameSettings.Character.GetRandomName();
     public Weapon Weapon => new Weapon(_baseWeaponCharacteristics, new MeleeAttackLogic(), _baseWeaponAttackDistance, null);
 
-    public Fighter—haracteristics GetCharacteristics()
+    public FighterCharacteristics GetCharacteristics()
     {
-        return new Fighter—haracteristics(_attacSpeed, _damage, _armor, _hitPoints, _moveSpeed, _manaRegen, _manaPoints);
+        return new FighterCharacteristics(_attacSpeed, _damage, _armor, _hitPoints, _moveSpeed, _manaRegen, _manaPoints);
     }
 }

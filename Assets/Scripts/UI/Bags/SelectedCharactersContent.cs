@@ -4,21 +4,21 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(ContentViewerSezer))]
-[RequireComponent(typeof(Content—oncealer))]
+[RequireComponent(typeof(ContentConcealer))]
 public class SelectedCharactersContent : MonoBehaviour
 {
     [SerializeField] private CharacterViewer _tempViewer;
 
     private List<CharacterViewer> _characterViewersPool = new List<CharacterViewer>();
     private ContentViewerSezer _sizer;
-    private Content—oncealer _Òoncealer;
+    private ContentConcealer _concealer;
 
     public event Action<Character> OnCharacterSelect;
 
     private void Awake()
     {
         TryGetComponent<ContentViewerSezer>(out _sizer);
-        TryGetComponent<Content—oncealer>(out _Òoncealer);
+        TryGetComponent<ContentConcealer>(out _concealer);
     }
 
     public void ClearSelectedChaViewers()
@@ -29,7 +29,7 @@ public class SelectedCharactersContent : MonoBehaviour
             viewer.Render(null);
         }
 
-        _Òoncealer.StartMovePanel(false);
+        _concealer.StartMovePanel(false);
         _sizer.UpdateViewersSize(0);
     }
 
@@ -52,7 +52,7 @@ public class SelectedCharactersContent : MonoBehaviour
         newViewer.Render(character);
         newViewer.SelectSharacter += UpdateSelectedViewer;
         SetMainViewer(newViewer);
-        _Òoncealer.StartMovePanel(++countUsedViewers > 1);
+        _concealer.StartMovePanel(++countUsedViewers > 1);
         _sizer.UpdateViewersSize(++countUsedViewers);
     }
 

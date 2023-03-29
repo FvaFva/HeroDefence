@@ -1,4 +1,4 @@
 ﻿public interface ICharacteristicsSource
 {
-    public FighterСharacteristics GetCharacteristics();
+    public FighterCharacteristics GetCharacteristics();
 }

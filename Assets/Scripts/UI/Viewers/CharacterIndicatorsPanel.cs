@@ -18,6 +18,11 @@ public class CharacterIndicatorsPanel : MonoBehaviour
         _mainCameraTransform = Camera.main.transform;
     }
 
+    private void Update()
+    {
+        transform.rotation = _mainCameraTransform.rotation;
+    }
+
     public void SetFlagGolod(Color color)
     {
         _flag.color = color;
@@ -27,10 +32,5 @@ public class CharacterIndicatorsPanel : MonoBehaviour
     {
         _hitPointsBar.value = hitPointsCoeffecient;
         _manaPointsBar.value = manaPointsCoeffecient;
-    }
-
-    private void Update()
-    {
-        transform.rotation = _mainCameraTransform.rotation;
     }
 }

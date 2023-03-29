@@ -11,6 +11,11 @@ public class CharacterStateMachine : MonoBehaviour
     private List<TransactionChooserObserver> _dependentCommanderTransactions = new List<TransactionChooserObserver>();
     private CharacterTargetObserveLogic _targetObserver;
 
+    private void OnDisable()
+    {
+        Transit(null, new());
+    }
+
     public void Init(CharacterState baseStat, CharacterTargetObserveLogic targetObserver, List<TransactionChooserObserver> dependentCommanderTransactions)
     {
         _baseState = baseStat;
@@ -29,11 +34,6 @@ public class CharacterStateMachine : MonoBehaviour
     {       
         foreach(TransactionChooserObserver transaction in _dependentCommanderTransactions)
             transaction.SetComander(comander);        
-    }
-
-    private void OnDisable()
-    {
-        Transit(null, new());
     }
 
     private void Transit(CharacterState nextState, Target target)

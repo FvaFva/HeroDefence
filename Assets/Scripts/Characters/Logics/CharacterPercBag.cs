@@ -3,28 +3,26 @@ using System.Linq;
 
 public class CharacterPercBag
 {
-    private List<PercSlot> _slots = new List<PercSlot>();
+    private List<IPercSource> _slots = new List<IPercSource>();
 
     public IReadOnlyList<Ability> Percs => _slots.Select(ps => ps.Perc).ToList().AsReadOnly();
 
-    public bool TryAddPerc(IPercSource source, Perc perc)
+    public bool TryAddPerc(IPercSource source)
     {
-        PercSlot newSlot = new PercSlot(source, perc);
-        bool isCanAdd = _slots.Contains(newSlot) == false;
+        bool isCanAdd = _slots.Contains(source) == false;
 
         if (isCanAdd)
-            _slots.Add(newSlot);
+            _slots.Add(source);
 
         return isCanAdd;
     }
 
-    public bool TryRemovePerc(IPercSource source, Perc perc)
+    public bool TryRemovePerc(IPercSource source)
     {
-        PercSlot newSlot = new PercSlot(source, perc);
-        bool isCanRemove = _slots.Contains(newSlot) == false;
+        bool isCanRemove = _slots.Contains(source);
 
         if (isCanRemove)
-            _slots.Remove(newSlot);
+            _slots.Remove(source);
 
         return isCanRemove;
     }

@@ -23,23 +23,23 @@ public class CharacterFightLogic : IReachLogic
 
     public event Action<Target> Reached;
 
-    public CharacterFightLogic(Fighter—haracteristics Òharacteristics, IFightable attacker)
+    public CharacterFightLogic(FighterCharacteristics characteristics, IFightable attacker)
     {               
-        _hitPointsCurrent = Òharacteristics.HitPoints;
-        _hitPointsMax = Òharacteristics.HitPoints;
+        _hitPointsCurrent = characteristics.HitPoints;
+        _hitPointsMax = characteristics.HitPoints;
         _currentStamina = StaminaToAttack;
-        ApplyNewCharacteristics(Òharacteristics);
+        ApplyNewCharacteristics(characteristics);
         _attacker = attacker;
     }
     
-    public void ApplyNewCharacteristics(Fighter—haracteristics Òharacteristics)
+    public void ApplyNewCharacteristics(FighterCharacteristics characteristics)
     {
         float tempHitPointsCoefficient = HitPointsCoefficient;
-        _hitPointsMax = Òharacteristics.HitPoints;
-        _hitPointsCurrent = Òharacteristics.HitPoints * tempHitPointsCoefficient;
-        _armor = Òharacteristics.Armor;
-        _damage = Òharacteristics.Damage;
-        _attackSpeed = Òharacteristics.AttackSpeed;
+        _hitPointsMax = characteristics.HitPoints;
+        _hitPointsCurrent = characteristics.HitPoints * tempHitPointsCoefficient;
+        _armor = characteristics.Armor;
+        _damage = characteristics.Damage;
+        _attackSpeed = characteristics.AttackSpeed;
     }
 
     public void SetNewAttackLogic(IAttackLogic newLogic)

@@ -2,7 +2,7 @@
 
 public class Item: ICharacteristicsSource, IPercSource
 {
-    private FighterСharacteristics _characteristics;
+    private FighterCharacteristics _characteristics;
 
     public bool IsTaken { get; private set; }
     public Perc Perc { get; private set; }
@@ -19,7 +19,7 @@ public class Item: ICharacteristicsSource, IPercSource
         ItemType = preset.ItemType;
     }
 
-    public FighterСharacteristics GetCharacteristics()
+    public FighterCharacteristics GetCharacteristics()
     {
         return _characteristics;
     }

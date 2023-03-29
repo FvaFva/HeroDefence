@@ -4,7 +4,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class InventoryButtom : MonoBehaviour
 {
-    [SerializeField] Content—oncealer _inventory;
+    [SerializeField] ContentConcealer _inventory;
     private bool _isVisibale = false;
     private Button _openInventory;
 

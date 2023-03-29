@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Content—oncealer : MonoBehaviour
+public class ContentConcealer : MonoBehaviour
 {
     [SerializeField] private UIPanel _panel;
     [SerializeField] private Vector2 _UnshowDirection;
@@ -10,6 +10,15 @@ public class Content—oncealer : MonoBehaviour
     private Vector3 _unshowingPosition;
     private Vector3 _showingPosition;
     private Coroutine _panelMoving;
+
+    private void Awake()
+    {
+        _unshowingPosition = _panel.transform.position;
+        _unshowingPosition.x += _UnshowDirection.x;
+        _unshowingPosition.y += _UnshowDirection.y;
+        _showingPosition = _panel.transform.position;
+        StartMovePanel(false);
+    }
 
     public void StartMovePanel(bool show)
     {
@@ -27,14 +36,5 @@ public class Content—oncealer : MonoBehaviour
             _panel.transform.position = Vector3.MoveTowards(_panel.transform.position, position, Time.deltaTime * _showingPanelSpeed);
             yield return null;
         }
-    }
-
-    private void Awake()
-    {
-        _unshowingPosition = _panel.transform.position;
-        _unshowingPosition.x += _UnshowDirection.x;
-        _unshowingPosition.y += _UnshowDirection.y;
-        _showingPosition = _panel.transform.position;
-        StartMovePanel(false);
     }
 }

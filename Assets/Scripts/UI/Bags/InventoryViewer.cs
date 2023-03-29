@@ -11,6 +11,12 @@ public class InventoryViewer : MonoBehaviour
 
     public event Action<Item> ChoseItem;
 
+    private void Awake()
+    {
+        for (int i = 0; i < GameSettings.PlayerBagSize; i++)
+            _viewersPool.Add(Instantiate(_tempViewer, transform));
+    }
+
     public void DrowInventory(IReadOnlyList<Item> bug)
     {
         Clear();
@@ -40,12 +46,6 @@ public class InventoryViewer : MonoBehaviour
 
         freeCell.ChoseItem += OnItemChoose;
         return freeCell;
-    }
-
-    private void Awake()
-    {
-        for (int i = 0; i < GameSettings.PlayerBagSize; i++)
-            _viewersPool.Add(Instantiate(_tempViewer, transform));
     }
 
     private void OnItemChoose(Item item)

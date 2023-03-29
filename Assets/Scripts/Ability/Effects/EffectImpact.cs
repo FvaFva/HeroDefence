@@ -10,9 +10,9 @@ public class EffectImpact : ScriptableObject
     [SerializeField] private float _healtPerSec;
     [SerializeField] private float _healtCoefficientPerSec;
 
-    public Fighter—haracteristics ApplyEffect(Fighter—haracteristics Òharacteristics)
+    public FighterCharacteristics ApplyEffect(FighterCharacteristics characteristics)
     {
-        Fighter—haracteristics tempCharacteristics = Òharacteristics;
+        FighterCharacteristics tempCharacteristics = characteristics;
         tempCharacteristics.Armor *= _coefficientArmor;
         tempCharacteristics.AttackSpeed *= _coefficientAttackSpeed;
         tempCharacteristics.Damage *= _coefficientDamage;

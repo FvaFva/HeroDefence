@@ -16,6 +16,21 @@ public class AmmunitionViewer : MonoBehaviour
 
     public event Action<Item> ChoseItem;
 
+    private void Awake()
+    {
+        LoadAmmunitionView();
+    }
+
+    private void OnEnable()
+    {
+        ChangeListeningAmmunition(true);
+    }
+
+    private void OnDisable()
+    {
+        ChangeListeningAmmunition(false);
+    }
+
     public void DrowThingsWorn(IReadOnlyDictionary<ItemType, Item> things)
     {
         foreach (KeyValuePair<ItemType, ItemViewer> cell in _ammunition)
@@ -29,11 +44,6 @@ public class AmmunitionViewer : MonoBehaviour
     {
         foreach (var cell in _ammunition)
             cell.Value.DrowItem(null);
-    }
-
-    private void Awake()
-    {
-        LoadAmmunitionView();
     }
 
     private void LoadAmmunitionView()
@@ -55,16 +65,6 @@ public class AmmunitionViewer : MonoBehaviour
         else
             foreach (ItemViewer cell in _ammunition.Values)
                 cell.ChoseItem -= OnItemShoose;
-    }
-
-    private void OnEnable()
-    {
-        ChangeListeningAmmunition(true);
-    }
-
-    private void OnDisable()
-    {
-        ChangeListeningAmmunition(false);
     }
 
     private void OnItemShoose(Item item)

@@ -1,4 +1,4 @@
-public struct Fighter—haracteristics
+public struct FighterCharacteristics
 {
     public float Damage;
     public float AttackSpeed;
@@ -8,7 +8,7 @@ public struct Fighter—haracteristics
     public float ManaPoints;
     public float ManaRegen;
 
-    public Fighter—haracteristics(float attackSpeed, float damage, float armor, float hitPointsMax, float speed,
+    public FighterCharacteristics(float attackSpeed, float damage, float armor, float hitPointsMax, float speed,
                                   float manaRegen, float manaPoints)
     {
         Damage = damage;
@@ -20,14 +20,14 @@ public struct Fighter—haracteristics
         ManaRegen = manaPoints;
     }
 
-    public void ApplyCharacteristics(Fighter—haracteristics Òharacteristics)
+    public void ApplyCharacteristics(FighterCharacteristics characteristics)
     {
-        AttackSpeed += Òharacteristics.AttackSpeed;
-        Damage += Òharacteristics.Damage;
-        Armor += Òharacteristics.Armor;
-        HitPoints += Òharacteristics.HitPoints;
-        Speed += Òharacteristics.Speed;
-        ManaPoints += Òharacteristics.ManaRegen;
-        ManaRegen += Òharacteristics.ManaPoints;
+        AttackSpeed += characteristics.AttackSpeed;
+        Damage += characteristics.Damage;
+        Armor += characteristics.Armor;
+        HitPoints += characteristics.HitPoints;
+        Speed += characteristics.Speed;
+        ManaPoints += characteristics.ManaRegen;
+        ManaRegen += characteristics.ManaPoints;
     }
 }

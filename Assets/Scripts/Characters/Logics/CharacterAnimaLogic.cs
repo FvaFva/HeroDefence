@@ -13,13 +13,13 @@ public class CharacterAnimaLogic
     public event Action<Spell> CastedSpell;
     public event Action<Spell> AddedSpell;
 
-    public CharacterAnimaLogic(Fighter—haracteristics characteristics)
+    public CharacterAnimaLogic(FighterCharacteristics characteristics)
     {      
         _manaPointsCurrent = characteristics.ManaPoints;
         ApplyNewCharacteristics(characteristics);
     }
 
-    public void ApplyNewCharacteristics(Fighter—haracteristics characteristics)
+    public void ApplyNewCharacteristics(FighterCharacteristics characteristics)
     {
         _manaPointsMax = characteristics.ManaPoints;
         _manaPointsCurrent = characteristics.ManaPoints * ManaPointsCoefficient;

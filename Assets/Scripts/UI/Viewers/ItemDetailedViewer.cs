@@ -24,6 +24,16 @@ public class ItemDetailedViewer : MonoBehaviour
 
     public event Action<Item, bool> ItemWearChanged;
 
+    private void OnEnable()
+    {
+        _left.onClick.AddListener(OnWearChanging);
+    }
+
+    private void OnDisable()
+    {
+        _left.onClick.RemoveListener(OnWearChanging);
+    }
+
     public void SetItem(Item item, bool isItemPutOn = false)
     {
         _currentItem = item;
@@ -57,36 +67,26 @@ public class ItemDetailedViewer : MonoBehaviour
 
     private void ClearView()
     {
-        DrowCharacteristics(new Fighter—haracteristics());
+        DrowCharacteristics(new FighterCharacteristics());
         _abilityViewer.ShowAbility(null);
         _left.gameObject.SetActive(false);
         _right.gameObject.SetActive(false);
     }
 
-    private void DrowCharacteristics(Fighter—haracteristics Òharacteristics)
+    private void DrowCharacteristics(FighterCharacteristics characteristics)
     {
-        _damage.ShowCharacteristic((int)Òharacteristics.Damage);
-        _attackSpeed.ShowCharacteristic((int)Òharacteristics.AttackSpeed);
-        _armor.ShowCharacteristic((int)Òharacteristics.Armor);
-        _hitPoints.ShowCharacteristic((int)Òharacteristics.HitPoints);
-        _speed.ShowCharacteristic((int)Òharacteristics.Speed);
-        _manaPoints.ShowCharacteristic((int)Òharacteristics.ManaPoints);
-        _manaRegen.ShowCharacteristic((int)Òharacteristics.ManaRegen);
+        _damage.ShowCharacteristic((int)characteristics.Damage);
+        _attackSpeed.ShowCharacteristic((int)characteristics.AttackSpeed);
+        _armor.ShowCharacteristic((int)characteristics.Armor);
+        _hitPoints.ShowCharacteristic((int)characteristics.HitPoints);
+        _speed.ShowCharacteristic((int)characteristics.Speed);
+        _manaPoints.ShowCharacteristic((int)characteristics.ManaPoints);
+        _manaRegen.ShowCharacteristic((int)characteristics.ManaRegen);
     }
 
     private void OnWearChanging()
     {
         ItemWearChanged?.Invoke(_currentItem, _isItemPutOn);
         SetItem(null);
-    }
-
-    private void OnEnable()
-    {
-        _left.onClick.AddListener(OnWearChanging);
-    }
-
-    private void OnDisable()
-    {
-        _left.onClick.RemoveListener(OnWearChanging);
     }
 }
