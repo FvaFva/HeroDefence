@@ -23,6 +23,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
 
     [SerializeField] private AmmunitionViewer _ammunition;
     [SerializeField] private CurrentCharacterAbilityContent _currentCharacterAbility;
+    [SerializeField] private EffectsBug _effectsBug;
 
     private Character _character;
 
@@ -46,6 +47,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
             _character.ChangedCharacteristics -= UpdateCharacteristicsInfo;
             _character.ChangedAbilitiesKit -= DrowAbilities;
             _character.ChangedAmmunition -= _ammunition.DrowThingsWorn;
+            _character.ChangedEffectsKit -= _effectsBug.DrowEffects;
         }
 
         _character = character;
@@ -69,6 +71,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _moveSpeed.ShowCharacteristic(0);
         _hitPoints.SetMaxValue(1);
         _manaPoints.SetMaxValue(1);
+        _effectsBug.DrowEffects();
         _teamName.text = "";
         _ammunition.Clear();
         _flag.color = Color.white;
@@ -80,6 +83,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _character.ChangedCharacteristics += UpdateCharacteristicsInfo;
         _character.ChangedAbilitiesKit += DrowAbilities;
         _character.ChangedAmmunition += _ammunition.DrowThingsWorn;
+        _character.ChangedEffectsKit += _effectsBug.DrowEffects;
         _portrait.sprite = _character.Portrait;
         _name.text = _character.Name;
         _profession.text = _character.Profession;

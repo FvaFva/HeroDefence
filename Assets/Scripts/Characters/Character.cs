@@ -19,6 +19,7 @@ public class Character : MonoBehaviour, IFightable
     private CharacterMoveLogic _moveLogic;
     private CharacterAnimaLogic _animaLogic;
     private CharacterPercBag _percBag;
+    private CharacterEffectBug _effectBug;
 
     private Weapon _baseWeapon;
     private Weapon _currentWeapon;
@@ -36,6 +37,7 @@ public class Character : MonoBehaviour, IFightable
     public event Action<float, float> ChangedIndicators;
     public event Action<FighterCharacteristics> ChangedCharacteristics;
     public event Action<IReadOnlyList<Ability>> ChangedAbilitiesKit;
+    public event Action<IReadOnlyList<EffectLogic>> ChangedEffectsKit;
     public event Action<IReadOnlyDictionary<ItemType, Item>> ChangedAmmunition;
     public event Action Died;
 
@@ -48,8 +50,11 @@ public class Character : MonoBehaviour, IFightable
     {
         _fightLogic.HitPointsChanged += ShowIndicators;
         _fightLogic.Died += OnDied;
-        _resting = StartCoroutine(Resting());
         _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
+        _effectBug.CharacteristicsChanged += OnEffectsChange;
+        _effectBug.HealthTic += ApplyHealthChangeFromEffect;
+
+        _resting = StartCoroutine(Resting());
         ShowAllInformations();
     }
 
@@ -58,6 +63,8 @@ public class Character : MonoBehaviour, IFightable
         _fightLogic.HitPointsChanged -= ShowIndicators;
         _fightLogic.Died -= OnDied;
         _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
+        _effectBug.CharacteristicsChanged -= OnEffectsChange;
+        _effectBug.HealthTic -= ApplyHealthChangeFromEffect;
 
         if (_resting != null)
             StopCoroutine(_resting);
@@ -71,6 +78,12 @@ public class Character : MonoBehaviour, IFightable
     public void ApplyStamina(int count)
     {
         _fightLogic.ApplyStamina(count);
+    }
+
+    public void ApplyEffect(EffectLogic effect)
+    {
+        effect.Calculate(_characteristics.Current);
+        _effectBug.ApplyEffect(effect);
     }
 
     public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTrigered = true)
@@ -105,21 +118,15 @@ public class Character : MonoBehaviour, IFightable
         ChangedCharacteristics?.Invoke(_characteristics.Current);
         ChangedAbilitiesKit?.Invoke(_percBag.Percs);
         ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
+        ChangedEffectsKit?.Invoke(_effectBug.Effects);
         ShowIndicators();
-    }
-
-    public void RemovePerc(IPercSource source)
-    {
-        if (_percBag.TryRemovePerc(source))
-            ChangedAbilitiesKit?.Invoke(_percBag.Percs);
     }
 
     public bool TryDropItem(ItemType itemType, out Item dropItem)
     {
         if (_ammunition.TryDropType(itemType, out dropItem))
         {
-            if (_percBag.TryRemovePerc(dropItem))
-                ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+            RemovePerc(dropItem);
 
             _characteristics?.RemoveBuff(dropItem);
 
@@ -141,7 +148,7 @@ public class Character : MonoBehaviour, IFightable
             if (_percBag.TryAddPerc(item))
                 ChangedAbilitiesKit?.Invoke(_percBag.Percs);
 
-            _characteristics?.ApplyBuff(item);
+            _characteristics.ApplyBuff(item);
 
             if (item.ItemType == ItemType.Weapon)
                 SetNewWeapon((Weapon)item);
@@ -152,6 +159,27 @@ public class Character : MonoBehaviour, IFightable
         }
 
         return false;
+    }
+
+    private void ApplyHealthChangeFromEffect(float healthChange, IFightable source)
+    {
+        if (healthChange > 0)
+            TryApplyDamage(source, ref healthChange, false);
+        else
+            ApplyHeal(healthChange);
+    }
+
+    private void RemovePerc(IPercSource source)
+    {
+        if (_percBag.TryRemovePerc(source))
+            ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+    }
+
+    private void OnEffectsChange()
+    {
+        _characteristics.RemoveBuff(_effectBug);
+        _characteristics.ApplyBuff(_effectBug);
+        ChangedEffectsKit?.Invoke(_effectBug.Effects);
     }
 
     private void OnDamageDealing(IFightable enemy, float damage, bool triggeredDamage)
@@ -206,6 +234,7 @@ public class Character : MonoBehaviour, IFightable
         TryGetComponent(out _stateMachine);
         
         _percBag = new CharacterPercBag();
+        _effectBug = new CharacterEffectBug();
         _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
         
         _informationUI.SetFlagGolod(_team.Flag);
@@ -226,6 +255,7 @@ public class Character : MonoBehaviour, IFightable
 
         while (true)
         {
+            _effectBug.UpdateDuration(delay);
             _fightLogic.StaminaRegeneration(delay);
             _animaLogic.ManaRegeneration(delay);
             yield return GameSettings.Character.OptimizationDelay;

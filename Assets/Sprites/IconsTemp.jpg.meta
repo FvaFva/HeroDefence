@@ -356,7 +356,7 @@ TextureImporter:
         width: 49
         height: 48
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -377,7 +377,7 @@ TextureImporter:
         width: 51
         height: 49
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -385,6 +385,27 @@ TextureImporter:
       bones: []
       spriteID: 2077fc0904e784241900241317bab2c5
       internalID: -750999338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonePoison
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 265
+        width: 49
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65f299810a453444cb474c9f1bc69032
+      internalID: -712174557
       vertices: []
       indices: 
       edges: []
@@ -409,6 +430,7 @@ TextureImporter:
       CharArmor: 854237141
       Bug: 1874692523
       CharDamage: 1878284616
+      BonePoison: -712174557
       CharManaRegen: -750999338
       Buy: 1039777932
       Thorn: 1425255154

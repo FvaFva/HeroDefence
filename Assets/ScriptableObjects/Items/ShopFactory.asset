@@ -21,6 +21,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
   - {fileID: 11400000, guid: 77b35bef3dab7b24f92b43e7477e2567, type: 2}
   - {fileID: 11400000, guid: 23fa0ce6be459c84ea2395be0ef9fa87, type: 2}
+  - {fileID: 11400000, guid: af9d0b463f5d4e9458186b4f5d61b8c8, type: 2}
   _uncommonPercs: []
   _rarePercs: []
   _epickPercs: []
