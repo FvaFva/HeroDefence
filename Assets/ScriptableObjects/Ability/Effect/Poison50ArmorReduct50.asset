@@ -15,7 +15,7 @@ MonoBehaviour:
   _coefficientMoveSpeed: 0
   _coefficientAttackSpeed: 0
   _coefficientDamage: 0
-  _coefficientArmor: 0.5
+  _coefficientArmor: -0.5
   _healtPerSec: -50
   _healtCoefficientPerSec: 0
   _healtMultiplier: 0

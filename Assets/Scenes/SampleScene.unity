@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2fe8b7f73ab8b340bbb074ea4b4556a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventory: {fileID: 2097184961}
+  _inventory: {fileID: 2097184965}
 --- !u!114 &307261201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2334,14 +2334,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1371952912}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd95753f91126244189ec2165e86b0ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 3910d264f45631843824ca25c031760f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _panel: {fileID: 2144929988}
-  _UnshowDirection: {x: -300, y: 0}
-  _showingPanelSpeed: 1000
-  _unshowingPosition: {x: 0, y: 0, z: 0}
-  _showingPosition: {x: 0, y: 0, z: 0}
+  _UnshowDirection: {x: -500, y: 0}
 --- !u!1 &1389826206
 GameObject:
   m_ObjectHideFlags: 0
@@ -3928,6 +3925,7 @@ MonoBehaviour:
   _moveSpeed: {fileID: 691747081}
   _ammunition: {fileID: 1142233872}
   _currentCharacterAbility: {fileID: 1262262366}
+  _effectsBug: {fileID: 4425680714734531174}
 --- !u!1 &2097184959
 GameObject:
   m_ObjectHideFlags: 0
@@ -3940,7 +3938,7 @@ GameObject:
   - component: {fileID: 2097184964}
   - component: {fileID: 2097184963}
   - component: {fileID: 2097184962}
-  - component: {fileID: 2097184961}
+  - component: {fileID: 2097184965}
   m_Layer: 5
   m_Name: PlayerInventory
   m_TagString: Untagged
@@ -3970,23 +3968,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.90997314, y: 0.73999023}
   m_SizeDelta: {x: 1.8, y: 1.2390003}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2097184961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2097184959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd95753f91126244189ec2165e86b0ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _panel: {fileID: 2097184962}
-  _UnshowDirection: {x: 700, y: 0}
-  _showingPanelSpeed: 1000
-  _unshowingPosition: {x: 0, y: 0, z: 0}
-  _showingPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &2097184962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4037,6 +4018,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097184959}
   m_CullTransparentMesh: 1
+--- !u!114 &2097184965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097184959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3910d264f45631843824ca25c031760f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _panel: {fileID: 2097184962}
+  _UnshowDirection: {x: 600, y: 0}
 --- !u!1 &2136111181
 GameObject:
   m_ObjectHideFlags: 0
@@ -5024,6 +5019,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1092553192427527038}
+  - component: {fileID: 4425680714734531174}
+  - component: {fileID: 4425680714734531175}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -5031,6 +5028,44 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4425680714734531174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4425680714734531173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd56a0cf0f6b78a4fb00c60b8a6769ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tempViewer: {fileID: 2266723195209764875, guid: 2c323597f0d8c754cb73f66d022adc31, type: 3}
+  _countMaxEffects: 10
+--- !u!114 &4425680714734531175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4425680714734531173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 2
+    m_Right: 2
+    m_Top: 5
+    m_Bottom: 5
+  m_ChildAlignment: 1
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 40, y: 40}
+  m_Spacing: {x: 4, y: 4}
+  m_Constraint: 1
+  m_ConstraintCount: 2
 --- !u!1 &4516029041318911369
 GameObject:
   m_ObjectHideFlags: 0
