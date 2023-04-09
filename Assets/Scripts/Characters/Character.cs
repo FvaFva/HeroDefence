@@ -257,7 +257,7 @@ public class Character : MonoBehaviour, IFightable
         {
             _effectBug.UpdateDuration(delay);
             _fightLogic.StaminaRegeneration(delay);
-            _animaLogic.ManaRegeneration(delay);
+            _animaLogic.RestingAnima(delay);
             yield return GameSettings.Character.OptimizationDelay;
         }    
     }
@@ -267,7 +267,7 @@ public class Character : MonoBehaviour, IFightable
         _characteristics = new Characteristics(preset.GetCharacteristics());
         _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
         _fightLogic = new CharacterFightLogic(_characteristics.Current, this);
-        _animaLogic = new CharacterAnimaLogic(_characteristics.Current);
+        _animaLogic = new CharacterAnimaLogic(_characteristics.Current, this);
 
         _baseWeapon = preset.Weapon;
         Name        = preset.Name;

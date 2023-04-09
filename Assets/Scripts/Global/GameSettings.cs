@@ -29,6 +29,7 @@ public static class GameSettings
         public const float DistanceDeltaToPoint = 0.4f;
         public const float SecondsDelay = 0.1f;
         public const float FlightDethHeght = 30;
+        public const int CountOfCharacterSpells = 2;
 
         public static readonly WaitForSeconds OptimizationDelay = new WaitForSeconds(SecondsDelay);
 

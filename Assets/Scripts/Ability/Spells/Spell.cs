@@ -1,46 +1,60 @@
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-public class Spell:ScriptableObject
+public class Spell : ISpellInfo
 {
-    [SerializeField] private int _manaCost;
-    [SerializeField] private int _coolDownSeconds;
-    [SerializeField] private ISpellTargetLogic _targetLogic;
-    [SerializeField] private List<ISpellCastLogic> _spellCastLogicList;
-
     private float _currentCoolDown;
-    public int ManaCost => _manaCost;
-    public int CoolDownSeconds => _coolDownSeconds;
+    private IFightable _caster ;
+    private SpellPreset _preset => Source.SpellPreset;
 
-    private void OnEnable()
-    {
-        _targetLogic.TargetsSelected += Cast;
-    }
+    public ISpellSource Source { get; private set; }
 
-    private void OnDisable()
+    public Sprite Icon => _preset.Icon;
+    public int ManaCost => _preset.ManaCost;
+    public event Action<float> CoolDownChanged;
+
+    public event Action Casted;
+
+    public Spell(IFightable caster, ISpellSource source)
     {
-        _targetLogic.TargetsSelected -= Cast;
+        _caster = caster;
+        Source = source;
     }
 
     public void CoolDownReduct(float timeReduct)
     {
         if (_currentCoolDown > 0)
+        {
             _currentCoolDown -= timeReduct;
+            CoolDownChanged?.Invoke(_currentCoolDown / _preset.CoolDownSeconds);
+        }
     }
 
-    private void Cast(List<IFightable> targets)
+    public void Cast()
     {
         if (_currentCoolDown > 0)
             return;
 
-        _currentCoolDown = CoolDownSeconds;
+        _preset.Casted += OnPresetCasting;
+        _preset.Create(this, _caster);
+    }
 
-        foreach (IFightable target in targets)
+    private void OnPresetCasting(Spell spell, bool isCasted)
+    {
+        if (spell == this)
         {
-            foreach(ISpellCastLogic castLogic in _spellCastLogicList)
-            {
-                castLogic.CastAction(target);
-            }
+            _preset.Casted -= OnPresetCasting;
+
+            if (isCasted)
+                OnCastFinish();
         }
     }
+
+    private void OnCastFinish()
+    {
+        Casted?.Invoke();
+        _currentCoolDown = _preset.CoolDownSeconds;
+        CoolDownChanged?.Invoke(_currentCoolDown / _preset.CoolDownSeconds);
+    }
 }
+

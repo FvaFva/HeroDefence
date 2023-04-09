@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class CharacterAnimaLogic
 {
@@ -8,15 +9,18 @@ public class CharacterAnimaLogic
     private float _manaPointsMax;
     private float _manaPointsCurrent;
     private float _manaRegen;
+    private Spell[] _currentSpells = new Spell[GameSettings.Character.CountOfCharacterSpells];
+    private IFightable _caster;
 
     public float ManaPointsCoefficient => _manaPointsCurrent / _manaPointsMax;
     public event Action<Spell> CastedSpell;
     public event Action<Spell> AddedSpell;
 
-    public CharacterAnimaLogic(FighterCharacteristics characteristics)
+    public CharacterAnimaLogic(FighterCharacteristics characteristics, IFightable caster)
     {      
         _manaPointsCurrent = characteristics.ManaPoints;
         ApplyNewCharacteristics(characteristics);
+        _caster = caster;
     }
 
     public void ApplyNewCharacteristics(FighterCharacteristics characteristics)
@@ -26,29 +30,61 @@ public class CharacterAnimaLogic
         _manaRegen = characteristics.ManaRegen;
     }
 
-    public void AddSpell(Spell spell)
+    public void DropSpell(ISpellSource source)
     {
-        _spellBook.Add(spell);
-        AddedSpell?.Invoke(spell);
+        Spell spellPresetInCurrent = _currentSpells.Where(spell => spell.Source == source).FirstOrDefault();
+
+        
     }
 
-    public void CastSpell(Spell spell, Vector2 castPoint)
+    public void AddSpell(ISpellSource source)
     {
-        float manaCost = spell.GetManacost();
-        if (_spellBook.Contains(spell) && _manaPointsCurrent >= manaCost)
+        Spell spellPresetInCurrent = _currentSpells.Where(spell => spell.Source == source).FirstOrDefault();
+
+        if (spellPresetInCurrent != null)
+            return;
+
+        int freeSlot = GetIdSpellPresetInCurrent(null);
+
+        if (freeSlot == -1)
+            return;
+
+        Spell knownSpell = _spellBook.Where(spell => spell.Source == source).FirstOrDefault();
+
+        if (knownSpell == null)
         {
-            CastedSpell?.Invoke(spell);
-            _manaPointsCurrent -= manaCost;
-            spell.Cast(castPoint);
+            knownSpell = new Spell(_caster, source);
+            _spellBook.Add(knownSpell);
         }
+
+        _currentSpells[freeSlot] = knownSpell;
+        AddedSpell?.Invoke(knownSpell);
     }
 
-    public void ManaRegeneration(float delay)
+    public void CastSpell(int id)
+    {
+        if (id >= _currentSpells.Length || id < 0)
+            return;
+    }
+
+    public void RestingAnima(float delay)
     {
         if(_manaPointsCurrent < _manaPointsMax)
         {
             _manaPointsCurrent += _manaRegen * delay;
             Mathf.Clamp(_manaPointsCurrent, 0, _manaPointsMax);
         }
+
+        foreach (Spell spell in _spellBook)
+            spell.CoolDownReduct(delay);
+    }
+
+    private int GetIdSpellPresetInCurrent(ISpellSource source)
+    {
+        for(int i = 0; i < _currentSpells.Length; i++)
+            if (_currentSpells[i].Source == source)
+                return i;
+
+        return -1;
     }
 }
