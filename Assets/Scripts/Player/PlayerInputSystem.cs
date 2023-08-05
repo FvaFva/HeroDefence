@@ -12,7 +12,7 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
     private RaycastHit _hitTemp;
     private PlayerInput _input;
 
-    public event Action<Target> ChoosedTarget;
+    public event Action<Target> ChoseTarget;
     public event Action<Character> ChoosedCharacter;
 
     private void Awake()
@@ -59,9 +59,9 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
         if (CheckMouseRay())
         {
             if (_hitTemp.collider.gameObject.TryGetComponent<Walkable>(out Walkable place))
-                ChoosedTarget?.Invoke(new(_hitTemp.point));
+                ChoseTarget?.Invoke(new(_hitTemp.point));
             else if (_hitTemp.collider.gameObject.TryGetComponent<Character>(out Character enemy))
-                ChoosedTarget?.Invoke(new(_hitTemp.point, enemy));
+                ChoseTarget?.Invoke(new(_hitTemp.point, enemy));
         }
     }
 
@@ -79,7 +79,7 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
         if (EventSystem.current.IsPointerOverGameObject() == false)
         {
             Ray tapRay = _camera.ScreenPointToRay(Input.mousePosition);
-            return Physics.Raycast(tapRay, out _hitTemp, GameSettings.HitingRange);
+            return Physics.Raycast(tapRay, out _hitTemp, GameSettings.HittingRange);
         }
         else
         {

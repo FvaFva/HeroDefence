@@ -7,7 +7,7 @@ public class CharacterTargetObserveLogic : MonoBehaviour, ITargetChooser
     private ITargetDistanceObserver _distanceObserver;
     private IFightable _target;
 
-    public event Action<Target> ChoosedTarget;
+    public event Action<Target> ChoseTarget;
 
     public void Init(ITargetDistanceObserver observer)
     {
@@ -69,7 +69,7 @@ public class CharacterTargetObserveLogic : MonoBehaviour, ITargetChooser
 
     private void OnTargetDieing()
     {
-        ChoosedTarget.Invoke(new Target());
+        ChoseTarget.Invoke(new Target());
         StopWork();
     }
 }

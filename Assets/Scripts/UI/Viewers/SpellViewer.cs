@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SpellViewer : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _manacost;
+    [SerializeField] private TMP_Text _manaCost;
     [SerializeField] private Image _icon;
     [SerializeField] private Image _cooldown;
     [SerializeField] private Button _button;
@@ -22,7 +22,7 @@ public class SpellViewer : MonoBehaviour
         Clear();
     }
 
-    public void DrowSpell(Spell spell)
+    public void DrawSpell(Spell spell)
     {
         if(spell == null)
             Clear();
@@ -37,14 +37,14 @@ public class SpellViewer : MonoBehaviour
         _icon.sprite = _spell.Icon;
         _cooldown.fillAmount = 0;
         _spell.CoolDownChanged += UpdateCooldown;
-        _manacost.text = _spell.ManaCost.ToString();
+        _manaCost.text = _spell.ManaCost.ToString();
     }
 
     private void Clear()
     {
         _cooldown.fillAmount = 0;
         _icon.sprite = null;
-        _manacost.text = "0";
+        _manaCost.text = "0";
 
         if (_spell != null)
             _spell.CoolDownChanged -= UpdateCooldown;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterFightLogic : IReachLogic
 {
-    private const float StaminaToAttack = GameSettings.Character.StaminaPointsToAtack;
+    private const float StaminaToAttack = GameSettings.Character.StaminaPointsToAttack;
 
     private float _attackSpeed;
     private float _currentStamina;

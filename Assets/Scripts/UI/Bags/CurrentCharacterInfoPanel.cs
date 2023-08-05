@@ -46,7 +46,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
             _character.ChangedIndicators -= UpdateIndicators;
             _character.ChangedCharacteristics -= UpdateCharacteristicsInfo;
             _character.ChangedAbilitiesKit -= DrowAbilities;
-            _character.ChangedAmmunition -= _ammunition.DrowThingsWorn;
+            _character.ChangedAmmunition -= _ammunition.DrawThingsWorn;
             _character.ChangedEffectsKit -= _effectsBug.DrowEffects;
         }
 
@@ -82,14 +82,14 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _character.ChangedIndicators += UpdateIndicators;
         _character.ChangedCharacteristics += UpdateCharacteristicsInfo;
         _character.ChangedAbilitiesKit += DrowAbilities;
-        _character.ChangedAmmunition += _ammunition.DrowThingsWorn;
+        _character.ChangedAmmunition += _ammunition.DrawThingsWorn;
         _character.ChangedEffectsKit += _effectsBug.DrowEffects;
         _portrait.sprite = _character.Portrait;
         _name.text = _character.Name;
         _profession.text = _character.Profession;
         _teamName.text = _character.Team.Name;
         _flag.color = _character.Team.Flag;
-        _character.ShowAllInformations();
+        _character.ShowAllInformation();
     }
 
     private void UpdateCharacteristicsInfo(FighterCharacteristics characteristics)

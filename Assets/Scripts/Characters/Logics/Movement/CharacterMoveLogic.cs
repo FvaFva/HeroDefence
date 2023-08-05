@@ -23,7 +23,7 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
     private float _distance;
 
     public event Action<Target> Reached;
-    public event Action<Target> ChoosedTarget;
+    public event Action<Target> ChoseTarget;
     public event Action<IFightable> LostTarget;
     public event Action<IFightable> FoundTarget;
 
@@ -100,7 +100,7 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
             yield return GameSettings.Character.OptimizationDelay;
         }
 
-        ChoosedTarget?.Invoke(new Target(_body.position, _target));
+        ChoseTarget?.Invoke(new Target(_body.position, _target));
         LostTarget?.Invoke(_target);
     }
 }

@@ -42,7 +42,7 @@ namespace CharacterTransactions
         public void TryOn()
         {
             if (_comander != null)            
-                _comander.ChoosedTarget += OnChooseNewTarget;                    
+                _comander.ChoseTarget += OnChooseNewTarget;                    
 
             _isObserving = true;
         }
@@ -50,7 +50,7 @@ namespace CharacterTransactions
         public void Off()
         {
             if (_comander != null)            
-                _comander.ChoosedTarget -= OnChooseNewTarget;            
+                _comander.ChoseTarget -= OnChooseNewTarget;            
 
             _isObserving = false;
         }
@@ -59,7 +59,7 @@ namespace CharacterTransactions
         {
             if (target.IsIFightebelMatches(_current) == false && _rule.CheckSuitableTarget(target, _current))
             {
-                _comander!.ChoosedTarget -= OnChooseNewTarget;
+                _comander!.ChoseTarget -= OnChooseNewTarget;
                 NewStatusAvailable?.Invoke(_targetState, target);
             }
         }
@@ -67,12 +67,12 @@ namespace CharacterTransactions
         private void ResubscribeComander(ITargetChooser comander)
         {
             if (_comander != null)
-                _comander.ChoosedTarget -= OnChooseNewTarget;
+                _comander.ChoseTarget -= OnChooseNewTarget;
 
             _comander = comander;
 
             if (_comander != null)
-                _comander.ChoosedTarget += OnChooseNewTarget;
+                _comander.ChoseTarget += OnChooseNewTarget;
         }
     }
 }

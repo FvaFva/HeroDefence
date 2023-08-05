@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Shop : MonoBehaviour
 {
     [SerializeField] private Button _shopBut;
-    [SerializeField] private ItemFactory _facktory;
+    [SerializeField] private ItemFactory _factory;
 
     public event Action<Item> SoldItem;
 
@@ -21,6 +21,6 @@ public class Shop : MonoBehaviour
 
     private void SellItem()
     {
-        SoldItem?.Invoke(_facktory.GetRandomItem());
+        SoldItem?.Invoke(_factory.GetRandomItem());
     }
 }

@@ -5,12 +5,12 @@ public static class GameSettings
 {
     public const float Hundred = 100;
     public const float Zero = 0;
-    public const float HitingRange = 300;
+    public const float HittingRange = 300;
     public const int PlayerBagSize = 100;
 
-    public static bool CheckCorrespondencePositions(Vector3 postion1, Vector3 position2, float range = 0)
+    public static bool CheckCorrespondencePositions(Vector3 position1, Vector3 position2, float range = 0)
     {
-        float distance = Vector3.Distance(postion1, position2);
+        float distance = Vector3.Distance(position1, position2);
         return distance - range <= Character.RangeDelta;
     }
 
@@ -28,12 +28,12 @@ public static class GameSettings
         public const float AngularSpeed = 10;
         public const float DistanceDeltaToPoint = 0.4f;
         public const float SecondsDelay = 0.1f;
-        public const float FlightDethHeght = 30;
+        public const float FlightDeathHight = 30;
         public const int CountOfCharacterSpells = 2;
 
         public static readonly WaitForSeconds OptimizationDelay = new WaitForSeconds(SecondsDelay);
 
-        public const int StaminaPointsToAtack = 1000;        
+        public const int StaminaPointsToAttack = 1000;        
 
         static Character()
         {

@@ -4,7 +4,7 @@
     ManaPoints,
     Damage,
     Armor,
-    AttackSpped,
+    AttackSpeed,
     Speed,
     ManaRegen
 }

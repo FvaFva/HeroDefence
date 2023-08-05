@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
             return;
 
         foreach (Character character in _selectedPull)
-            character.SetNewComander(null);
+            character.SetNewCommander(null);
 
         _selectedPull.Clear();
         _currentCharacter = null;
@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
             _currentCharacter = character;
 
             if (_isControllabilityCharacter)
-                _currentCharacter.SetNewComander(_playerInputSystem);
+                _currentCharacter.SetNewCommander(_playerInputSystem);
 
             bool isNewInPool = _selectedPull.Contains(_currentCharacter) == false;
             _mainUI.DrawCurrentCharacter(character, isNewInPool);

@@ -4,16 +4,7 @@ using UnityEngine;
 public class Spell : ISpellInfo
 {
     private float _currentCoolDown;
-    private IFightable _caster ;
-    private SpellPreset _preset => Source.SpellPreset;
-
-    public ISpellSource Source { get; private set; }
-
-    public Sprite Icon => _preset.Icon;
-    public int ManaCost => _preset.ManaCost;
-    public event Action<float> CoolDownChanged;
-
-    public event Action Casted;
+    private IFightable _caster;
 
     public Spell(IFightable caster, ISpellSource source)
     {
@@ -21,11 +12,23 @@ public class Spell : ISpellInfo
         Source = source;
     }
 
-    public void CoolDownReduct(float timeReduct)
+    public event Action<float> CoolDownChanged;
+
+    public event Action Casted;
+
+    public ISpellSource Source { get; private set; }
+
+    public Sprite Icon => _preset.Icon;
+
+    public int ManaCost => _preset.ManaCost;
+
+    private SpellPreset _preset => Source.SpellPreset;
+
+    public void ReduceCoolDown(float count)
     {
         if (_currentCoolDown > 0)
         {
-            _currentCoolDown -= timeReduct;
+            _currentCoolDown -= count;
             CoolDownChanged?.Invoke(_currentCoolDown / _preset.CoolDownSeconds);
         }
     }

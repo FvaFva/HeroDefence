@@ -18,7 +18,7 @@ public class CharacterDieingLogic : IReachLogic
     public IEnumerator ReachTarget()
     {
         yield return GameSettings.Character.OptimizationDelay;
-        float currentFlight = GameSettings.Character.FlightDethHeght;
+        float currentFlight = GameSettings.Character.FlightDeathHight;
 
         while(currentFlight > 0)
         {

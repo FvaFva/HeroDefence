@@ -56,7 +56,7 @@ public class EffectLogic: ICharacteristicsSource
             case CharacteristicType.Armor:
                 HealthPerSecond = _effect.GetHealthPerSec(characteristicsTerget.Armor);
                 break;
-            case CharacteristicType.AttackSpped:
+            case CharacteristicType.AttackSpeed:
                 HealthPerSecond = _effect.GetHealthPerSec(characteristicsTerget.AttackSpeed);
                 break;
             case CharacteristicType.Speed:

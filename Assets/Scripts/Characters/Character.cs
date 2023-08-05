@@ -8,7 +8,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(CharacterStateMachine))]
 [RequireComponent(typeof(CharacterTargetObserveLogic))]
 public class Character : MonoBehaviour, IFightable
-{        
+{
     [SerializeField] private CharacterIndicatorsPanel _informationUI;
     [SerializeField] private CharacterPreset _preset;
     [SerializeField] private Team _team;
@@ -27,52 +27,31 @@ public class Character : MonoBehaviour, IFightable
     private CharacterStateMachine _stateMachine;
     private Coroutine _resting;
 
+    public event Action<float, float> ChangedIndicators;
+
+    public event Action<FighterCharacteristics> ChangedCharacteristics;
+
+    public event Action<IReadOnlyList<Ability>> ChangedAbilitiesKit;
+
+    public event Action<IReadOnlyList<EffectLogic>> ChangedEffectsKit;
+
+    public event Action<IReadOnlyDictionary<ItemType, Item>> ChangedAmmunition;
+
+    public event Action Died;
+
     public string Name { get; private set; }
+
     public string Profession { get; private set; }
+
     public Sprite Portrait{ get; private set; }
+
     public Team Team => _team;
 
     public Vector3 CurrentPosition => transform.position;
 
-    public event Action<float, float> ChangedIndicators;
-    public event Action<FighterCharacteristics> ChangedCharacteristics;
-    public event Action<IReadOnlyList<Ability>> ChangedAbilitiesKit;
-    public event Action<IReadOnlyList<EffectLogic>> ChangedEffectsKit;
-    public event Action<IReadOnlyDictionary<ItemType, Item>> ChangedAmmunition;
-    public event Action Died;
-
-    private void Awake()
+    public void SetNewCommander(ITargetChooser commander)
     {
-        Init();
-    }
-
-    private void OnEnable()
-    {
-        _fightLogic.HitPointsChanged += ShowIndicators;
-        _fightLogic.Died += OnDied;
-        _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
-        _effectBug.CharacteristicsChanged += OnEffectsChange;
-        _effectBug.HealthTic += ApplyHealthChangeFromEffect;
-
-        _resting = StartCoroutine(Resting());
-        ShowAllInformations();
-    }
-
-    private void OnDisable()
-    {
-        _fightLogic.HitPointsChanged -= ShowIndicators;
-        _fightLogic.Died -= OnDied;
-        _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
-        _effectBug.CharacteristicsChanged -= OnEffectsChange;
-        _effectBug.HealthTic -= ApplyHealthChangeFromEffect;
-
-        if (_resting != null)
-            StopCoroutine(_resting);
-    }
-
-    public void SetNewComander (ITargetChooser comander)
-    {
-        _stateMachine.SetNewComander(comander);
+        _stateMachine.SetNewComander(commander);
     }
 
     public void ApplyStamina(int count)
@@ -86,7 +65,7 @@ public class Character : MonoBehaviour, IFightable
         _effectBug.ApplyEffect(effect);
     }
 
-    public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTrigered = true)
+    public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTriggered = true)
     {
         bool isDamageTaken = _fightLogic.TryApplyDamage(ref damage);
 
@@ -108,13 +87,13 @@ public class Character : MonoBehaviour, IFightable
         return _team == verifiableTeam;
     }
 
-    public bool IsFriendly(IFightable verifiableIFightebel)
+    public bool IsFriendly(IFightable verifiableIFightable)
     {
-        return verifiableIFightebel.IsFriendly(_team);
+        return verifiableIFightable.IsFriendly(_team);
     }
 
-    public void ShowAllInformations()
-    {                
+    public void ShowAllInformation()
+    {
         ChangedCharacteristics?.Invoke(_characteristics.Current);
         ChangedAbilitiesKit?.Invoke(_percBag.Percs);
         ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
@@ -143,7 +122,7 @@ public class Character : MonoBehaviour, IFightable
 
     public bool TryPutOnItem(Item item)
     {
-        if(_ammunition.TryPutOnItem(item))
+        if (_ammunition.TryPutOnItem(item))
         {
             if (_percBag.TryAddPerc(item))
                 ChangedAbilitiesKit?.Invoke(_percBag.Percs);
@@ -159,6 +138,35 @@ public class Character : MonoBehaviour, IFightable
         }
 
         return false;
+    }
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    private void OnEnable()
+    {
+        _fightLogic.HitPointsChanged += ShowIndicators;
+        _fightLogic.Died += OnDied;
+        _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
+        _effectBug.CharacteristicsChanged += OnEffectsChange;
+        _effectBug.HealthTic += ApplyHealthChangeFromEffect;
+
+        _resting = StartCoroutine(Resting());
+        ShowAllInformation();
+    }
+
+    private void OnDisable()
+    {
+        _fightLogic.HitPointsChanged -= ShowIndicators;
+        _fightLogic.Died -= OnDied;
+        _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
+        _effectBug.CharacteristicsChanged -= OnEffectsChange;
+        _effectBug.HealthTic -= ApplyHealthChangeFromEffect;
+
+        if (_resting != null)
+            StopCoroutine(_resting);
     }
 
     private void ApplyHealthChangeFromEffect(float healthChange, IFightable source)
@@ -198,7 +206,7 @@ public class Character : MonoBehaviour, IFightable
     {
         _informationUI.SetCurrentIndicators(_fightLogic.HitPointsCoefficient, _animaLogic.ManaPointsCoefficient);
         ChangedIndicators?.Invoke(_fightLogic.HitPointsCoefficient, _animaLogic.ManaPointsCoefficient);
-    }    
+    }
 
     private void UpdateLogicsCharacteristics()
     {
@@ -212,11 +220,9 @@ public class Character : MonoBehaviour, IFightable
     private void SetNewWeapon(Weapon weapon)
     {
         if (_currentWeapon != null)
-        {
             _currentWeapon.AttackLogic.DamageDealed -= OnDamageDealing;
-        }
-        
-        if(weapon == null)
+
+        if (weapon == null)
             _currentWeapon = _baseWeapon;
         else
             _currentWeapon = weapon;
@@ -232,11 +238,11 @@ public class Character : MonoBehaviour, IFightable
         TryGetComponent(out NavMeshAgent navigator);
         TryGetComponent(out CharacterTargetObserveLogic targetObserver);
         TryGetComponent(out _stateMachine);
-        
+
         _percBag = new CharacterPercBag();
         _effectBug = new CharacterEffectBug();
         _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
-        
+
         _informationUI.SetFlagGolod(_team.Flag);
         targetObserver.Init(_moveLogic);
 
@@ -259,19 +265,19 @@ public class Character : MonoBehaviour, IFightable
             _fightLogic.StaminaRegeneration(delay);
             _animaLogic.RestingAnima(delay);
             yield return GameSettings.Character.OptimizationDelay;
-        }    
+        }
     }
 
     private void LoadPreset(CharacterPreset preset)
-    {        
+    {
         _characteristics = new Characteristics(preset.GetCharacteristics());
         _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
         _fightLogic = new CharacterFightLogic(_characteristics.Current, this);
         _animaLogic = new CharacterAnimaLogic(_characteristics.Current, this);
 
         _baseWeapon = preset.Weapon;
-        Name        = preset.Name;
-        Profession  = preset.Profession;
-        Portrait    = preset.Portrait;
-    }    
+        Name = preset.Name;
+        Profession = preset.Profession;
+        Portrait = preset.Portrait;
+    }
 }
