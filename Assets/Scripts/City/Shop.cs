@@ -11,7 +11,7 @@ public class Shop : MonoBehaviour
 
     private void OnDisable()
     {
-        _shopBut.onClick.RemoveListener(SellItem);    
+        _shopBut.onClick.RemoveListener(SellItem);
     }
 
     private void OnEnable()

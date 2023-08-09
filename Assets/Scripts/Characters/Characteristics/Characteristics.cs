@@ -7,16 +7,17 @@ public class Characteristics
     private FighterCharacteristics _base;
     private Dictionary<ICharacteristicsSource, FighterCharacteristics> _baffs = new Dictionary<ICharacteristicsSource, FighterCharacteristics>();
 
-    public FighterCharacteristics BaseCharacteristics => _base;
-    public event Action CharacteristicsChanged;
-
-    public FighterCharacteristics Current;
-
     public Characteristics(FighterCharacteristics baseCharacteristics)
     {
         _base = baseCharacteristics;
         CurrentCharacteristicsUpdate();
     }
+
+    public event Action CharacteristicsChanged;
+
+    public FighterCharacteristics BaseCharacteristics => _base;
+
+    public FighterCharacteristics Current;
 
     public void ApplyBuff(ICharacteristicsSource source)
     {

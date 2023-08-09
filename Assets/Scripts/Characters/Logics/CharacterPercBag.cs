@@ -31,7 +31,7 @@ public class CharacterPercBag
     {
         foreach (Perc perc in _slots.Select(ps => ps.Perc))
         {
-            perc.ExecuteDepenceAction(root, target, damage, type);
+            perc.ExecuteDependsAction(root, target, damage, type);
         }
     }
 }

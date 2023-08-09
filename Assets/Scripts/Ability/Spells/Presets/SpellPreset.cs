@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpellPreset:ScriptableObject
+public class SpellPreset : ScriptableObject
 {
     [SerializeField] private int _manaCost;
     [SerializeField] private int _coolDownSeconds;
     [SerializeField] private int _castRange;
     [SerializeField] private int _castRadius;
     [SerializeField] private Sprite _icon;
-
     [SerializeField] private bool _isForEnemy;
     [SerializeField] private BaseSpellTargetLogic _targetLogic;
     [SerializeField] private List<BaseSpellCastLogic> _spellCastLogicList;

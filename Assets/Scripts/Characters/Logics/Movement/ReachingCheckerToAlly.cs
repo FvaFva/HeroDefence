@@ -1,19 +1,16 @@
-﻿using UnityEngine.AI;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace MovementSystem
 {
     public class ReachingCheckerToAlly : BaseReachingChecker
     {
         public ReachingCheckerToAlly(NavMeshAgent moveAgent)
-        {
-            _moveAgent = moveAgent;
-            _distance = GameSettings.Character.SocialDistance;
-        }
+            : base(GameSettings.Character.SocialDistance, moveAgent) { }
 
         public override void SetTarget(Target target, Vector3 currentPosition)
         {
-            target.TryGetFightebel(out _target);
+            TryGetFightable(target);
             SetNewTargetPointToAgent(currentPosition, target.CurrentPosition());
         }
     }

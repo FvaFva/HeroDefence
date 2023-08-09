@@ -10,18 +10,8 @@ public class Perc : Ability
     [SerializeField] private List<PercActionType> _percActionTypes = new List<PercActionType>();
 
     private List<ActionTrigger> _triggers = new List<ActionTrigger>();
-    
-    private void OnValidate()
-    {
-        int numberOfLastRecord = Mathf.Min(_actions.Count, _chances.Count, _percActionTypes.Count);
 
-        _triggers.Clear();
-
-        for(int i = 0; i < numberOfLastRecord; i++)
-            _triggers.Add(new ActionTrigger(_actions[i], _chances[i], _percActionTypes[i]));
-    }
-
-    public void ExecuteDepenceAction(IFightable root, IFightable target, float damage, PercActionType type)
+    public void ExecuteDependsAction(IFightable root, IFightable target, float damage, PercActionType type)
     {
         foreach (ActionTrigger action in _triggers.Where(act => act.PercActionType == type))
             action.ExecuteActionIfRandomize(root, target, damage);
@@ -29,7 +19,7 @@ public class Perc : Ability
 
     public override string GetDescription()
     {
-        string description = "";
+        string description = string.Empty;
 
         AddNewBlockToDescription("On attack: ", PercActionType.OnAttack, ref description);
         AddNewBlockToDescription("On defence: ", PercActionType.OnDefence, ref description);
@@ -38,14 +28,24 @@ public class Perc : Ability
         return description;
     }
 
+    private void OnValidate()
+    {
+        int numberOfLastRecord = Mathf.Min(_actions.Count, _chances.Count, _percActionTypes.Count);
+
+        _triggers.Clear();
+
+        for (int i = 0; i < numberOfLastRecord; i++)
+            _triggers.Add(new ActionTrigger(_actions[i], _chances[i], _percActionTypes[i]));
+    }
+
     private void AddNewBlockToDescription(string blocName, PercActionType blocType, ref string description)
     {
-        if (description != "")
+        if (description != string.Empty)
             description = description + "\n";
 
         description = description + blocName;
 
         foreach (ActionTrigger action in _triggers.Where(act => act.PercActionType == blocType))
             description = $"{description} {action.Description}, ";
-    }    
+    }
 }

@@ -52,7 +52,7 @@ public class AmmunitionViewer : MonoBehaviour
     {
         _ammunition.Add(ItemType.Weapon, _weaponView);
         _ammunition.Add(ItemType.Ring, _ringView);
-        _ammunition.Add(ItemType.Necle, _necklaceView);
+        _ammunition.Add(ItemType.Necklace, _necklaceView);
         _ammunition.Add(ItemType.Helm, _helmView);
         _ammunition.Add(ItemType.Chest, _chestView);
         _ammunition.Add(ItemType.Hand, _handView);

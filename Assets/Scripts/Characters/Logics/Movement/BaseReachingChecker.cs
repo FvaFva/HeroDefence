@@ -1,21 +1,29 @@
-﻿using UnityEngine.AI;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace MovementSystem
 {
     public abstract class BaseReachingChecker
     {
-        protected float _distance;
-        protected NavMeshAgent _moveAgent;
-        protected Vector3 _currentTargetPoint;
-        protected IFightable _target;
+        private float _distance;
+        private NavMeshAgent _moveAgent;
+        private IFightable _target;
+        private Vector3 _currentTargetPoint;
+
+        public BaseReachingChecker(float distance, NavMeshAgent moveAgent)
+        {
+            _distance = distance;
+            _moveAgent = moveAgent;
+        }
+
+        public Vector3 CurrentTargetPoint => _currentTargetPoint;
+
+        protected IFightable Target => _target;
 
         public virtual bool CheckPathEnd(Vector3 currentPosition)
         {
             if (CheckDistance(currentPosition))
-            {
                 return false;
-            }
             else
                 SetNewTargetPointToAgent(currentPosition, _target.CurrentPosition);
 
@@ -43,6 +51,15 @@ namespace MovementSystem
             _currentTargetPoint = newTarget;
             _moveAgent.SetDestination(newTarget);
         }
-    }
 
+        protected void ChangeDistance(float distance)
+        {
+            _distance = Mathf.Max(0, distance);
+        }
+
+        protected void TryGetFightable(Target target)
+        {
+            target.TryGetFightebel(out _target);
+        }
+    }
 }

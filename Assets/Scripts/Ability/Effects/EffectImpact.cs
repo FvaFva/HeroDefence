@@ -7,13 +7,14 @@ public class EffectImpact : ScriptableObject
     [SerializeField] private float _coefficientAttackSpeed;
     [SerializeField] private float _coefficientDamage;
     [SerializeField] private float _coefficientArmor;
-    [SerializeField] private float _healtPerSec;
-    [SerializeField] private float _healtCoefficientPerSec;
+    [SerializeField] private float _healthPerSec;
+    [SerializeField] private float _healthCoefficientPerSec;
 
-    [SerializeField] private CharacteristicType _healtMultiplier;
+    [SerializeField] private CharacteristicType _healthMultiplier;
     [SerializeField] private Sprite _icon;
 
-    public CharacteristicType EffectHealthMultiplaceType => _healtMultiplier;
+    public CharacteristicType EffectHealthMultiplierType => _healthMultiplier;
+
     public Sprite Icon => _icon;
 
     public FighterCharacteristics ApplyEffect(FighterCharacteristics characteristics)
@@ -26,8 +27,9 @@ public class EffectImpact : ScriptableObject
         return tempCharacteristics;
     }
 
-    public float GetHealthPerSec(float multiplace)
+    public float GetHealthPerSec(float multiplier)
     {
-        return _healtCoefficientPerSec * multiplace + _healtPerSec;
+        float healthPerSecond = (_healthCoefficientPerSec * multiplier) + _healthPerSec;
+        return healthPerSecond;
     }
 }

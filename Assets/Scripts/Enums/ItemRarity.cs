@@ -3,6 +3,6 @@ public enum ItemRarity
      Common,
      Uncommon,
      Rare,
-     Epick,
-     Legandary
+     Epic,
+     Legendary
 }

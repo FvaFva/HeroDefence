@@ -8,8 +8,7 @@ public struct FighterCharacteristics
     public float ManaPoints;
     public float ManaRegen;
 
-    public FighterCharacteristics(float attackSpeed, float damage, float armor, float hitPointsMax, float speed,
-                                  float manaRegen, float manaPoints)
+    public FighterCharacteristics(float attackSpeed, float damage, float armor, float hitPointsMax, float speed, float manaRegen, float manaPoints)
     {
         Damage = damage;
         AttackSpeed = attackSpeed;

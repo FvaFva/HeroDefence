@@ -32,9 +32,9 @@ public class ItemFactory : ScriptableObject
                 return GetRandomPercFromList(_uncommonPercs);
             case ItemRarity.Rare:
                 return GetRandomPercFromList(_rarePercs);
-            case ItemRarity.Epick:
+            case ItemRarity.Epic:
                 return GetRandomPercFromList(_epickPercs);
-            case ItemRarity.Legandary:
+            case ItemRarity.Legendary:
                 return GetRandomPercFromList(_legandaryPercs);
             default:
                 return null;

@@ -215,19 +215,19 @@ public class Character : MonoBehaviour, IFightable
         _animaLogic.ApplyNewCharacteristics(_characteristics.Current);
         ChangedCharacteristics?.Invoke(_characteristics.Current);
         ShowIndicators();
-    } 
+    }
 
     private void SetNewWeapon(Weapon weapon)
     {
         if (_currentWeapon != null)
-            _currentWeapon.AttackLogic.DamageDealed -= OnDamageDealing;
+            _currentWeapon.AttackLogic.DamageDealt -= OnDamageDealing;
 
         if (weapon == null)
             _currentWeapon = _baseWeapon;
         else
             _currentWeapon = weapon;
 
-        _currentWeapon.AttackLogic.DamageDealed += OnDamageDealing;
+        _currentWeapon.AttackLogic.DamageDealt += OnDamageDealing;
         _moveLogic.SetNewDistanceToEnemy(_currentWeapon.AttackDistance);
         _fightLogic.SetNewAttackLogic(_currentWeapon.AttackLogic);
     }

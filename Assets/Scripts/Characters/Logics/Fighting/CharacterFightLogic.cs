@@ -17,21 +17,23 @@ public class CharacterFightLogic : IReachLogic
     private IFightable _attacker;
     private IAttackLogic _attackLogic;
 
-    public float HitPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
-    public event Action Died;
-    public event Action HitPointsChanged;
-
-    public event Action<Target> Reached;
-
     public CharacterFightLogic(FighterCharacteristics characteristics, IFightable attacker)
-    {               
+    {
         _hitPointsCurrent = characteristics.HitPoints;
         _hitPointsMax = characteristics.HitPoints;
         _currentStamina = StaminaToAttack;
         ApplyNewCharacteristics(characteristics);
         _attacker = attacker;
     }
-    
+
+    public event Action Died;
+
+    public event Action HitPointsChanged;
+
+    public event Action<Target> Reached;
+
+    public float HitPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
+
     public void ApplyNewCharacteristics(FighterCharacteristics characteristics)
     {
         float tempHitPointsCoefficient = HitPointsCoefficient;
@@ -45,7 +47,7 @@ public class CharacterFightLogic : IReachLogic
     public void SetNewAttackLogic(IAttackLogic newLogic)
     {
         if (newLogic == null || newLogic == _attackLogic)
-            return;        
+            return;
 
         _attackLogic = newLogic;
     }
@@ -79,25 +81,10 @@ public class CharacterFightLogic : IReachLogic
         _currentStamina += count;
     }
 
-    private void Attack()
-    {
-        if (_currentStamina >= StaminaToAttack)
-        {
-            _attackLogic.AttackEnemy(_attacker, _enemy, _damage);
-            _currentStamina -= StaminaToAttack;
-        }        
-    }
-
     public void StaminaRegeneration(float delay)
     {
         if (_currentStamina < StaminaToAttack)
             _currentStamina += _attackSpeed * delay;
-    }
-
-    private float GetRealDamage(float damage)
-    {        
-        float armorImpact = Mathf.Pow(GameSettings.Character.ArmorUnitImpact, _armor);
-        return armorImpact * damage;
     }
 
     public IEnumerator ReachTarget()
@@ -116,5 +103,20 @@ public class CharacterFightLogic : IReachLogic
     public void SetTarget(Target target)
     {
         target.TryGetFightebel(out _enemy);
-    }    
+    }
+
+    private float GetRealDamage(float damage)
+    {
+        float armorImpact = Mathf.Pow(GameSettings.Character.ArmorUnitImpact, _armor);
+        return armorImpact * damage;
+    }
+
+    private void Attack()
+    {
+        if (_currentStamina >= StaminaToAttack)
+        {
+            _attackLogic.AttackEnemy(_attacker, _enemy, _damage);
+            _currentStamina -= StaminaToAttack;
+        }
+    }
 }

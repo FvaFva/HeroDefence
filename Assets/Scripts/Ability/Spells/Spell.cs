@@ -60,4 +60,3 @@ public class Spell : ISpellInfo
         CoolDownChanged?.Invoke(_currentCoolDown / _preset.CoolDownSeconds);
     }
 }
-
