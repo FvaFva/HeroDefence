@@ -67,7 +67,7 @@ public class CharacterAnimaLogic
 
     public void RestingAnima(float delay)
     {
-        if(_manaPointsCurrent < _manaPointsMax)
+        if (_manaPointsCurrent < _manaPointsMax)
         {
             _manaPointsCurrent += _manaRegen * delay;
             Mathf.Clamp(_manaPointsCurrent, 0, _manaPointsMax);
@@ -84,6 +84,7 @@ public class CharacterAnimaLogic
             if (_currentSpells[i].Source == source)
                 return i;
         }
+
         return -1;
     }
 }

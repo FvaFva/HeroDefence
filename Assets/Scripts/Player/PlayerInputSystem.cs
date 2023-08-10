@@ -13,7 +13,8 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
     private PlayerInput _input;
 
     public event Action<Target> ChoseTarget;
-    public event Action<Character> ChoosedCharacter;
+
+    public event Action<Character> ChoseCharacter;
 
     private void Awake()
     {
@@ -24,7 +25,7 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
     private void OnEnable()
     {
         _input.Enable();
-        _input.Player.PlaceTap.performed += ctx => ComandAction();
+        _input.Player.PlaceTap.performed += ctx => CommandAction();
         _input.Player.ControlTap.performed += ctx => SelectAction();
         _cameraMover = StartCoroutine(CameraMover());
     }
@@ -32,7 +33,7 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
     private void OnDisable()
     {
         _input.Disable();
-        _input.Player.PlaceTap.performed -= ctx => ComandAction();
+        _input.Player.PlaceTap.performed -= ctx => CommandAction();
         _input.Player.ControlTap.performed -= ctx => SelectAction();
         StopCoroutine(_cameraMover);
     }
@@ -54,14 +55,14 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
         }
     }
 
-    private void ComandAction()
+    private void CommandAction()
     {
         if (CheckMouseRay())
         {
             if (_hitTemp.collider.gameObject.TryGetComponent<Walkable>(out Walkable place))
-                ChoseTarget?.Invoke(new(_hitTemp.point));
+                ChoseTarget?.Invoke(new Target(_hitTemp.point));
             else if (_hitTemp.collider.gameObject.TryGetComponent<Character>(out Character enemy))
-                ChoseTarget?.Invoke(new(_hitTemp.point, enemy));
+                ChoseTarget?.Invoke(new Target(_hitTemp.point, enemy));
         }
     }
 
@@ -70,7 +71,7 @@ public class PlayerInputSystem : MonoBehaviour, ITargetChooser
         if (CheckMouseRay())
         {
             _hitTemp.collider.gameObject.TryGetComponent<Character>(out Character character);
-            ChoosedCharacter?.Invoke(character);           
+            ChoseCharacter?.Invoke(character);
         }
     }
 

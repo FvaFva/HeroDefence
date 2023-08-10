@@ -1,6 +1,6 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System;
 
 [RequireComponent(typeof(Image))]
@@ -13,38 +13,20 @@ public class CharacterViewer : MonoBehaviour
     [SerializeField] private Image _portrait;
     [SerializeField] private Image _flagImage;
     [SerializeField] private Image _currentMask;
-    [SerializeField] private Color _targetebleColor;
-    [SerializeField] private Button _selectSharacter;
+    [SerializeField] private Color _targetableColor;
+    [SerializeField] private Button _selectCharacter;
     [SerializeField] private ScrollRect _effectPlace;
 
     private Character _character;
     private Color _baseColor;
 
-    public event Action<Character, CharacterViewer> SelectSharacter;
-    public bool IsUsed;
+    public event Action<Character, CharacterViewer> SelectCharacter;
 
-    private void Awake()
-    {
-        _baseColor = _currentMask.color;
-    }
-
-    private void OnEnable()
-    {
-        if(_character != null)
-            _character.ChangedIndicators += SetCurrentIndicators;
-
-        _selectSharacter.onClick.AddListener(Selected);
-    }
-
-    private void OnDisable()
-    {
-        RemoveListenersFromCharacter();
-        _selectSharacter.onClick.RemoveListener(Selected);
-    }
+    public bool IsUsed { get; private set; }
 
     public void SetMainTarget(bool isItMain)
     {
-        _currentMask.color = isItMain? _targetebleColor : _baseColor;
+        _currentMask.color = isItMain ? _targetableColor : _baseColor;
     }
 
     public void Render(Character character)
@@ -66,9 +48,9 @@ public class CharacterViewer : MonoBehaviour
         }
     }
 
-    public void Selected() 
+    public void Selected()
     {
-        SelectSharacter?.Invoke(_character, this);
+        SelectCharacter?.Invoke(_character, this);
     }
 
     public void Clear()
@@ -82,15 +64,34 @@ public class CharacterViewer : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void Awake()
+    {
+        _baseColor = _currentMask.color;
+    }
+
+    private void OnEnable()
+    {
+        if (_character != null)
+            _character.ChangedIndicators += SetCurrentIndicators;
+
+        _selectCharacter.onClick.AddListener(Selected);
+    }
+
+    private void OnDisable()
+    {
+        RemoveListenersFromCharacter();
+        _selectCharacter.onClick.RemoveListener(Selected);
+    }
+
     private void RemoveListenersFromCharacter()
     {
         if (_character != null)
             _character.ChangedIndicators -= SetCurrentIndicators;
     }
 
-    private void SetCurrentIndicators(float hitPointsCoeffecient, float manaPointsCoeffecient)
+    private void SetCurrentIndicators(float hitPointsCoefficient, float manaPointsCoefficient)
     {
-        _hitPointsBar.value = hitPointsCoeffecient;
-        _manaPointsBar.value = manaPointsCoeffecient;
+        _hitPointsBar.value = hitPointsCoefficient;
+        _manaPointsBar.value = manaPointsCoefficient;
     }
 }

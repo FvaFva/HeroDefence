@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+
 public class CharacterIdleLogic : IReachLogic
 {
     public event Action<Target> Reached;

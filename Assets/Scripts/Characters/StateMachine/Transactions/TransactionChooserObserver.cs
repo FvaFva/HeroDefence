@@ -5,74 +5,75 @@ namespace CharacterTransactions
     public class TransactionChooserObserver : ITransaction
     {
         private CharacterState _targetState;
-        private ITargetChooser _comander;
+        private ITargetChooser _commander;
         private IFightable _current;
         private TransactionRule _rule;
-        private bool _staticComander;
+        private bool _staticCommander;
         private bool _isObserving;
 
-        public event Action<CharacterState, Target> NewStatusAvailable;
-        public TransactionType Type { get; private set; }
-
-        public TransactionChooserObserver(TransactionRule rule, IFightable current, CharacterState targetState, TransactionType type, ITargetChooser comander = null)
+        public TransactionChooserObserver(TransactionRule rule, IFightable current, CharacterState targetState, TransactionType type, ITargetChooser commander = null)
         {
             _rule = rule;
             _current = current;
             _targetState = targetState;
-            _staticComander = comander != null;
-            _comander = comander;
+            _staticCommander = commander != null;
+            _commander = commander;
             Type = type;
         }
 
-        public void SetComander(ITargetChooser comander)
+        public event Action<CharacterState, Target> NewStatusAvailable;
+
+        public TransactionType Type { get; private set; }
+
+        public void SetCommander(ITargetChooser commander)
         {
-            if (_staticComander == false)
+            if (_staticCommander == false)
             {
-                if(_isObserving)
+                if (_isObserving)
                 {
-                    ResubscribeComander(comander);
+                    ResubscribeCommander(commander);
                 }
                 else
                 {
-                    _comander = comander;
+                    _commander = commander;
                 }
             }
         }
 
         public void TryOn()
         {
-            if (_comander != null)            
-                _comander.ChoseTarget += OnChooseNewTarget;                    
+            if (_commander != null)
+                _commander.ChoseTarget += OnChooseNewTarget;
 
             _isObserving = true;
         }
 
         public void Off()
         {
-            if (_comander != null)            
-                _comander.ChoseTarget -= OnChooseNewTarget;            
+            if (_commander != null)
+                _commander.ChoseTarget -= OnChooseNewTarget;
 
             _isObserving = false;
         }
 
         private void OnChooseNewTarget(Target target)
         {
-            if (target.IsIFightebelMatches(_current) == false && _rule.CheckSuitableTarget(target, _current))
+            if (target.IsIFightableMatches(_current) == false && _rule.CheckSuitableTarget(target, _current))
             {
-                _comander!.ChoseTarget -= OnChooseNewTarget;
+                _commander!.ChoseTarget -= OnChooseNewTarget;
                 NewStatusAvailable?.Invoke(_targetState, target);
             }
         }
 
-        private void ResubscribeComander(ITargetChooser comander)
+        private void ResubscribeCommander(ITargetChooser commander)
         {
-            if (_comander != null)
-                _comander.ChoseTarget -= OnChooseNewTarget;
+            if (_commander != null)
+                _commander.ChoseTarget -= OnChooseNewTarget;
 
-            _comander = comander;
+            _commander = commander;
 
-            if (_comander != null)
-                _comander.ChoseTarget += OnChooseNewTarget;
+            if (_commander != null)
+                _commander.ChoseTarget += OnChooseNewTarget;
         }
     }
 }

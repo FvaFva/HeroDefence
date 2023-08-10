@@ -44,7 +44,7 @@ public class CharacterMoveLogic: IReachLogic, ITargetChooser, ITargetDistanceObs
 
     public void SetTarget(Target target)
     {
-        if (target.TryGetFightebel(out _target))
+        if (target.TryGetFightable(out _target))
             if (_target.IsFriendly(_team))
                 _currentChecker = _allyChecker;
             else

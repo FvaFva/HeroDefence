@@ -6,6 +6,6 @@
         ChooserObserver,
         StaticChooserObserver,
         CharacterDieObserver,
-        TargetDieObserver
+        TargetDieObserver,
     }
 }

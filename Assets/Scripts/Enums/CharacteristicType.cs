@@ -6,5 +6,5 @@
     Armor,
     AttackSpeed,
     Speed,
-    ManaRegen
+    ManaRegen,
 }

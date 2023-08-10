@@ -2,18 +2,21 @@
 {
     public class TransactionOnCharacterDied : BaseTransactionCharacterObserver
     {
-        public TransactionOnCharacterDied(CharacterState targetState, IFightable character, TransactionType type) : base(targetState, character, type){}
+        public TransactionOnCharacterDied(CharacterState targetState, IFightable character, TransactionType type)
+            : base(targetState, character, type)
+        {
+        }
 
         public override void Off()
         {
-            if (_character != null)
-                _character.Died -= OnTriggering;
+            if (Character != null)
+                Character.Died -= OnTriggering;
         }
 
         public override void TryOn()
         {
-            if (_character != null)
-                _character.Died += OnTriggering;
+            if (Character != null)
+                Character.Died += OnTriggering;
         }
     }
 }

@@ -2,18 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-[RequireComponent(typeof(ContentViewerSezer))]
+[RequireComponent(typeof(ContentViewersSizeCorrector))]
 public class CurrentCharacterAbilityContent : MonoBehaviour
 {
     [SerializeField] private AbilityViewer _tempViewer;
 
-    private ContentViewerSezer _contentSizer;
+    private ContentViewersSizeCorrector _contentSizer;
     private List<AbilityViewer> _viewerPool = new List<AbilityViewer>();
-
-    private void Awake()
-    {
-        TryGetComponent<ContentViewerSezer>(out _contentSizer);   
-    }
 
     public void Render(Ability ability)
     {
@@ -44,5 +39,10 @@ public class CurrentCharacterAbilityContent : MonoBehaviour
             viewer.ShowAbility(null);
 
         _contentSizer.UpdateViewersSize(0);
+    }
+
+    private void Awake()
+    {
+        TryGetComponent<ContentViewersSizeCorrector>(out _contentSizer);
     }
 }

@@ -11,15 +11,14 @@ public class CharacterTargetObserveLogic : MonoBehaviour, ITargetChooser
 
     public void Init(ITargetDistanceObserver observer)
     {
-        if (_distanceObserver == null)
-            _distanceObserver = observer;
+        _distanceObserver ??= observer;
     }
 
     public void SetTarget(Target target)
     {
         StopWork();
 
-        if(target.TryGetFightebel(out _target))
+        if (target.TryGetFightable(out _target))
         {
             StartWork();
         }
@@ -31,7 +30,7 @@ public class CharacterTargetObserveLogic : MonoBehaviour, ITargetChooser
         _distanceObserver.LostTarget -= StopObserveDistanceToTarget;
 
         if (_target != null)
-            _target.Died -= OnTargetDieing;
+            _target.Died -= OnTargetDyeing;
 
         _target = null;
 
@@ -42,7 +41,7 @@ public class CharacterTargetObserveLogic : MonoBehaviour, ITargetChooser
     private void StartWork()
     {
         _distanceObserver.FoundTarget += StartObserveDistanceToTarget;
-        _target.Died += OnTargetDieing;
+        _target.Died += OnTargetDyeing;
     }
 
     private void OnDisable()
@@ -67,9 +66,9 @@ public class CharacterTargetObserveLogic : MonoBehaviour, ITargetChooser
         _distanceObserver.FoundTarget += StartObserveDistanceToTarget;
     }
 
-    private void OnTargetDieing()
+    private void OnTargetDyeing()
     {
-        ChoseTarget.Invoke(new Target());
+        ChoseTarget.Invoke(default(Target));
         StopWork();
     }
 }

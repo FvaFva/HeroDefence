@@ -1,31 +1,25 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-[RequireComponent(typeof(ContentViewerSezer))]
+[RequireComponent(typeof(ContentViewersSizeCorrector))]
 [RequireComponent(typeof(ContentConcealer))]
 public class SelectedCharactersContent : MonoBehaviour
 {
     [SerializeField] private CharacterViewer _tempViewer;
 
     private List<CharacterViewer> _characterViewersPool = new List<CharacterViewer>();
-    private ContentViewerSezer _sizer;
+    private ContentViewersSizeCorrector _sizer;
     private ContentConcealer _concealer;
 
     public event Action<Character> OnCharacterSelect;
-
-    private void Awake()
-    {
-        TryGetComponent<ContentViewerSezer>(out _sizer);
-        TryGetComponent<ContentConcealer>(out _concealer);
-    }
 
     public void ClearSelectedChaViewers()
     {
         foreach (CharacterViewer viewer in _characterViewersPool)
         {
-            viewer.SelectSharacter -= UpdateSelectedViewer;
+            viewer.SelectCharacter -= UpdateSelectedViewer;
             viewer.Render(null);
         }
 
@@ -38,7 +32,7 @@ public class SelectedCharactersContent : MonoBehaviour
         var unusedViewer = _characterViewersPool.Where(character => character.IsUsed == false).ToList();
         CharacterViewer newViewer = null;
         int countUsedViewers = _characterViewersPool.Count - unusedViewer.Count;
-        
+
         if (unusedViewer.Count == 0)
         {
             newViewer = Instantiate(_tempViewer, transform);
@@ -50,10 +44,16 @@ public class SelectedCharactersContent : MonoBehaviour
         }
 
         newViewer.Render(character);
-        newViewer.SelectSharacter += UpdateSelectedViewer;
+        newViewer.SelectCharacter += UpdateSelectedViewer;
         SetMainViewer(newViewer);
         _concealer.StartMovePanel(++countUsedViewers > 1);
         _sizer.UpdateViewersSize(++countUsedViewers);
+    }
+
+    private void Awake()
+    {
+        TryGetComponent<ContentViewersSizeCorrector>(out _sizer);
+        TryGetComponent<ContentConcealer>(out _concealer);
     }
 
     private void UpdateSelectedViewer(Character character, CharacterViewer viewer)
@@ -69,5 +69,4 @@ public class SelectedCharactersContent : MonoBehaviour
         foreach (CharacterViewer viewer in usedViewer)
             viewer.SetMainTarget(viewer == mainViewer);
     }
-
 }

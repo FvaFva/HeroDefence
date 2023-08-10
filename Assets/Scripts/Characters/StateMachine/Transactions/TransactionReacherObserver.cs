@@ -5,32 +5,33 @@ namespace CharacterTransactions
     public class TransactionReacherObserver : ITransaction
     {
         private CharacterState _targetState;
-        private IReachLogic _reacher;
+        private IReachLogic _achiever;
 
-        public TransactionType Type { get; private set; }
-        public event Action<CharacterState, Target> NewStatusAvailable;
-
-        public TransactionReacherObserver(IReachLogic reacher, CharacterState targetState, TransactionType type)
+        public TransactionReacherObserver(IReachLogic achiever, CharacterState targetState, TransactionType type)
         {
-            _reacher = reacher;
+            _achiever = achiever;
             _targetState = targetState;
             Type = type;
         }
 
+        public event Action<CharacterState, Target> NewStatusAvailable;
+
+        public TransactionType Type { get; private set; }
+
         public void TryOn()
         {
-            if (_reacher != null)
-                _reacher!.Reached += OnReachTarget;
+            if (_achiever != null)
+                _achiever!.Reached += OnReachTarget;
         }
 
         public void Off()
         {
-            _reacher!.Reached -= OnReachTarget;
+            _achiever!.Reached -= OnReachTarget;
         }
 
         private void OnReachTarget(Target target)
         {
-            _reacher!.Reached -= OnReachTarget;
+            _achiever!.Reached -= OnReachTarget;
             NewStatusAvailable?.Invoke(_targetState, target);
         }
     }

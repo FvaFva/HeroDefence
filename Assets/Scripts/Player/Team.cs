@@ -7,5 +7,6 @@ public class Team : ScriptableObject
     [SerializeField] private string _name;
 
     public Color Flag => _flag;
+
     public string Name => _name;
 }

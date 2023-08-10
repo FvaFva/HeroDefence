@@ -6,5 +6,5 @@
     Hand,
     Leg,
     Ring,
-    Necklace
+    Necklace,
 }

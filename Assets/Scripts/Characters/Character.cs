@@ -43,7 +43,7 @@ public class Character : MonoBehaviour, IFightable
 
     public string Profession { get; private set; }
 
-    public Sprite Portrait{ get; private set; }
+    public Sprite Portrait { get; private set; }
 
     public Team Team => _team;
 
@@ -51,7 +51,7 @@ public class Character : MonoBehaviour, IFightable
 
     public void SetNewCommander(ITargetChooser commander)
     {
-        _stateMachine.SetNewComander(commander);
+        _stateMachine.SetNewCommander(commander);
     }
 
     public void ApplyStamina(int count)
@@ -65,13 +65,13 @@ public class Character : MonoBehaviour, IFightable
         _effectBug.ApplyEffect(effect);
     }
 
-    public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTriggered = true)
+    public bool TryApplyDamage(IFightable attacker, ref float damage, bool isPercTriggered = true)
     {
         bool isDamageTaken = _fightLogic.TryApplyDamage(ref damage);
 
         if (isDamageTaken)
         {
-            _percBag.ExecuteActionDepenceAction(this, attacker, damage, PercActionType.OnDefence);
+            _percBag.ExecuteDependentAction(this, attacker, damage, PercActionType.OnDefense);
         }
 
         return isDamageTaken;
@@ -95,7 +95,7 @@ public class Character : MonoBehaviour, IFightable
     public void ShowAllInformation()
     {
         ChangedCharacteristics?.Invoke(_characteristics.Current);
-        ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+        ChangedAbilitiesKit?.Invoke(_percBag.Perks);
         ChangedAmmunition?.Invoke(_ammunition.ThingsWorn);
         ChangedEffectsKit?.Invoke(_effectBug.Effects);
         ShowIndicators();
@@ -125,7 +125,7 @@ public class Character : MonoBehaviour, IFightable
         if (_ammunition.TryPutOnItem(item))
         {
             if (_percBag.TryAddPerc(item))
-                ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+                ChangedAbilitiesKit?.Invoke(_percBag.Perks);
 
             _characteristics.ApplyBuff(item);
 
@@ -180,7 +180,7 @@ public class Character : MonoBehaviour, IFightable
     private void RemovePerc(IPercSource source)
     {
         if (_percBag.TryRemovePerc(source))
-            ChangedAbilitiesKit?.Invoke(_percBag.Percs);
+            ChangedAbilitiesKit?.Invoke(_percBag.Perks);
     }
 
     private void OnEffectsChange()
@@ -193,7 +193,7 @@ public class Character : MonoBehaviour, IFightable
     private void OnDamageDealing(IFightable enemy, float damage, bool triggeredDamage)
     {
         if (triggeredDamage)
-            _percBag.ExecuteActionDepenceAction(this, enemy, damage, PercActionType.OnDamageDelay);
+            _percBag.ExecuteDependentAction(this, enemy, damage, PercActionType.OnDamageDelay);
     }
 
     private void OnDied()
@@ -248,7 +248,7 @@ public class Character : MonoBehaviour, IFightable
 
         UpdateLogicsCharacteristics();
         SetNewWeapon(_baseWeapon);
-        AllLogics logics = new AllLogics(_fightLogic, new CharacterDieingLogic(transform, _characteristics.Current.Speed), targetObserver, _moveLogic);
+        AllLogics logics = new AllLogics(_fightLogic, new CharacterDyeingLogic(transform, _characteristics.Current.Speed), targetObserver, _moveLogic);
         StateMachineLogicBuilder builder = new StateMachineLogicBuilder();
 
         builder.Build(_stateMachine, logics, this);

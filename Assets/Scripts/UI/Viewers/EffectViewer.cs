@@ -10,12 +10,7 @@ public class EffectViewer : MonoBehaviour
     private Sprite _emptyIcon;
     private EffectLogic _effect;
 
-    private void Awake()
-    {
-        _emptyIcon = _icon.sprite;
-    }
-
-    public void DrowEffect(EffectLogic effect)
+    public void DrawEffect(EffectLogic effect)
     {
         _effect = effect;
 
@@ -28,8 +23,13 @@ public class EffectViewer : MonoBehaviour
         gameObject.SetActive(true);
 
         _icon.sprite = _effect.Icon;
-        DrowDuration(_effect.Duration);
-        _effect.ChangeDuration += DrowDuration;
+        DrawDuration(_effect.Duration);
+        _effect.ChangeDuration += DrawDuration;
+    }
+
+    private void Awake()
+    {
+        _emptyIcon = _icon.sprite;
     }
 
     private void OnDisable()
@@ -43,10 +43,10 @@ public class EffectViewer : MonoBehaviour
         _duration.text = "0";
 
         if (_effect != null)
-            _effect.ChangeDuration -= DrowDuration;
+            _effect.ChangeDuration -= DrawDuration;
     }
 
-    private void DrowDuration(int duration)
+    private void DrawDuration(int duration)
     {
         _duration.text = duration.ToString();
     }

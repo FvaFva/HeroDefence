@@ -102,7 +102,7 @@ public class CharacterFightLogic : IReachLogic
 
     public void SetTarget(Target target)
     {
-        target.TryGetFightebel(out _enemy);
+        target.TryGetFightable(out _enemy);
     }
 
     private float GetRealDamage(float damage)

@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     {
         _mainUI.OnCharacterSelect += SetCurrentCharacter;
         _mainUI.ItemWearChanged += OnItemWearChange;
-        _playerInputSystem.ChoosedCharacter += SetCurrentCharacter;
+        _playerInputSystem.ChoseCharacter += SetCurrentCharacter;
         _shop.SoldItem += BuyItem;
     }
 
@@ -26,32 +26,38 @@ public class Player : MonoBehaviour
     {
         _mainUI.OnCharacterSelect -= SetCurrentCharacter;
         _mainUI.ItemWearChanged -= OnItemWearChange;
-        _playerInputSystem.ChoosedCharacter -= SetCurrentCharacter;
+        _playerInputSystem.ChoseCharacter -= SetCurrentCharacter;
         _shop.SoldItem -= BuyItem;
     }
 
     private void GetCurrentCharacterItem(Item item)
     {
         if (item != null && _currentCharacter != null)
+        {
             if (_inventory.TryDropItem(item))
+            {
                 if (_currentCharacter.TryPutOnItem(item) == false)
                     _inventory.TryTakeItem(item);
                 else
                     _mainUI.DrowInventory(_inventory.Bug);
+            }
+        }
     }
 
-    private void StreapCurrentCharacterSlot(ItemType slot)
+    private void StripCurrentCharacterSlot(ItemType slot)
     {
         if (_currentCharacter != null && _currentCharacter.TryDropItem(slot, out Item dropItem))
+        {
             if (_inventory.TryTakeItem(dropItem) == false)
                 _currentCharacter.TryPutOnItem(dropItem);
             else
                 _mainUI.DrowInventory(_inventory.Bug);
+        }
     }
 
     private bool TakeItem(Item item)
     {
-        if(_inventory.TryTakeItem(item))
+        if (_inventory.TryTakeItem(item))
         {
             _mainUI.DrowInventory(_inventory.Bug);
             return true;
@@ -72,7 +78,7 @@ public class Player : MonoBehaviour
 
     private void ClearSelectedCharacters()
     {
-        if(_selectedPull.Count == 0 && _currentCharacter == null)
+        if (_selectedPull.Count == 0 && _currentCharacter == null)
             return;
 
         foreach (Character character in _selectedPull)
@@ -85,7 +91,7 @@ public class Player : MonoBehaviour
 
     private void SetCurrentCharacter(Character character)
     {
-        if(character != null && character != _currentCharacter)
+        if (character != null && character != _currentCharacter)
         {
             UpdateCharacterControllability(character);
 
@@ -98,9 +104,9 @@ public class Player : MonoBehaviour
             _mainUI.DrawCurrentCharacter(character, isNewInPool);
 
             if (isNewInPool)
-                _selectedPull.Add(_currentCharacter);            
+                _selectedPull.Add(_currentCharacter);
         }
-        else if(character == null)
+        else if (character == null)
         {
             ClearSelectedCharacters();
         }
@@ -111,7 +117,7 @@ public class Player : MonoBehaviour
         if (isPutOn)
             GetCurrentCharacterItem(item);
         else
-            StreapCurrentCharacterSlot(item.ItemType);
+            StripCurrentCharacterSlot(item.ItemType);
     }
 
     private void UpdateCharacterControllability(Character character)

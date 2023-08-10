@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class CharacterEffectBug: ICharacteristicsSource
+public class CharacterEffectBug : ICharacteristicsSource
 {
     private float _healthChangeCounter = 0;
     private List<EffectLogic> _effects = new List<EffectLogic>();
 
     public event Action CharacteristicsChanged;
+
     public event Action<float, IFightable> HealthTic;
+
     public IReadOnlyList<EffectLogic> Effects => _effects.OrderByDescending(effect => effect.Duration).ToList();
 
     public FighterCharacteristics GetCharacteristics()
     {
-        FighterCharacteristics tempFighterCharacteristics = new FighterCharacteristics();
+        FighterCharacteristics tempFighterCharacteristics = default(FighterCharacteristics);
 
         foreach (EffectLogic effectImpact in _effects)
             tempFighterCharacteristics.ApplyCharacteristics(effectImpact.GetCharacteristics());

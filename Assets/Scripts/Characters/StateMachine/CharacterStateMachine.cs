@@ -1,7 +1,6 @@
-using UnityEngine;
 using CharacterTransactions;
+using UnityEngine;
 using System.Collections.Generic;
-
 
 public class CharacterStateMachine : MonoBehaviour
 {
@@ -10,11 +9,6 @@ public class CharacterStateMachine : MonoBehaviour
     private Coroutine _currentStateAction;
     private List<TransactionChooserObserver> _dependentCommanderTransactions = new List<TransactionChooserObserver>();
     private CharacterTargetObserveLogic _targetObserver;
-
-    private void OnDisable()
-    {
-        Transit(null, new());
-    }
 
     public void Init(CharacterState baseStat, CharacterTargetObserveLogic targetObserver, List<TransactionChooserObserver> dependentCommanderTransactions)
     {
@@ -25,19 +19,24 @@ public class CharacterStateMachine : MonoBehaviour
 
         foreach (TransactionChooserObserver transaction in dependentCommanderTransactions)
             _dependentCommanderTransactions.Add(transaction);
-       
+
         _targetObserver = targetObserver;
-        Transit(_baseState, new Target());
+        Transit(_baseState, default(Target));
     }
 
-    public void SetNewComander(ITargetChooser comander)
-    {       
-        foreach(TransactionChooserObserver transaction in _dependentCommanderTransactions)
-            transaction.SetComander(comander);        
+    public void SetNewCommander(ITargetChooser commander)
+    {
+        foreach (TransactionChooserObserver transaction in _dependentCommanderTransactions)
+            transaction.SetCommander(commander);
+    }
+
+    private void OnDisable()
+    {
+        Transit(null, default(Target));
     }
 
     private void Transit(CharacterState nextState, Target target)
-    {        
+    {
         if (_currentState != null)
         {
             if (_currentStateAction != null)
@@ -58,7 +57,7 @@ public class CharacterStateMachine : MonoBehaviour
         }
         else
         {
-            _targetObserver.SetTarget(new Target());
+            _targetObserver.SetTarget(default(Target));
         }
     }
 }

@@ -16,7 +16,7 @@ public class MainUi : MonoBehaviour
     {
         _selectedCharacters.OnCharacterSelect += SetMainCharacter;
         _inventory.ChoseItem += ShowPutOnItemDetails;
-        _currentCharacter.ShoseAmmunitionsItem += ShowPutOffItemDetails;
+        _currentCharacter.ChoseAmmunitionsItem += ShowPutOffItemDetails;
         _itemDetails.ItemWearChanged += OnItemWearChanging;
     }
 
@@ -24,13 +24,13 @@ public class MainUi : MonoBehaviour
     {
         _selectedCharacters.OnCharacterSelect -= SetMainCharacter;
         _inventory.ChoseItem -= ShowPutOnItemDetails;
-        _currentCharacter.ShoseAmmunitionsItem -= ShowPutOffItemDetails;
+        _currentCharacter.ChoseAmmunitionsItem -= ShowPutOffItemDetails;
         _itemDetails.ItemWearChanged -= OnItemWearChanging;
     }
 
     public void DrowInventory(IReadOnlyList<Item> bug)
     {
-        _inventory.DrowInventory(bug);
+        _inventory.DrawInventory(bug);
     }   
     
     public void DrawCurrentCharacter(Character character, bool isNewInPool)

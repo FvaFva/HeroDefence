@@ -2,6 +2,6 @@
 {
     public override bool CheckSuitableTarget(Target target, IFightable current)
     {
-        return target.IstEmpte == false;
+        return target.IstEmpty == false;
     }
 }

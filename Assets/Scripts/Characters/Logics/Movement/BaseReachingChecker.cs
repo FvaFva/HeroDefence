@@ -59,7 +59,7 @@ namespace MovementSystem
 
         protected void TryGetFightable(Target target)
         {
-            target.TryGetFightebel(out _target);
+            target.TryGetFightable(out _target);
         }
     }
 }

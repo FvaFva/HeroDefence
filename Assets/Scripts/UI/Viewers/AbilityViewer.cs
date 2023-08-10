@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class AbilityViewer : MonoBehaviour
 {
     [SerializeReference] private Image _icon;
-    
     private string _description;
 
     public Ability Ability { get; private set; }

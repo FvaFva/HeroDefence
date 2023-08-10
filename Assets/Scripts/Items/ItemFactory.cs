@@ -1,17 +1,17 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ItemFactory", menuName = "Items/Create New Item Factory", order = 51)]
 public class ItemFactory : ScriptableObject
 {
-    [SerializeField] List<ItemPreset> _presets  = new List<ItemPreset>();
-    [SerializeField] List<Perc> _commonPercs    = new List<Perc>();
-    [SerializeField] List<Perc> _uncommonPercs  = new List<Perc>();
-    [SerializeField] List<Perc> _rarePercs      = new List<Perc>();
-    [SerializeField] List<Perc> _epickPercs     = new List<Perc>();
-    [SerializeField] List<Perc> _legandaryPercs = new List<Perc>();
-    
+    [SerializeField] private List<ItemPreset> _presets = new List<ItemPreset>();
+    [SerializeField] private List<Perc> _commonPerks = new List<Perc>();
+    [SerializeField] private List<Perc> _uncommonPerks = new List<Perc>();
+    [SerializeField] private List<Perc> _rarePerks = new List<Perc>();
+    [SerializeField] private List<Perc> _epicPerks = new List<Perc>();
+    [SerializeField] private List<Perc> _legendaryPerks = new List<Perc>();
+
     public Item GetRandomItem()
     {
         ItemPreset currentPreset = _presets[UnityEngine.Random.Range(0, _presets.Count)];
@@ -19,31 +19,25 @@ public class ItemFactory : ScriptableObject
         if (currentPreset.ItemType == ItemType.Weapon)
             return CreateWeapon(currentPreset);
         else
-            return new Item(currentPreset, GetRandomPercForRariy(currentPreset.Rarity));
+            return new Item(currentPreset, GetRandomPercForRarity(currentPreset.Rarity));
     }
 
-    private Perc GetRandomPercForRariy(ItemRarity rarity)
+    private Perc GetRandomPercForRarity(ItemRarity rarity)
     {
-        switch(rarity)
+        return rarity switch
         {
-            case ItemRarity.Common:
-                return GetRandomPercFromList(_commonPercs);
-            case ItemRarity.Uncommon:
-                return GetRandomPercFromList(_uncommonPercs);
-            case ItemRarity.Rare:
-                return GetRandomPercFromList(_rarePercs);
-            case ItemRarity.Epic:
-                return GetRandomPercFromList(_epickPercs);
-            case ItemRarity.Legendary:
-                return GetRandomPercFromList(_legandaryPercs);
-            default:
-                return null;
-        }
+            ItemRarity.Common => GetRandomPercFromList(_commonPerks),
+            ItemRarity.Uncommon => GetRandomPercFromList(_uncommonPerks),
+            ItemRarity.Rare => GetRandomPercFromList(_rarePerks),
+            ItemRarity.Epic => GetRandomPercFromList(_epicPerks),
+            ItemRarity.Legendary => GetRandomPercFromList(_legendaryPerks),
+            _ => null,
+        };
     }
 
-    private Perc GetRandomPercFromList(List<Perc> percs)
+    private Perc GetRandomPercFromList(List<Perc> perks)
     {
-        return percs[UnityEngine.Random.Range(0, percs.Count)];
+        return perks[UnityEngine.Random.Range(0, perks.Count)];
     }
 
     private Weapon CreateWeapon(ItemPreset preset)
@@ -55,6 +49,8 @@ public class ItemFactory : ScriptableObject
         {
             case WeaponType.Melee:
                 return InstantiateMeleeWeapon(preset);
+            default:
+                break;
         }
 
         return null;
@@ -64,6 +60,6 @@ public class ItemFactory : ScriptableObject
     {
         MeleeAttackLogic attackLogic = new MeleeAttackLogic();
         float attackDistance = 2.5f;
-        return new Weapon(preset, attackLogic, attackDistance, GetRandomPercForRariy(preset.Rarity));
+        return new Weapon(preset, attackLogic, attackDistance, GetRandomPercForRarity(preset.Rarity));
     }
 }

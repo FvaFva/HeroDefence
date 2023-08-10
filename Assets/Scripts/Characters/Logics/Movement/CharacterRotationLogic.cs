@@ -28,7 +28,7 @@ namespace MovementSystem
 
         public void SetTarget(Target target)
         {
-            if (target.IsFightebel == false)
+            if (target.IsFightable == false)
             {
                 Vector3 currentPosition = target.CurrentPosition();
                 currentPosition.y += _height;

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class InventoryViewer : MonoBehaviour
 {
@@ -11,13 +11,7 @@ public class InventoryViewer : MonoBehaviour
 
     public event Action<Item> ChoseItem;
 
-    private void Awake()
-    {
-        for (int i = 0; i < GameSettings.PlayerBagSize; i++)
-            _viewersPool.Add(Instantiate(_tempViewer, transform));
-    }
-
-    public void DrowInventory(IReadOnlyList<Item> bug)
+    public void DrawInventory(IReadOnlyList<Item> bug)
     {
         Clear();
 
@@ -27,11 +21,17 @@ public class InventoryViewer : MonoBehaviour
 
     public void Clear()
     {
-        foreach(ItemViewer cell in _viewersPool)
+        foreach (ItemViewer cell in _viewersPool)
         {
             cell.DrowItem(null);
             cell.ChoseItem -= OnItemChoose;
         }
+    }
+
+    private void Awake()
+    {
+        for (int i = 0; i < GameSettings.PlayerBagSize; i++)
+            _viewersPool.Add(Instantiate(_tempViewer, transform));
     }
 
     private ItemViewer GetFreeViewer()

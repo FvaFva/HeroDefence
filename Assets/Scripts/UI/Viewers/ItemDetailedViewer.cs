@@ -12,7 +12,6 @@ public class ItemDetailedViewer : MonoBehaviour
     [SerializeField] private CharacteristicViewer _speed;
     [SerializeField] private CharacteristicViewer _manaPoints;
     [SerializeField] private CharacteristicViewer _manaRegen;
-
     [SerializeField] private ItemViewer _itemViewer;
     [SerializeField] private AbilityViewer _abilityViewer;
     [SerializeField] private Button _left;
@@ -24,16 +23,6 @@ public class ItemDetailedViewer : MonoBehaviour
 
     public event Action<Item, bool> ItemWearChanged;
 
-    private void OnEnable()
-    {
-        _left.onClick.AddListener(OnWearChanging);
-    }
-
-    private void OnDisable()
-    {
-        _left.onClick.RemoveListener(OnWearChanging);
-    }
-
     public void SetItem(Item item, bool isItemPutOn = false)
     {
         _currentItem = item;
@@ -44,36 +33,46 @@ public class ItemDetailedViewer : MonoBehaviour
         if (_currentItem == null)
             ClearView();
         else
-            DrowCurrentItem();
+            DrawCurrentItem();
+    }
+
+    private void OnEnable()
+    {
+        _left.onClick.AddListener(OnWearChanging);
+    }
+
+    private void OnDisable()
+    {
+        _left.onClick.RemoveListener(OnWearChanging);
     }
 
     private void ChangeButtonsView()
     {
         string leftText = "Put off";
 
-        if(_isItemPutOn)
+        if (_isItemPutOn)
             leftText = "Put on";
 
         _leftName.text = leftText;
     }
 
-    private void DrowCurrentItem()
+    private void DrawCurrentItem()
     {
-        DrowCharacteristics(_currentItem.GetCharacteristics());
-        _abilityViewer.ShowAbility(_currentItem.Perc);
+        DrawCharacteristics(_currentItem.GetCharacteristics());
+        _abilityViewer.ShowAbility(_currentItem.Perk);
         _left.gameObject.SetActive(true);
         _right.gameObject.SetActive(true);
     }
 
     private void ClearView()
     {
-        DrowCharacteristics(new FighterCharacteristics());
+        DrawCharacteristics(default(FighterCharacteristics));
         _abilityViewer.ShowAbility(null);
         _left.gameObject.SetActive(false);
         _right.gameObject.SetActive(false);
     }
 
-    private void DrowCharacteristics(FighterCharacteristics characteristics)
+    private void DrawCharacteristics(FighterCharacteristics characteristics)
     {
         _damage.ShowCharacteristic((int)characteristics.Damage);
         _attackSpeed.ShowCharacteristic((int)characteristics.AttackSpeed);

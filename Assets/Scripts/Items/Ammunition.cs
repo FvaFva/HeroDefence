@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public class Ammunition
-{ 
+{
     private Dictionary<ItemType, Item> _thingsWorn = new Dictionary<ItemType, Item>();
 
     public IReadOnlyDictionary<ItemType, Item> ThingsWorn => _thingsWorn;

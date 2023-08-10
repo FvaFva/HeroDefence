@@ -1,4 +1,4 @@
 ﻿public interface IPercSource
 {
-    public Perc Perc { get; }
+    public Perc Perk { get; }
 }

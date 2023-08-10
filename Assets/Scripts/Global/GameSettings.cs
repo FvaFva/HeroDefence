@@ -16,8 +16,6 @@ public static class GameSettings
 
     public static class Character
     {
-        private static List<string> _namesPool = new List<string>();
-
         public const float RangeDelta = 0.1f;
         public const float AngleDelta = 0.97f;
         public const float SocialDistance = 1.2f;
@@ -30,10 +28,11 @@ public static class GameSettings
         public const float SecondsDelay = 0.1f;
         public const float FlightDeathHight = 30;
         public const int CountOfCharacterSpells = 2;
+        public const int StaminaPointsToAttack = 1000;
 
         public static readonly WaitForSeconds OptimizationDelay = new WaitForSeconds(SecondsDelay);
 
-        public const int StaminaPointsToAttack = 1000;        
+        private static List<string> _namesPool = new List<string>();
 
         static Character()
         {
@@ -53,30 +52,26 @@ public static class GameSettings
             _namesPool.Add("Nik");
             _namesPool.Add("Adam");
             _namesPool.Add("Mark");
-            _namesPool.Add("Rolan");
-            _namesPool.Add("Serg");
+            _namesPool.Add("Rowan");
+            _namesPool.Add("Sergey");
             _namesPool.Add("Andy");
-            _namesPool.Add("Filipp");
+            _namesPool.Add("Filip");
             _namesPool.Add("Boris");
             _namesPool.Add("Oleg");
-            _namesPool.Add("Pilat");
             _namesPool.Add("Den");
-            _namesPool.Add("Zoza");
-            _namesPool.Add("Naham");
             _namesPool.Add("Greek");
-            _namesPool.Add("Chak");
+            _namesPool.Add("Chuck");
             _namesPool.Add("Baron");
             _namesPool.Add("Graf");
             _namesPool.Add("Zak");
             _namesPool.Add("Pupa");
-            _namesPool.Add("Lupa");
             _namesPool.Add("Biba");
             _namesPool.Add("Boba");
             _namesPool.Add("Aram");
             _namesPool.Add("Adam");
             _namesPool.Add("Daniel");
         }
-    }    
+    }
 
     public static class UI
     {
@@ -87,7 +82,7 @@ public static class GameSettings
     {
         public static class States
         {
-            public const string Idle = nameof(Idle); 
+            public const string Idle = nameof(Idle);
             public const string Run = "Run";
         }
     }

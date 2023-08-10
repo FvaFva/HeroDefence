@@ -2,25 +2,25 @@
 using System.Collections;
 using UnityEngine;
 
-public class CharacterDieingLogic : IReachLogic
+public class CharacterDyeingLogic : IReachLogic
 {
     private Transform _body;
     private float _speed;
 
-    public event Action<Target> Reached;
-
-    public CharacterDieingLogic(Transform body, float speed)
+    public CharacterDyeingLogic(Transform body, float speed)
     {
         _body = body;
         _speed = speed;
     }
+
+    public event Action<Target> Reached;
 
     public IEnumerator ReachTarget()
     {
         yield return GameSettings.Character.OptimizationDelay;
         float currentFlight = GameSettings.Character.FlightDeathHight;
 
-        while(currentFlight > 0)
+        while (currentFlight > 0)
         {
             float distanceFlight = _speed * GameSettings.Character.SecondsDelay;
             currentFlight -= distanceFlight;
@@ -30,7 +30,7 @@ public class CharacterDieingLogic : IReachLogic
             yield return GameSettings.Character.OptimizationDelay;
         }
 
-        Reached?.Invoke(new Target());
+        Reached?.Invoke(default(Target));
         _body.gameObject.SetActive(false);
     }
 

@@ -4,11 +4,8 @@ namespace CharacterTransactions
 {
     public abstract class BaseTransactionCharacterObserver : ITransaction
     {
-        protected IFightable _character;
-        protected CharacterState _targetState;
-
-        public event Action<CharacterState, Target> NewStatusAvailable;
-        public TransactionType Type { get; private set; }
+        private IFightable _character;
+        private CharacterState _targetState;
 
         public BaseTransactionCharacterObserver(CharacterState targetState, IFightable character, TransactionType type)
         {
@@ -17,13 +14,21 @@ namespace CharacterTransactions
             Type = type;
         }
 
+        public event Action<CharacterState, Target> NewStatusAvailable;
+
+        public TransactionType Type { get; private set; }
+
+        protected IFightable Character => _character;
+
+        protected CharacterState TargetState => _targetState;
+
         public abstract void Off();
 
         public abstract void TryOn();
 
         protected virtual void OnTriggering()
         {
-            NewStatusAvailable?.Invoke(_targetState, new Target());
+            NewStatusAvailable?.Invoke(TargetState, default(Target));
         }
     }
 }

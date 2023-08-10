@@ -2,5 +2,5 @@
 {
     OnAttack = 0,
     OnDamageDelay,
-    OnDefence
+    OnDefense,
 }

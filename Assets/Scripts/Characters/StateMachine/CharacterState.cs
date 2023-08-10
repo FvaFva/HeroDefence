@@ -7,17 +7,19 @@ namespace CharacterTransactions
     public class CharacterState
     {
         private List<ITransaction> _transactions = new List<ITransaction>();
-        private IReachLogic _reacher;
+        private IReachLogic _achiever;
 
-        public string Name { get; private set; }
-        public event Action<CharacterState, Target> OnFindNextState;
-        public IEnumerator ReachTarget => _reacher.ReachTarget();
-
-        public CharacterState(IReachLogic reacher, string name)
+        public CharacterState(IReachLogic achiever, string name)
         {
-            _reacher = reacher;
+            _achiever = achiever;
             Name = name;
         }
+
+        public event Action<CharacterState, Target> OnFindNextState;
+
+        public string Name { get; private set; }
+
+        public IEnumerator ReachTarget => _achiever.ReachTarget();
 
         public void AddTransaction(ITransaction transaction)
         {
@@ -33,7 +35,7 @@ namespace CharacterTransactions
 
         public void Enter(Target target)
         {
-            _reacher.SetTarget(target);
+            _achiever.SetTarget(target);
 
             foreach (ITransaction transaction in _transactions)
             {

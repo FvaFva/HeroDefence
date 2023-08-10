@@ -15,7 +15,7 @@ public class AmmunitionViewer : MonoBehaviour
     [SerializeField] private ItemViewer _legView;
 
     public event Action<Item> ChoseItem;
-    private int nobodyknows;
+
     public void DrawThingsWorn(IReadOnlyDictionary<ItemType, Item> things)
     {
         foreach (KeyValuePair<ItemType, ItemViewer> cell in _ammunition)

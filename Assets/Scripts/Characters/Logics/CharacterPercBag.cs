@@ -5,7 +5,7 @@ public class CharacterPercBag
 {
     private List<IPercSource> _slots = new List<IPercSource>();
 
-    public IReadOnlyList<Ability> Percs => _slots.Select(ps => ps.Perc).ToList().AsReadOnly();
+    public IReadOnlyList<Ability> Perks => _slots.Select(ps => ps.Perk).ToList().AsReadOnly();
 
     public bool TryAddPerc(IPercSource source)
     {
@@ -27,11 +27,11 @@ public class CharacterPercBag
         return isCanRemove;
     }
 
-    public void ExecuteActionDepenceAction(IFightable root, IFightable target, float damage, PercActionType type)
+    public void ExecuteDependentAction(IFightable root, IFightable target, float damage, PercActionType type)
     {
-        foreach (Perc perc in _slots.Select(ps => ps.Perc))
+        foreach (Perc perc in _slots.Select(ps => ps.Perk))
         {
-            perc.ExecuteDependsAction(root, target, damage, type);
+            perc.ExecuteDependentAction(root, target, damage, type);
         }
     }
 }
