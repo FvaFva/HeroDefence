@@ -98,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponView: {fileID: 7700178340412941672}
   _ringView: {fileID: 5580958872339051374}
-  _necleView: {fileID: 3078693935031096058}
+  _necklaceView: {fileID: 3078693935031096058}
   _helmView: {fileID: 6233557414082046227}
   _chestView: {fileID: 7650784069851204528}
   _handView: {fileID: 8366212340384348710}

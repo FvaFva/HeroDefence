@@ -1619,18 +1619,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hitPointsBar: {fileID: 3506574249223264477}
   _manaPointsBar: {fileID: 8561952021197219036}
-  _portrait: {fileID: 3506574248825101979}
-  _effectPlace: {fileID: 5162527481154567212}
-  _selectSharacter: {fileID: 869112875420158354}
   _name: {fileID: 2815362824363872631}
-  _targetebleColor: {r: 0.5254902, g: 1, b: 0.56078434, a: 1}
-  _flagImage: {fileID: 4589667370202413830}
   _flagText: {fileID: 3280369480129012028}
+  _portrait: {fileID: 3506574248825101979}
+  _flagImage: {fileID: 4589667370202413830}
   _currentMask: {fileID: 1750453774257504272}
-  SelectSharacter:
-    m_PersistentCalls:
-      m_Calls: []
-  IsUsed: 0
+  _targetableColor: {r: 0, g: 0, b: 0, a: 0}
+  _selectCharacter: {fileID: 869112875420158354}
+  _effectPlace: {fileID: 5162527481154567212}
 --- !u!114 &869112875420158354
 MonoBehaviour:
   m_ObjectHideFlags: 0

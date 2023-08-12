@@ -27,7 +27,7 @@ public class ItemDetailedViewer : MonoBehaviour
     {
         _currentItem = item;
         _isItemPutOn = isItemPutOn;
-        _itemViewer.DrowItem(_currentItem);
+        _itemViewer.DrawItem(_currentItem);
         ChangeButtonsView();
 
         if (_currentItem == null)

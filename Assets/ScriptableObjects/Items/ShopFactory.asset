@@ -17,12 +17,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 08944e4446e66ca4e97c88a9be2b4886, type: 2}
   - {fileID: 11400000, guid: 63a67e036dc61544082822adec1569bc, type: 2}
   - {fileID: 11400000, guid: fefc2f9284dfdaa43922f908efc39c0f, type: 2}
-  _commonPercs:
-  - {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
-  - {fileID: 11400000, guid: 77b35bef3dab7b24f92b43e7477e2567, type: 2}
-  - {fileID: 11400000, guid: 23fa0ce6be459c84ea2395be0ef9fa87, type: 2}
+  _commonPerks:
   - {fileID: 11400000, guid: af9d0b463f5d4e9458186b4f5d61b8c8, type: 2}
-  _uncommonPercs: []
-  _rarePercs: []
-  _epickPercs: []
-  _legandaryPercs: []
+  - {fileID: 11400000, guid: 23fa0ce6be459c84ea2395be0ef9fa87, type: 2}
+  _uncommonPerks:
+  - {fileID: 11400000, guid: 77b35bef3dab7b24f92b43e7477e2567, type: 2}
+  _rarePerks:
+  - {fileID: 11400000, guid: 77cda5526ab0f9e4eb946e4fa3e668d8, type: 2}
+  _epicPerks: []
+  _legendaryPerks: []

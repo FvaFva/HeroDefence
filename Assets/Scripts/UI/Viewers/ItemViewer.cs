@@ -1,13 +1,13 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System;
 
 [RequireComponent(typeof(Image))]
 public class ItemViewer : MonoBehaviour
 {
     private Image _icon;
-    private Sprite _baseIcaon;
+    private Sprite _baseIcon;
     private Item _item;
 
     [SerializeField] private TMP_Text _rarity;
@@ -17,7 +17,26 @@ public class ItemViewer : MonoBehaviour
     [SerializeField] private Button _button;
 
     public event Action<Item> ChoseItem;
+
     public bool IsUsed { get; private set; }
+
+    public void DrawItem(Item item)
+    {
+        _item = item;
+
+        if (_item == null)
+        {
+            _icon.sprite = _baseIcon;
+            IsUsed = false;
+        }
+        else
+        {
+            _icon.sprite = item.Icon;
+            IsUsed = true;
+        }
+
+        ChangeElementsVision();
+    }
 
     private void OnEnable()
     {
@@ -29,23 +48,6 @@ public class ItemViewer : MonoBehaviour
         _button.onClick.RemoveListener(OnButtonClick);
     }
 
-    public void DrowItem(Item item)
-    {
-        _item = item;
-
-        if (_item == null)
-        { 
-            _icon.sprite = _baseIcaon;           
-            IsUsed = false;
-        }
-        else
-        { 
-            _icon.sprite = item.Icon;
-            IsUsed = true;
-        }
-
-        ChangeElementsVision();
-    }
 
     private void OnButtonClick()
     {
@@ -55,7 +57,7 @@ public class ItemViewer : MonoBehaviour
     private void Awake()
     {
         TryGetComponent<Image>(out _icon);
-        _baseIcaon = _icon.sprite;
+        _baseIcon = _icon.sprite;
         ChangeElementsVision();
     }
 

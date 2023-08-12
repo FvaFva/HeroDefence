@@ -243,7 +243,7 @@ public class Character : MonoBehaviour, IFightable
         _effectBug = new CharacterEffectBug();
         _moveLogic = new CharacterMoveLogic(navigator, transform, _team, _preset.Height);
 
-        _informationUI.SetFlagGolod(_team.Flag);
+        _informationUI.SetFlagColor(_team.Flag);
         targetObserver.Init(_moveLogic);
 
         UpdateLogicsCharacteristics();

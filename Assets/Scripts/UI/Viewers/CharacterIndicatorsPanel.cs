@@ -1,5 +1,5 @@
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
 public class CharacterIndicatorsPanel : MonoBehaviour
@@ -11,6 +11,17 @@ public class CharacterIndicatorsPanel : MonoBehaviour
     private Transform _mainCameraTransform;
     private Canvas _mainCanvas;
 
+    public void SetFlagColor(Color color)
+    {
+        _flag.color = color;
+    }
+
+    public void SetCurrentIndicators(float hitPointsCoefficient, float manaPointsCoefficient)
+    {
+        _hitPointsBar.value = hitPointsCoefficient;
+        _manaPointsBar.value = manaPointsCoefficient;
+    }
+
     private void Awake()
     {
         TryGetComponent<Canvas>(out _mainCanvas);
@@ -21,16 +32,5 @@ public class CharacterIndicatorsPanel : MonoBehaviour
     private void Update()
     {
         transform.rotation = _mainCameraTransform.rotation;
-    }
-
-    public void SetFlagGolod(Color color)
-    {
-        _flag.color = color;
-    }
-
-    public void SetCurrentIndicators(float hitPointsCoeffecient, float manaPointsCoeffecient)
-    {
-        _hitPointsBar.value = hitPointsCoeffecient;
-        _manaPointsBar.value = manaPointsCoeffecient;
     }
 }

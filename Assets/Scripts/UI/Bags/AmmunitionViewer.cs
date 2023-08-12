@@ -21,16 +21,16 @@ public class AmmunitionViewer : MonoBehaviour
         foreach (KeyValuePair<ItemType, ItemViewer> cell in _ammunition)
         {
             if (things.ContainsKey(cell.Key))
-                cell.Value.DrowItem(things[cell.Key]);
+                cell.Value.DrawItem(things[cell.Key]);
             else
-                cell.Value.DrowItem(null);
+                cell.Value.DrawItem(null);
         }
     }
 
     public void Clear()
     {
         foreach (var cell in _ammunition)
-            cell.Value.DrowItem(null);
+            cell.Value.DrawItem(null);
     }
 
     private void Awake()

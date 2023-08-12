@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b98025f667ef947aefe43574608e13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _manacost: {fileID: 4177212753982695919}
+  _manaCost: {fileID: 4177212753982695919}
   _icon: {fileID: 4177212753221355881}
   _cooldown: {fileID: 4177212754235376443}
   _button: {fileID: 4177212753877190325}

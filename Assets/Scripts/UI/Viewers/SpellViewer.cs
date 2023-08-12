@@ -11,6 +11,14 @@ public class SpellViewer : MonoBehaviour
 
     private ISpellInfo _spell;
 
+    public void DrawSpell(Spell spell)
+    {
+        if (spell == null)
+            Clear();
+        else
+            Render(spell);
+    }
+
     private void OnEnable()
     {
         _button.onClick.AddListener(ActivatedSpell);
@@ -20,14 +28,6 @@ public class SpellViewer : MonoBehaviour
     {
         _button.onClick.RemoveListener(ActivatedSpell);
         Clear();
-    }
-
-    public void DrawSpell(Spell spell)
-    {
-        if(spell == null)
-            Clear();
-        else
-            Render(spell);
     }
 
     private void Render(Spell spell)
@@ -60,6 +60,5 @@ public class SpellViewer : MonoBehaviour
 
     private void ActivatedSpell()
     {
-
     }
 }

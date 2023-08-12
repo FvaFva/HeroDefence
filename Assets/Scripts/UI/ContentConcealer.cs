@@ -4,29 +4,29 @@ using UnityEngine;
 public class ContentConcealer : MonoBehaviour
 {
     [SerializeField] private UIPanel _panel;
-    [SerializeField] private Vector2 _UnshowDirection;
+    [SerializeField] private Vector2 _hideDirection;
 
     private float _showingPanelSpeed = 1000;
-    private Vector3 _unshowingPosition;
-    private Vector3 _showingPosition;
+    private Vector3 _hidePosition;
+    private Vector3 _showPosition;
     private Coroutine _panelMoving;
-
-    private void Awake()
-    {
-        _unshowingPosition = _panel.transform.position;
-        _unshowingPosition.x += _UnshowDirection.x;
-        _unshowingPosition.y += _UnshowDirection.y;
-        _showingPosition = _panel.transform.position;
-        StartMovePanel(false);
-    }
 
     public void StartMovePanel(bool show)
     {
         if (_panelMoving != null)
             StopCoroutine(_panelMoving);
 
-        Vector3 targetPosition = show ? _showingPosition : _unshowingPosition;
+        Vector3 targetPosition = show ? _showPosition : _hidePosition;
         _panelMoving = StartCoroutine(MovePanel(targetPosition));
+    }
+
+    private void Awake()
+    {
+        _hidePosition = _panel.transform.position;
+        _hidePosition.x += _hideDirection.x;
+        _hidePosition.y += _hideDirection.y;
+        _showPosition = _panel.transform.position;
+        StartMovePanel(false);
     }
 
     private IEnumerator MovePanel(Vector3 position)

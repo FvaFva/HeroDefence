@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
                 if (_currentCharacter.TryPutOnItem(item) == false)
                     _inventory.TryTakeItem(item);
                 else
-                    _mainUI.DrowInventory(_inventory.Bug);
+                    _mainUI.DrawInventory(_inventory.Bug);
             }
         }
     }
@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
             if (_inventory.TryTakeItem(dropItem) == false)
                 _currentCharacter.TryPutOnItem(dropItem);
             else
-                _mainUI.DrowInventory(_inventory.Bug);
+                _mainUI.DrawInventory(_inventory.Bug);
         }
     }
 
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
     {
         if (_inventory.TryTakeItem(item))
         {
-            _mainUI.DrowInventory(_inventory.Bug);
+            _mainUI.DrawInventory(_inventory.Bug);
             return true;
         }
 

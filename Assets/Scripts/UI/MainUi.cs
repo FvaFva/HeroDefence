@@ -12,23 +12,7 @@ public class MainUi : MonoBehaviour
     public event Action<Character> OnCharacterSelect;
     public event Action<Item, bool> ItemWearChanged;
 
-    private void OnEnable()
-    {
-        _selectedCharacters.OnCharacterSelect += SetMainCharacter;
-        _inventory.ChoseItem += ShowPutOnItemDetails;
-        _currentCharacter.ChoseAmmunitionsItem += ShowPutOffItemDetails;
-        _itemDetails.ItemWearChanged += OnItemWearChanging;
-    }
-
-    private void OnDisable()
-    {
-        _selectedCharacters.OnCharacterSelect -= SetMainCharacter;
-        _inventory.ChoseItem -= ShowPutOnItemDetails;
-        _currentCharacter.ChoseAmmunitionsItem -= ShowPutOffItemDetails;
-        _itemDetails.ItemWearChanged -= OnItemWearChanging;
-    }
-
-    public void DrowInventory(IReadOnlyList<Item> bug)
+    public void DrawInventory(IReadOnlyList<Item> bug)
     {
         _inventory.DrawInventory(bug);
     }   
@@ -48,6 +32,22 @@ public class MainUi : MonoBehaviour
     {
         _currentCharacter.SetNewCurrentCharacter(null);
         _selectedCharacters.ClearSelectedChaViewers();
+    }
+
+    private void OnEnable()
+    {
+        _selectedCharacters.OnCharacterSelect += SetMainCharacter;
+        _inventory.ChoseItem += ShowPutOnItemDetails;
+        _currentCharacter.ChoseAmmunitionsItem += ShowPutOffItemDetails;
+        _itemDetails.ItemWearChanged += OnItemWearChanging;
+    }
+
+    private void OnDisable()
+    {
+        _selectedCharacters.OnCharacterSelect -= SetMainCharacter;
+        _inventory.ChoseItem -= ShowPutOnItemDetails;
+        _currentCharacter.ChoseAmmunitionsItem -= ShowPutOffItemDetails;
+        _itemDetails.ItemWearChanged -= OnItemWearChanging;
     }
 
     private void SetMainCharacter(Character character)

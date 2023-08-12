@@ -16,14 +16,14 @@ public class InventoryViewer : MonoBehaviour
         Clear();
 
         foreach (Item item in bug)
-            GetFreeViewer().DrowItem(item);
+            GetFreeViewer().DrawItem(item);
     }
 
     public void Clear()
     {
         foreach (ItemViewer cell in _viewersPool)
         {
-            cell.DrowItem(null);
+            cell.DrawItem(null);
             cell.ChoseItem -= OnItemChoose;
         }
     }

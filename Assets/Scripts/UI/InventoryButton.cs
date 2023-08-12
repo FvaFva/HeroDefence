@@ -2,15 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class InventoryButtom : MonoBehaviour
+public class InventoryButton : MonoBehaviour
 {
-    [SerializeField] ContentConcealer _inventory;
-    private bool _isVisibale = false;
+    [SerializeField] private ContentConcealer _inventory;
+
+    private bool _isVisible = false;
     private Button _openInventory;
 
     private void Awake()
     {
-        TryGetComponent<Button>(out _openInventory);        
+        TryGetComponent<Button>(out _openInventory);
     }
 
     private void OnEnable()
@@ -25,7 +26,7 @@ public class InventoryButtom : MonoBehaviour
 
     private void ChangeVisionInventory()
     {
-        _isVisibale = !_isVisibale;
-        _inventory.StartMovePanel(_isVisibale);
+        _isVisible = !_isVisible;
+        _inventory.StartMovePanel(_isVisible);
     }
 }
