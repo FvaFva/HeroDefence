@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: StaminaApply300
   m_EditorClassIdentifier: 
   _description: 
-  _countStamina: 300
+  _effectColor: {r: 0.33490568, g: 1, b: 0.40240058, a: 1}
+  _countStamina: 600

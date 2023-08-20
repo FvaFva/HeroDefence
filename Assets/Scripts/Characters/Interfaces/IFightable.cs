@@ -13,9 +13,11 @@ public interface IFightable
 
     public void ApplyEffect(EffectLogic effect);
 
-    public bool TryApplyDamage(IFightable attacker,ref float damage, bool isPercTriggered = true);
+    public bool TryApplyDamage(IFightable attacker, ref float damage, bool isPercTriggered = true);
 
     public bool IsFriendly(Team verifiableTeam);
 
     public bool IsFriendly(IFightable verifiableIFightable);
+
+    public void ShowColoredEffectImpact(Color color);
 }

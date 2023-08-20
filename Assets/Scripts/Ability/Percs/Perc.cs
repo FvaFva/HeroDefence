@@ -22,7 +22,7 @@ public class Perc : Ability
         string description = string.Empty;
 
         AddNewBlockToDescription("On attack: ", PercActionType.OnAttack, ref description);
-        AddNewBlockToDescription("On defence: ", PercActionType.OnDefense, ref description);
+        AddNewBlockToDescription("On defense: ", PercActionType.OnDefense, ref description);
         AddNewBlockToDescription("On deal damage: ", PercActionType.OnDamageDelay, ref description);
 
         return description;

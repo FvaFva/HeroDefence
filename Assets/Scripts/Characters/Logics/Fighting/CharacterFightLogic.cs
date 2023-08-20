@@ -30,6 +30,8 @@ public class CharacterFightLogic : IReachLogic
 
     public event Action HitPointsChanged;
 
+    public event Action<float> StaminaChanged;
+
     public event Action<Target> Reached;
 
     public float HitPointsCoefficient => _hitPointsCurrent / _hitPointsMax;
@@ -79,12 +81,16 @@ public class CharacterFightLogic : IReachLogic
     public void ApplyStamina(int count)
     {
         _currentStamina += count;
+        StaminaChanged?.Invoke(_currentStamina);
     }
 
     public void StaminaRegeneration(float delay)
     {
         if (_currentStamina < StaminaToAttack)
+        {
             _currentStamina += _attackSpeed * delay;
+            StaminaChanged?.Invoke(_currentStamina);
+        }
     }
 
     public IEnumerator ReachTarget()
@@ -117,6 +123,7 @@ public class CharacterFightLogic : IReachLogic
         {
             _attackLogic.AttackEnemy(_attacker, _enemy, _damage);
             _currentStamina -= StaminaToAttack;
+            StaminaChanged?.Invoke(_currentStamina);
         }
     }
 }

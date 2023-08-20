@@ -12,6 +12,7 @@ public class Character : MonoBehaviour, IFightable
     [SerializeField] private CharacterIndicatorsPanel _informationUI;
     [SerializeField] private CharacterPreset _preset;
     [SerializeField] private Team _team;
+    [SerializeField] private PercImpactPlayer _impactEffectPlayer;
 
     private Ammunition _ammunition = new Ammunition();
     private Characteristics _characteristics;
@@ -28,6 +29,8 @@ public class Character : MonoBehaviour, IFightable
     private Coroutine _resting;
 
     public event Action<float, float> ChangedIndicators;
+
+    public event Action<float> StaminaChanged;
 
     public event Action<FighterCharacteristics> ChangedCharacteristics;
 
@@ -48,6 +51,11 @@ public class Character : MonoBehaviour, IFightable
     public Team Team => _team;
 
     public Vector3 CurrentPosition => transform.position;
+
+    public void ShowColoredEffectImpact(Color color)
+    {
+        _impactEffectPlayer.ShowColoredEffect(color);
+    }
 
     public void SetNewCommander(ITargetChooser commander)
     {
@@ -149,6 +157,7 @@ public class Character : MonoBehaviour, IFightable
     {
         _fightLogic.HitPointsChanged += ShowIndicators;
         _fightLogic.Died += OnDied;
+        _fightLogic.StaminaChanged += OnStaminaChanged;
         _characteristics.CharacteristicsChanged += UpdateLogicsCharacteristics;
         _effectBug.CharacteristicsChanged += OnEffectsChange;
         _effectBug.HealthTic += ApplyHealthChangeFromEffect;
@@ -161,6 +170,7 @@ public class Character : MonoBehaviour, IFightable
     {
         _fightLogic.HitPointsChanged -= ShowIndicators;
         _fightLogic.Died -= OnDied;
+        _fightLogic.StaminaChanged -= OnStaminaChanged;
         _characteristics.CharacteristicsChanged -= UpdateLogicsCharacteristics;
         _effectBug.CharacteristicsChanged -= OnEffectsChange;
         _effectBug.HealthTic -= ApplyHealthChangeFromEffect;
@@ -279,5 +289,10 @@ public class Character : MonoBehaviour, IFightable
         Name = preset.Name;
         Profession = preset.Profession;
         Portrait = preset.Portrait;
+    }
+
+    private void OnStaminaChanged(float currentStamina)
+    {
+        StaminaChanged?.Invoke(currentStamina);
     }
 }

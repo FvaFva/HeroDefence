@@ -5,7 +5,7 @@ public class PercActionApplyStaminaRoot : PercAction
 {
     [SerializeField]private int _countStamina;
 
-    public override void DoAction(IFightable root, IFightable target, float damage)
+    protected override void MainAction(IFightable root, IFightable target, float damage)
     {
         root.ApplyStamina(_countStamina);
     }

@@ -10,6 +10,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     [SerializeField] private Image _flag;
     [SerializeField] private IndicatorSlider _hitPoints;
     [SerializeField] private IndicatorSlider _manaPoints;
+    [SerializeField] private IndicatorSlider _stamina;
     [SerializeField] private TMP_Text _name;
     [SerializeField] private TMP_Text _profession;
     [SerializeField] private TMP_Text _teamName;
@@ -34,6 +35,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
             _character.ChangedAbilitiesKit -= DrawAbilities;
             _character.ChangedAmmunition -= _ammunition.DrawThingsWorn;
             _character.ChangedEffectsKit -= _effectsBug.DrawEffects;
+            _character.StaminaChanged -= OnStaminaChanged;
         }
 
         _character = character;
@@ -57,6 +59,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _moveSpeed.ShowCharacteristic(0);
         _hitPoints.SetMaxValue(1);
         _manaPoints.SetMaxValue(1);
+        _stamina.SetMaxValue(GameSettings.Character.StaminaPointsToAttack);
         _effectsBug.DrawEffects();
         _teamName.text = string.Empty;
         _ammunition.Clear();
@@ -76,6 +79,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     private void DrawCharacter()
     {
         _character.ChangedIndicators += UpdateIndicators;
+        _character.StaminaChanged += OnStaminaChanged;
         _character.ChangedCharacteristics += UpdateCharacteristicsInfo;
         _character.ChangedAbilitiesKit += DrawAbilities;
         _character.ChangedAmmunition += _ammunition.DrawThingsWorn;
@@ -96,6 +100,7 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
         _moveSpeed.ShowCharacteristic((int)characteristics.Speed);
         _hitPoints.SetMaxValue(characteristics.HitPoints);
         _manaPoints.SetMaxValue(characteristics.ManaPoints);
+        _stamina.SetMaxValue(GameSettings.Character.StaminaPointsToAttack);
     }
 
     private void UpdateIndicators(float hitPointsCoefficient, float manaPointsCoefficient)
@@ -115,5 +120,10 @@ public class CurrentCharacterInfoPanel : MonoBehaviour
     private void OnItemChoose(Item item)
     {
         ChoseAmmunitionsItem?.Invoke(item);
+    }
+
+    private void OnStaminaChanged(float currentStamina)
+    {
+        _stamina.SetCurrentCoefficient(currentStamina / GameSettings.Character.StaminaPointsToAttack);
     }
 }

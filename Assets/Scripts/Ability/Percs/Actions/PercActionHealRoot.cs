@@ -5,7 +5,7 @@ public class PercActionHealRoot : PercAction
 {
     [SerializeField] private float _coefficientOfHealByDamage;
 
-    public override void DoAction(IFightable root, IFightable target, float damage)
+    protected override void MainAction(IFightable root, IFightable target, float damage)
     {
         root.ApplyHeal(damage * _coefficientOfHealByDamage);
     }

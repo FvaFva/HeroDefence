@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 5SecondToTargetPoisonArmor50
   m_EditorClassIdentifier: 
   _description: 
+  _effectColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
   _durationSeconds: 5
   _effect: {fileID: 11400000, guid: 02be227f763f4d843b73c831a8a3928c, type: 2}

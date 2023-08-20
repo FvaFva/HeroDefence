@@ -6,7 +6,7 @@ public class PercActionApplyEffectToTarget : PercAction
     [SerializeField] private int _durationSeconds;
     [SerializeField] private EffectImpact _effect;
 
-    public override void DoAction(IFightable root, IFightable target, float damage)
+    protected override void MainAction(IFightable root, IFightable target, float damage)
     {
         EffectLogic effect = new EffectLogic(_effect, root, _durationSeconds);
         target.ApplyEffect(effect);
