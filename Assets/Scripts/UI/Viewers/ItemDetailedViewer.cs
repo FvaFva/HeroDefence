@@ -16,7 +16,7 @@ public class ItemDetailedViewer : MonoBehaviour
     [SerializeField] private AbilityViewer _abilityViewer;
     [SerializeField] private Button _left;
     [SerializeField] private TMP_Text _leftName;
-    [SerializeField] private Button _right;
+    [SerializeField] private TMP_Text _percDescription;
 
     private Item _currentItem;
     private bool _isItemPutOn;
@@ -61,7 +61,8 @@ public class ItemDetailedViewer : MonoBehaviour
         DrawCharacteristics(_currentItem.GetCharacteristics());
         _abilityViewer.ShowAbility(_currentItem.Perk);
         _left.gameObject.SetActive(true);
-        _right.gameObject.SetActive(true);
+        _percDescription.gameObject.SetActive(true);
+        _percDescription.text = _currentItem.Perk.GetDescription();
     }
 
     private void ClearView()
@@ -69,7 +70,8 @@ public class ItemDetailedViewer : MonoBehaviour
         DrawCharacteristics(default(FighterCharacteristics));
         _abilityViewer.ShowAbility(null);
         _left.gameObject.SetActive(false);
-        _right.gameObject.SetActive(false);
+        _percDescription.gameObject.SetActive(false);
+        _percDescription.text = string.Empty;
     }
 
     private void DrawCharacteristics(FighterCharacteristics characteristics)

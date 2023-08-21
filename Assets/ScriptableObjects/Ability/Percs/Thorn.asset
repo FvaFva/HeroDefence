@@ -17,5 +17,5 @@ MonoBehaviour:
   _actions:
   - {fileID: 11400000, guid: b42e3ea6045d35d4f92bc9b34efeee66, type: 2}
   _chances:
-  - 30
+  - 100
   _percActionTypes: 02000000

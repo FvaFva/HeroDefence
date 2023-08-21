@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6d778ffeeac09340ae85f71c4a3a1d9, type: 3}
   m_Name: Vampire
   m_EditorClassIdentifier: 
-  _description: 
+  _description: vampire 30%
   _effectColor: {r: 0.5660378, g: 0.008009953, b: 0.10913871, a: 1}
   _coefficientOfHealByDamage: 0.3

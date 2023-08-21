@@ -40,12 +40,15 @@ public class Perc : Ability
 
     private void AddNewBlockToDescription(string blocName, PercActionType blocType, ref string description)
     {
-        if (description != string.Empty)
-            description = description + "\n";
-
-        description = description + blocName;
+        string actionDescriptions = string.Empty;
 
         foreach (ActionTrigger action in _triggers.Where(act => act.PercActionType == blocType))
-            description = $"{description} {action.Description}, ";
+            actionDescriptions = $"{actionDescriptions} {action.Description}, ";
+
+        if (actionDescriptions != string.Empty)
+            {
+                description += description == string.Empty ? "\n" : "";
+                description = $"{description} {blocName} {actionDescriptions}";
+            }
     }
 }

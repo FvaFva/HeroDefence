@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e1a6ecc98622049981aedb268afa3d, type: 3}
   m_Name: Thorn100
   m_EditorClassIdentifier: 
-  _description: 
-  _effectColor: {r: 0.45908713, g: 0.2691349, b: 0.9056604, a: 1}
+  _description: get back damage
+  _effectColor: {r: 0.49982202, g: 0.88993096, b: 0.9056604, a: 1}
   _coefficientOfDamage: 1

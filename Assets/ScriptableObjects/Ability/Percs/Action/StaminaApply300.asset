@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbd06921c61be9541ac5ba3a89afc37c, type: 3}
   m_Name: StaminaApply300
   m_EditorClassIdentifier: 
-  _description: 
+  _description: Take 300 stamina
   _effectColor: {r: 0.33490568, g: 1, b: 0.40240058, a: 1}
-  _countStamina: 600
+  _countStamina: 300

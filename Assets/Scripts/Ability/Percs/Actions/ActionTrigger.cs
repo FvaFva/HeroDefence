@@ -15,7 +15,7 @@ public struct ActionTrigger
 
     public PercActionType PercActionType => _percActionType;
 
-    public string Description => $"{_chance} to {_action.Description}";
+    public string Description => $"{_chance}% to {_action.Description}";
 
     public void ExecuteActionIfRandomize(IFightable root, IFightable target, float damage)
     {
