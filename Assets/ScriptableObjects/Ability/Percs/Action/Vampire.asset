@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Vampire
   m_EditorClassIdentifier: 
   _description: 
+  _effectColor: {r: 0.5660378, g: 0.008009953, b: 0.10913871, a: 1}
   _coefficientOfHealByDamage: 0.3
